@@ -12,7 +12,6 @@ class TrainState(val train: Train) {
         }
     }
 
-
     /**
      * 現在の列車の速度
      */
