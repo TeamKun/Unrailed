@@ -1,0 +1,5 @@
+name: Unrailed
+version: '${project.version}'
+main: net.kunmc.lab.unrailed.Unrailed
+api-version: 1.16
+authors: [ Bun133 ]
