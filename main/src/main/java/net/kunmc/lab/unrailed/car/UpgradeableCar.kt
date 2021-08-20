@@ -2,13 +2,14 @@ package net.kunmc.lab.unrailed.car
 
 import net.kunmc.lab.unrailed.car.upgrade.UpGradeSetting
 import org.bukkit.Location
+import org.bukkit.entity.Minecart
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
  * Upgradeできるワゴン
  */
-abstract class UpgradeableCar(plugin: JavaPlugin, spawnLocation: Location, Name: String) :
-    BaseCar(plugin, spawnLocation, Name) {
+abstract class UpgradeableCar(plugin: JavaPlugin, spawnLocation: Location, Name: String,carClass: Class<out Minecart> = Minecart::class.java) :
+    BaseCar(plugin, spawnLocation, Name,carClass) {
 
     /**
      * 今このワゴンがアップグレードできるかどうか
@@ -43,8 +44,9 @@ abstract class UpgradeableSettingCar<T>(
     plugin: JavaPlugin,
     spawnLocation: Location,
     Name: String,
-    val setting: UpGradeSetting<T>
-) : UpgradeableCar(plugin, spawnLocation, Name) {
+    val setting: UpGradeSetting<T>,
+    carClass: Class<out Minecart> = Minecart::class.java
+) : UpgradeableCar(plugin, spawnLocation, Name,carClass) {
 
     override fun isUpgradeable(): Boolean {
         return setting.cost(getUpGradeLevel() + 1) != -1

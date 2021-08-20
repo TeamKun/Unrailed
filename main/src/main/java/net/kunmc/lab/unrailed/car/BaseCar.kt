@@ -9,7 +9,7 @@ open class BaseCar(
     val plugin: JavaPlugin,
     spawnLocation: Location,
     private val Name: String,
-    carClass: Class<Minecart> = Minecart::class.java
+    carClass: Class<out Minecart> = Minecart::class.java
 ) :
     AbstractCar() {
     private val mine: Minecart = spawnLocation.world.spawn(spawnLocation, carClass)

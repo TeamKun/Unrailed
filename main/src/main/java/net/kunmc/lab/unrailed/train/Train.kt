@@ -17,8 +17,8 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
         this.car.add(car)
     }
 
-    private val State = TrainState(this)
-    override fun state(): TrainState = State
+    private val trainState = TrainState(this)
+    override fun state(): TrainState = trainState
 
     var isMoving = false
 
@@ -37,7 +37,6 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
         getCars().map { it.getMinecart() }.filter { !it.isOnRail() }.forEach {
             // 地面に落ちているワゴンを削除
             // TODO 演出
-
         }
 
         val speed = state().getSpeed()
@@ -48,6 +47,9 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
         }
 
         getCars().map { it.getMinecart() }.forEach {
+            if (it.velocity.length() == 0.0) {
+                // TODO 動いてない状態の列車をどう動かすか
+            }
             // 速度を同じに調整
             it.velocity.scale(speed)
         }

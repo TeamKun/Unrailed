@@ -4,13 +4,13 @@ import com.github.bun133.flylib2.commands.Commander
 import com.github.bun133.flylib2.commands.CommanderBuilder
 import com.github.bun133.flylib2.commands.TabChain
 import com.github.bun133.flylib2.commands.TabObject
+import net.kunmc.lab.unrailed.test.TrainCombineTest
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 
 class Unrailed : JavaPlugin() {
     var isGoingOn = false
-        private set
 
     fun start(loc: Location) {
     }
@@ -19,12 +19,11 @@ class Unrailed : JavaPlugin() {
     }
 
     companion object {
-
-
     }
 
     override fun onEnable() {
         // Plugin startup logic
+        command(this).register("ur")
     }
 
     override fun onDisable() {
@@ -57,8 +56,13 @@ fun command(unrailed: Unrailed) =
             },
         CommanderBuilder<Unrailed>()
             .addFilter(CommanderBuilder.Filters.OP())
-            .addTabChain(TabChain(TabObject("test")))
+            .addTabChain(TabChain(TabObject("test"), TabObject("combine")))
             .setInvoker { plugin, sender, arr ->
-                return@setInvoker false
+                when (arr[1]) {
+                    "combine" -> {
+                        TrainCombineTest.getInstance(plugin).isGoingOn = !TrainCombineTest.getInstance(plugin).isGoingOn
+                    }
+                }
+                return@setInvoker true
             }
     )

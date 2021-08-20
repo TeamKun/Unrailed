@@ -2,19 +2,21 @@ package net.kunmc.lab.unrailed.car
 
 import net.kunmc.lab.unrailed.car.upgrade.UpGradeSetting
 import org.bukkit.Location
+import org.bukkit.entity.Minecart
 import org.bukkit.plugin.java.JavaPlugin
 import kotlin.math.max
 
 class EngineCar(
     plugin: JavaPlugin,
     spawnLocation: Location,
-    Name: String,
+    Name: String = "機関車",
     val engineSetting: EngineCarSetting = EngineCarSetting()
 ) :
     UpgradeableSettingCar<Double>(
         plugin, spawnLocation,
         Name,
-        engineSetting
+        engineSetting,
+        carClass = Minecart::class.java
     ) {
     companion object {
         /**
