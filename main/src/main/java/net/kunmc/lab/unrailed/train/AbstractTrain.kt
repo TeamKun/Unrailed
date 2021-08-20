@@ -1,6 +1,7 @@
 package net.kunmc.lab.unrailed.train
 
 import net.kunmc.lab.unrailed.car.AbstractCar
+import net.kunmc.lab.unrailed.rail.Rail
 import net.kunmc.lab.unrailed.train.state.TrainState
 
 /**
@@ -38,7 +39,15 @@ abstract class AbstractTrain {
      */
     abstract fun state(): TrainState
 
+    /**
+     * 特定のワゴンとる用
+     */
     inline fun <reified T : AbstractCar> getComponents(clazz: Class<T>): List<T> {
         return getCars().filterIsInstance<T>()
     }
+
+    /**
+     * @return 走行中のレールインスタンス
+     */
+    abstract fun getRunningRail():Rail
 }
