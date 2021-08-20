@@ -1,15 +1,15 @@
-package net.kunmc.lab.unrailed.train
+package net.kunmc.lab.unrailed.car
 
 import org.bukkit.entity.Minecart
 import org.bukkit.event.player.PlayerInteractEntityEvent
 
 /**
- * 車両
+ * ワゴン
  * @see AbstractTrain
  */
 abstract class AbstractCar {
     /**
-     * @return この車両の表示名
+     * @return このワゴンの表示名
      */
     abstract fun name():String
 
