@@ -36,6 +36,9 @@ abstract class UpgradeableCar(plugin: JavaPlugin, spawnLocation: Location, Name:
     abstract fun getUpGradeLevel(): Int
 }
 
+/**
+ * @see UpGradeSetting 適用できるワゴン
+ */
 abstract class UpgradeableSettingCar<T>(
     plugin: JavaPlugin,
     spawnLocation: Location,

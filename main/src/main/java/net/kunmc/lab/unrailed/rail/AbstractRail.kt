@@ -16,7 +16,7 @@ abstract class AbstractRail {
     abstract fun getAll():MutableList<Block>
 
     /**
-     * @return locationがレール郡に含まれるか
+     * @return locationがレール群に含まれるか
      */
     fun isOn(location: Location):Boolean{
         return getAll().any{ it.location == location }
@@ -29,7 +29,7 @@ abstract class AbstractRail {
     abstract fun add(block:Block): Boolean
 
     /**
-     * @return 位置的にレールが既存のレール郡と接続可能か
+     * @return 位置的にレールが既存のレール群と接続可能か
      */
     abstract fun joinOf(loc:Location):Boolean
 }

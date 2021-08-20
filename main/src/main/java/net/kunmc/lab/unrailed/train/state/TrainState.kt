@@ -4,6 +4,15 @@ import net.kunmc.lab.unrailed.car.EngineCar
 import net.kunmc.lab.unrailed.train.Train
 
 class TrainState(val train: Train) {
+    fun addModifier(modifier: StateModifier) {
+        when (modifier) {
+            is SpeedModifier -> {
+                speedModifier.add(modifier)
+            }
+        }
+    }
+
+
     /**
      * 現在の列車の速度
      */
