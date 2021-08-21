@@ -17,10 +17,8 @@ class Rail(val first: Block) : AbstractRail() {
                 // このレール群と引数のレールが接続できる
                 rails.add(block)
                 val connected = block.getConnectedRail()
-                if (connected != null) {
-                    add(connected.first)
-                    add(connected.second)
-                }
+                connected.first?.let { add(it) }
+                connected.second?.let { add(it) }
                 true
             } else {
                 // できない
@@ -33,9 +31,9 @@ class Rail(val first: Block) : AbstractRail() {
     }
 
     override fun joinOf(loc: Location): Boolean {
-        if(rails.isEmpty()) return true
-        return rails.last().getRelatives(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.SOUTH)
-            .map { it.location }.contains(loc)
+        if (rails.isEmpty()) return true
+        return rails.last().getRailableRelative()
+            .map { it.location }.any { it == loc }
     }
 
     /**
@@ -100,7 +98,8 @@ fun Block.getAllRelative(): List<Block> {
  */
 @Suppress("SpellCheckingInspection")
 fun Block.getRailableRelative(): List<Block> {
-    return listOf(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST).map { getRelative(it) }
+    val l = listOf(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST)
+    return l.map { getRelative(it) } + l.map { getRelative(it).getRelative(BlockFace.UP) } + l.map { getRelative(it).getRelative(BlockFace.DOWN) }
 }
 
 /**
@@ -117,26 +116,26 @@ fun Block.getRelatives(vararg blockFaces: BlockFace): List<Block> {
 /**
  * RailのShapeに基づいてつながっているRailを取得
  */
-fun Block.getConnectedRail(): Pair<Block, Block>? {
-    if (!isRail()) return null
+fun Block.getConnectedRail(): Pair<Block?, Block?> {
+    if (!isRail()) return Pair(null, null)
     val blocks = when ((blockData as Rail).shape) {
         Rail.Shape.ASCENDING_EAST -> {
-            getRelatives(BlockFace.EAST, BlockFace.EAST.oppositeFace)
+            listOf(getRelative(BlockFace.EAST).getRelative(BlockFace.UP), getRelative(BlockFace.EAST.oppositeFace))
+        }
+        Rail.Shape.ASCENDING_WEST -> {
+            listOf(getRelative(BlockFace.WEST).getRelative(BlockFace.UP), getRelative(BlockFace.WEST.oppositeFace))
+        }
+        Rail.Shape.ASCENDING_NORTH -> {
+            listOf(getRelative(BlockFace.NORTH).getRelative(BlockFace.UP), getRelative(BlockFace.NORTH.oppositeFace))
+        }
+        Rail.Shape.ASCENDING_SOUTH -> {
+            listOf(getRelative(BlockFace.SOUTH).getRelative(BlockFace.UP), getRelative(BlockFace.SOUTH.oppositeFace))
         }
         Rail.Shape.NORTH_SOUTH -> {
             getRelatives(BlockFace.NORTH, BlockFace.SOUTH)
         }
         Rail.Shape.EAST_WEST -> {
             getRelatives(BlockFace.EAST, BlockFace.WEST)
-        }
-        Rail.Shape.ASCENDING_WEST -> {
-            getRelatives(BlockFace.WEST, BlockFace.WEST.oppositeFace)
-        }
-        Rail.Shape.ASCENDING_NORTH -> {
-            getRelatives(BlockFace.NORTH, BlockFace.NORTH.oppositeFace)
-        }
-        Rail.Shape.ASCENDING_SOUTH -> {
-            getRelatives(BlockFace.SOUTH, BlockFace.SOUTH.oppositeFace)
         }
         Rail.Shape.SOUTH_EAST -> {
             getRelatives(BlockFace.SOUTH, BlockFace.EAST)
@@ -153,11 +152,21 @@ fun Block.getConnectedRail(): Pair<Block, Block>? {
     }
 
     return if (blocks.size == 2) {
-        if (blocks[0].isRail() && blocks[1].isRail()) {
-            Pair(blocks[0], blocks[1])
+        if (blocks[0].isRail()) {
+            if (blocks[1].isRail()) {
+                Pair(blocks[0], blocks[1])
+            } else {
+
+                Pair(blocks[0], null)
+            }
+        } else {
+            if (blocks[1].isRail()) {
+                Pair(null, blocks[1])
+
+            }
+            Pair(null, null)
         }
-        null
     } else {
-        null
+        Pair(null, null)
     }
 }
