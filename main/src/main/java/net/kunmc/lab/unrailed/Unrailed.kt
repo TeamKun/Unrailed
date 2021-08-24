@@ -6,6 +6,7 @@ import com.github.bun133.flylib2.commands.TabChain
 import com.github.bun133.flylib2.commands.TabObject
 import net.kunmc.lab.unrailed.test.RailRecognize
 import net.kunmc.lab.unrailed.test.TrainCombineTest
+import net.kunmc.lab.unrailed.test.TrainTest
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
@@ -57,7 +58,7 @@ fun command(unrailed: Unrailed) =
             },
         CommanderBuilder<Unrailed>()
             .addFilter(CommanderBuilder.Filters.OP())
-            .addTabChain(TabChain(TabObject("test"), TabObject("combine","RailRecognize")))
+            .addTabChain(TabChain(TabObject("test"), TabObject("combine","RailRecognize","Train")))
             .setInvoker { plugin, sender, arr ->
                 when (arr[1]) {
                     "combine" -> {
@@ -65,6 +66,9 @@ fun command(unrailed: Unrailed) =
                     }
                     "RailRecognize" -> {
                         RailRecognize.getInstance(plugin).isGoingOn = !RailRecognize.getInstance(plugin).isGoingOn
+                    }
+                    "Train" -> {
+                        TrainTest.getInstance(plugin).isGoingOn = !TrainTest.getInstance(plugin).isGoingOn
                     }
                 }
                 return@setInvoker true

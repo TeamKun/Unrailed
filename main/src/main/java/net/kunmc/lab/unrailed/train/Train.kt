@@ -4,12 +4,15 @@ import net.kunmc.lab.unrailed.Unrailed
 import net.kunmc.lab.unrailed.car.AbstractCar
 import net.kunmc.lab.unrailed.car.EngineCar
 import net.kunmc.lab.unrailed.rail.Rail
-import net.kunmc.lab.unrailed.rail.isRail
 import net.kunmc.lab.unrailed.train.state.TrainState
-import org.bukkit.entity.Minecart
+import net.kunmc.lab.unrailed.util.copy
+import net.kunmc.lab.unrailed.util.isOnRail
+import net.kunmc.lab.unrailed.util.scale
+import net.kunmc.lab.unrailed.util.toVector
 import org.bukkit.util.Vector
+import java.lang.IllegalArgumentException
 
-class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) : AbstractTrain() {
+class Train(val firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) : AbstractTrain() {
     val car = mutableListOf<AbstractCar>()
     override fun getLength(): Int = car.size
     override fun getCars(): MutableList<AbstractCar> = car.toMutableList()
@@ -37,6 +40,9 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
         getCars().map { it.getMinecart() }.filter { !it.isOnRail() }.forEach {
             // 地面に落ちているワゴンを削除
             // TODO 演出
+            println("地面に落ちているワゴンを削除")
+            println("it:$it")
+            it.damage = Double.MAX_VALUE
         }
 
         val speed = state().getSpeed()
@@ -46,27 +52,58 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
             return
         }
 
-        getCars().map { it.getMinecart() }.forEach {
-            if (it.velocity.length() == 0.0) {
-                // TODO 動いてない状態の列車をどう動かすか
+        move()
+    }
+
+    /**
+     * 列車をうごかす
+     */
+    fun move() {
+        if (!isMoving) {
+            println("boost is called,this train is not moving")
+            return
+        }
+
+        val speed = state().getSpeed()
+        if (speed == null) {
+            // TODO 先頭車爆発後処理
+            println("[ERROR] Train is Running,Speed State is Null")
+            return
+        }
+
+        applyVectors { abstractCar, vector ->
+            val now = abstractCar.getMinecart().location.block
+            val next = rail.getAfter(now)
+            if (next == null) {
+                // 車両の先のレールがない
+                // TODO どうしよ
+                return@applyVectors vector.scale(speed)
+            } else {
+                val face = now.getFace(next)
+                if (face == null) {
+                    // 次のレールブロックが近くにない
+                    println("次のレールブロックが近くにない")
+                    return@applyVectors Vector().zero()
+                } else {
+                    val v = face.toVector()
+                    return@applyVectors v.scale(speed)
+                }
             }
-            // 速度を同じに調整
-            it.velocity.scale(speed)
         }
     }
-}
 
+    fun applyVectors(vector: Vector) {
+        applyVectors { _, _ -> vector }
+    }
 
-/**
- * lengthがscaleになるように調整
- */
-fun Vector.scale(scale: Double) {
-    multiply(length() / scale)
-}
-
-/**
- * Minecartがレールに乗っているかどうか
- */
-fun Minecart.isOnRail(): Boolean {
-    return location.block.isRail()
+    fun applyVectors(f: (AbstractCar, Vector) -> Vector) {
+        getCars().forEach {
+            try {
+                val fr = f(it, it.getMinecart().velocity).copy()
+                it.getMinecart().velocity = fr
+            } catch (e: IllegalArgumentException) {
+                // 握りつぶす
+            }
+        }
+    }
 }
