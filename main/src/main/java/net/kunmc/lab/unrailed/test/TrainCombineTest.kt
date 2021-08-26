@@ -13,7 +13,7 @@ import org.bukkit.event.block.BlockPlaceEvent
 /**
  * ワゴンをくっつけて動くかテスト
  */
-class TrainCombineTest(val unrailed: Unrailed) : Listener {
+class TrainCombineTest(unrailed: Unrailed) : TestCase(unrailed) {
     companion object {
         private var ins: TrainCombineTest? = null
         fun getInstance(unrailed: Unrailed): TrainCombineTest {
@@ -25,7 +25,6 @@ class TrainCombineTest(val unrailed: Unrailed) : Listener {
         }
     }
 
-    var isGoingOn = false
 
 
     init {

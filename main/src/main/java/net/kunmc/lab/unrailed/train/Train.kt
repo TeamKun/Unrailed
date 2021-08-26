@@ -9,10 +9,18 @@ import net.kunmc.lab.unrailed.util.copy
 import net.kunmc.lab.unrailed.util.isOnRail
 import net.kunmc.lab.unrailed.util.scale
 import net.kunmc.lab.unrailed.util.toVector
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.vehicle.VehicleCollisionEvent
+import org.bukkit.event.vehicle.VehicleEntityCollisionEvent
 import org.bukkit.util.Vector
 import java.lang.IllegalArgumentException
 
-class Train(val firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) : AbstractTrain() {
+class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) : AbstractTrain(), Listener {
+    init {
+        plugin.server.pluginManager.registerEvents(this, plugin)
+    }
+
     val car = mutableListOf<AbstractCar>()
     override fun getLength(): Int = car.size
     override fun getCars(): MutableList<AbstractCar> = car.toMutableList()
@@ -37,19 +45,15 @@ class Train(val firstCar: EngineCar, val rail: Rail, private val plugin: Unraile
         //TODO 先頭車両に後続車両をびっちりくっつける
         if (!isMoving) return
 
-        getCars().map { it.getMinecart() }.filter { !it.isOnRail() }.forEach {
-            // 地面に落ちているワゴンを削除
-            // TODO 演出
-            println("地面に落ちているワゴンを削除")
-            println("it:$it")
-            it.damage = Double.MAX_VALUE
-        }
-
-        val speed = state().getSpeed()
-        if (speed == null) {
-            // TODO 先頭車爆発後処理
-            println("[ERROR] Train is Running,Speed State is Null")
-            return
+        car.removeAll {
+            val minecart = it.getMinecart()
+            if (!minecart.isOnRail()) {
+                // 地面に落ちているワゴンを削除
+                // TODO 演出
+                println("地面に落ちているワゴンを削除")
+                minecart.remove()
+            }
+            return@removeAll !minecart.isOnRail()
         }
 
         move()
@@ -60,14 +64,14 @@ class Train(val firstCar: EngineCar, val rail: Rail, private val plugin: Unraile
      */
     fun move() {
         if (!isMoving) {
-            println("boost is called,this train is not moving")
+            println("move is called,this train is not moving")
             return
         }
 
         val speed = state().getSpeed()
         if (speed == null) {
             // TODO 先頭車爆発後処理
-            println("[ERROR] Train is Running,Speed State is Null")
+//            println("[ERROR] Train is Running,Speed State is Null")
             return
         }
 
@@ -104,6 +108,16 @@ class Train(val firstCar: EngineCar, val rail: Rail, private val plugin: Unraile
             } catch (e: IllegalArgumentException) {
                 // 握りつぶす
             }
+        }
+    }
+
+
+    ////////////////// Listener ////////////////////
+    @EventHandler
+    fun onVehicleCollide(e: VehicleEntityCollisionEvent) {
+        if (car.map { it.getMinecart() }.contains(e.vehicle)) {
+            e.isCollisionCancelled = true
+            e.isCancelled = true
         }
     }
 }

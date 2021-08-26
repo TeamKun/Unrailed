@@ -5,7 +5,6 @@ import org.bukkit.Material
 import org.bukkit.block.Block
 
 
-val Rails = listOf(Material.RAIL, Material.ACTIVATOR_RAIL, Material.POWERED_RAIL, Material.DETECTOR_RAIL)
 
 /**
  * 1つのレールがつながったやつ(語彙力)

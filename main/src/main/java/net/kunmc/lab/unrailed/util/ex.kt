@@ -1,12 +1,15 @@
 package net.kunmc.lab.unrailed.util
 
-import net.kunmc.lab.unrailed.rail.Rails
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Rail
 import org.bukkit.entity.Minecart
 import org.bukkit.util.Vector
+
+val Rails = listOf(Material.RAIL, Material.ACTIVATOR_RAIL, Material.POWERED_RAIL, Material.DETECTOR_RAIL)
+val RailFace = listOf(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST)
 
 fun Location.copy(): Location {
     return Location(this.world, this.x, this.y, this.z, this.yaw, this.pitch)
@@ -23,7 +26,7 @@ fun Vector.scale(scale: Double): Vector {
  * Copy the vector
  */
 fun Vector.copy(): Vector {
-    return Vector(this.x,this.y,this.z)
+    return Vector(this.x, this.y, this.z)
 }
 
 /**
@@ -49,8 +52,11 @@ fun Block.getAllRelative(): List<Block> {
 @Suppress("SpellCheckingInspection")
 fun Block.getRailableRelative(): List<Block> {
     val l = listOf(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST)
-    return l.map { getRelative(it) } + l.map { getRelative(it).getRelative(BlockFace.UP) } + l.map { getRelative(it).getRelative(
-        BlockFace.DOWN) }
+    return l.map { getRelative(it) } + l.map { getRelative(it).getRelative(BlockFace.UP) } + l.map {
+        getRelative(it).getRelative(
+            BlockFace.DOWN
+        )
+    }
 }
 
 /**
@@ -64,56 +70,73 @@ fun Block.getRelatives(vararg blockFaces: BlockFace): List<Block> {
     return blockFaces.map { getRelative(it) }
 }
 
+
+/**
+ * 指定方向(水平・垂直方向のみ)に存在するレールを1ブロック上、同高度、1ブロック下から探してくる
+ */
+fun Block.getRailRelative(face: BlockFace): Block? {
+    return if (RailFace.contains(face)) {
+        val blocks = listOf(
+            getRelative(face),
+            getRelative(face).getRelative(BlockFace.UP),
+            getRelative(face).getRelative(BlockFace.DOWN)
+        )
+        blocks.filter { it.isRail() }.getOrNull(0)
+    } else {
+        null
+    }
+}
+
 /**
  * RailのShapeに基づいてつながっているRailを取得
  */
 fun Block.getConnectedRail(): Pair<Block?, Block?> {
     if (!isRail()) return Pair(null, null)
-    val blocks = when ((blockData as Rail).shape) {
+    val faces = when ((blockData as Rail).shape) {
         Rail.Shape.ASCENDING_EAST -> {
-            listOf(getRelative(BlockFace.EAST).getRelative(BlockFace.UP), getRelative(BlockFace.EAST.oppositeFace))
+            listOf(BlockFace.EAST, BlockFace.WEST)
         }
         Rail.Shape.ASCENDING_WEST -> {
-            listOf(getRelative(BlockFace.WEST).getRelative(BlockFace.UP), getRelative(BlockFace.WEST.oppositeFace))
+            listOf(BlockFace.WEST, BlockFace.EAST)
         }
         Rail.Shape.ASCENDING_NORTH -> {
-            listOf(getRelative(BlockFace.NORTH).getRelative(BlockFace.UP), getRelative(BlockFace.NORTH.oppositeFace))
+            listOf(BlockFace.NORTH, BlockFace.SOUTH)
         }
         Rail.Shape.ASCENDING_SOUTH -> {
-            listOf(getRelative(BlockFace.SOUTH).getRelative(BlockFace.UP), getRelative(BlockFace.SOUTH.oppositeFace))
+            listOf(BlockFace.SOUTH, BlockFace.NORTH)
         }
         Rail.Shape.NORTH_SOUTH -> {
-            getRelatives(BlockFace.NORTH, BlockFace.SOUTH)
+            listOf(BlockFace.NORTH, BlockFace.SOUTH)
         }
         Rail.Shape.EAST_WEST -> {
-            getRelatives(BlockFace.EAST, BlockFace.WEST)
+            listOf(BlockFace.EAST, BlockFace.WEST)
         }
         Rail.Shape.SOUTH_EAST -> {
-            getRelatives(BlockFace.SOUTH, BlockFace.EAST)
+            listOf(BlockFace.SOUTH, BlockFace.EAST)
         }
         Rail.Shape.SOUTH_WEST -> {
-            getRelatives(BlockFace.SOUTH, BlockFace.WEST)
+            listOf(BlockFace.SOUTH, BlockFace.WEST)
         }
         Rail.Shape.NORTH_WEST -> {
-            getRelatives(BlockFace.NORTH, BlockFace.WEST)
+            listOf(BlockFace.NORTH, BlockFace.WEST)
         }
         Rail.Shape.NORTH_EAST -> {
-            getRelatives(BlockFace.NORTH, BlockFace.EAST)
+            listOf(BlockFace.NORTH, BlockFace.EAST)
         }
     }
 
+    val blocks = faces.map { getRailRelative(it) }
+
     return if (blocks.size == 2) {
-        if (blocks[0].isRail()) {
-            if (blocks[1].isRail()) {
+        if (blocks[0] != null && blocks[0]!!.isRail()) {
+            if (blocks[1] != null && blocks[1]!!.isRail()) {
                 Pair(blocks[0], blocks[1])
             } else {
-
                 Pair(blocks[0], null)
             }
         } else {
-            if (blocks[1].isRail()) {
+            if (blocks[1] != null && blocks[1]!!.isRail()) {
                 Pair(null, blocks[1])
-
             }
             Pair(null, null)
         }
@@ -126,13 +149,13 @@ fun Block.getConnectedRail(): Pair<Block?, Block?> {
 /**
  * このBlockから見てどの方向にあるか
  */
-fun Block.getBlockFace(other:Block): BlockFace? {
-    return BlockFace.values().map { Pair(it,getRelative(it)) }.filter { it.second == other }.getOrNull(0)?.first
+fun Block.getBlockFace(other: Block): BlockFace? {
+    return BlockFace.values().map { Pair(it, getRelative(it)) }.filter { it.second == other }.getOrNull(0)?.first
 }
 
 /**
  * たぶん変換
  */
-fun BlockFace.toVector():Vector{
-    return Vector(this.modX,this.modY,this.modZ)
+fun BlockFace.toVector(): Vector {
+    return Vector(this.modX, this.modY, this.modZ)
 }

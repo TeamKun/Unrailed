@@ -2,7 +2,10 @@ package net.kunmc.lab.unrailed.car
 
 import net.kunmc.lab.unrailed.car.upgrade.UpGradeSetting
 import org.bukkit.Location
+import org.bukkit.Material
+import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Minecart
+import org.bukkit.material.MaterialData
 import org.bukkit.plugin.java.JavaPlugin
 import kotlin.math.max
 
@@ -16,7 +19,10 @@ class EngineCar(
         plugin, spawnLocation,
         Name,
         engineSetting,
-        carClass = Minecart::class.java
+        carClass = Minecart::class.java,
+        carInit = {
+            it.setDisplayBlock(MaterialData(Material.FURNACE))
+        }
     ) {
     companion object {
         /**

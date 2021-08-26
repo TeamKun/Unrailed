@@ -4,9 +4,7 @@ import com.github.bun133.flylib2.commands.Commander
 import com.github.bun133.flylib2.commands.CommanderBuilder
 import com.github.bun133.flylib2.commands.TabChain
 import com.github.bun133.flylib2.commands.TabObject
-import net.kunmc.lab.unrailed.test.RailRecognize
-import net.kunmc.lab.unrailed.test.TrainCombineTest
-import net.kunmc.lab.unrailed.test.TrainTest
+import net.kunmc.lab.unrailed.test.*
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
@@ -58,18 +56,39 @@ fun command(unrailed: Unrailed) =
             },
         CommanderBuilder<Unrailed>()
             .addFilter(CommanderBuilder.Filters.OP())
-            .addTabChain(TabChain(TabObject("test"), TabObject("combine","RailRecognize","Train")))
+            .addTabChain(
+                TabChain(
+                    TabObject("test"),
+                    TabObject("combine", "RailRecognize", "Train", "MinecartDelete", "RailShape", "RailConnecting")
+                )
+            )
             .setInvoker { plugin, sender, arr ->
-                when (arr[1]) {
+                val testCase = when (arr[1]) {
                     "combine" -> {
-                        TrainCombineTest.getInstance(plugin).isGoingOn = !TrainCombineTest.getInstance(plugin).isGoingOn
+                        TrainCombineTest.getInstance(plugin)
                     }
                     "RailRecognize" -> {
-                        RailRecognize.getInstance(plugin).isGoingOn = !RailRecognize.getInstance(plugin).isGoingOn
+                        RailRecognize.getInstance(plugin)
                     }
                     "Train" -> {
-                        TrainTest.getInstance(plugin).isGoingOn = !TrainTest.getInstance(plugin).isGoingOn
+                        TrainTest.getInstance(plugin)
                     }
+                    "MinecartDelete" -> {
+                        MinecartDelete.getInstance(plugin)
+                    }
+                    "RailShape" -> {
+                        RailShapeTest.getInstance(plugin)
+                    }
+                    "RailConnecting" -> {
+                        RailConnectingTest.getInstance(plugin)
+                    }
+                    else -> null
+                }
+
+                if (testCase == null) {
+                    return@setInvoker false
+                } else {
+                    testCase.isGoingOn = !testCase.isGoingOn
                 }
                 return@setInvoker true
             }

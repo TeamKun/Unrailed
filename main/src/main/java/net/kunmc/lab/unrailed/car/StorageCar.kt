@@ -8,7 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin
 class StorageCar(
     plugin: JavaPlugin,
     spawnLocation: Location,
-    Name: String,
+    Name: String = "貯蔵車",
     setting: UpGradeSetting<Int> = StorageUpgradeSetting()
 ) :
     UpgradeableSettingCar<Int>(plugin, spawnLocation, Name, setting, carClass = StorageMinecart::class.java) {

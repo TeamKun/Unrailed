@@ -9,10 +9,14 @@ open class BaseCar(
     val plugin: JavaPlugin,
     spawnLocation: Location,
     private val Name: String,
-    carClass: Class<out Minecart> = Minecart::class.java
+    carClass: Class<out Minecart> = Minecart::class.java,
+    carInit: (Minecart) -> Unit = {}
 ) :
     AbstractCar() {
-    private val mine: Minecart = spawnLocation.world.spawn(spawnLocation, carClass)
+    private val mine: Minecart = spawnLocation.world.spawn(spawnLocation, carClass).also {
+        it.isSlowWhenEmpty = false
+        carInit(it)
+    }
 
     override fun name(): String = Name
 

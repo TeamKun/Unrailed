@@ -8,8 +8,11 @@ import org.bukkit.plugin.java.JavaPlugin
 /**
  * Upgradeできるワゴン
  */
-abstract class UpgradeableCar(plugin: JavaPlugin, spawnLocation: Location, Name: String,carClass: Class<out Minecart> = Minecart::class.java) :
-    BaseCar(plugin, spawnLocation, Name,carClass) {
+abstract class UpgradeableCar(
+    plugin: JavaPlugin, spawnLocation: Location, Name: String, carClass: Class<out Minecart> = Minecart::class.java,
+    carInit: (Minecart) -> Unit = {}
+) :
+    BaseCar(plugin, spawnLocation, Name, carClass,carInit) {
 
     /**
      * 今このワゴンがアップグレードできるかどうか
@@ -45,8 +48,9 @@ abstract class UpgradeableSettingCar<T>(
     spawnLocation: Location,
     Name: String,
     val setting: UpGradeSetting<T>,
-    carClass: Class<out Minecart> = Minecart::class.java
-) : UpgradeableCar(plugin, spawnLocation, Name,carClass) {
+    carClass: Class<out Minecart> = Minecart::class.java,
+    carInit:(Minecart)->Unit = {}
+) : UpgradeableCar(plugin, spawnLocation, Name, carClass,carInit) {
 
     override fun isUpgradeable(): Boolean {
         return setting.cost(getUpGradeLevel() + 1) != -1
