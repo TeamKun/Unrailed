@@ -1,8 +1,6 @@
 package net.kunmc.lab.unrailed.rail
 
-import net.kunmc.lab.unrailed.util.getConnectedRail
-import net.kunmc.lab.unrailed.util.getRailableRelative
-import net.kunmc.lab.unrailed.util.isRail
+import net.kunmc.lab.unrailed.util.*
 import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
@@ -18,7 +16,32 @@ class Rail(val first: Block) : AbstractRail() {
             if (contain(block)) return false
             if (joinOf(block.location)) {
                 // このレール群と引数のレールが接続できる
-                rails.add(block)
+                val edgeIndexed = getEdgeIndexed() // 最適化可能
+                if (edgeIndexed == null) {
+                    // 最初のレール
+                    rails.add(block)
+                } else {
+                    val connectiveRail = edgeIndexed.toList().filter {
+                        it.first.isConnective(block)
+                    }
+                    if (connectiveRail.isEmpty()) throw Exception("in Rail#add Rail can join,while not connective any.")
+
+                    when (val maxRailIndex = connectiveRail.maxOfOrNull { it.second }!!) {
+                        0 -> {
+                            // 最初のレールの前にレールが設置された
+                            rails.add(0, block)
+                        }
+                        rails.lastIndex -> {
+                            // 最後のレールの後にレールが設置された
+                            rails.add(maxRailIndex, block)
+                        }
+                        else -> {
+                            throw Exception("in Rail#add Rail added to neither first Rail nor final Rail")
+                        }
+                    }
+                }
+
+
                 val connected = block.getConnectedRail()
                 connected.first?.let { add(it) }
                 connected.second?.let { add(it) }
@@ -33,10 +56,56 @@ class Rail(val first: Block) : AbstractRail() {
         }
     }
 
+    fun getEdge(): Pair<Block, Block>? {
+        val indexed = getEdgeIndexed() ?: return null
+        return Pair(indexed.first.first, indexed.second.first)
+    }
+
+    /**
+     * レールの端っこを返す
+     */
+    fun getEdgeIndexed(): Pair<Pair<Block, Int>, Pair<Block, Int>>? {
+        if (rails.isEmpty()) return null
+        else {
+            if (rails.size == 1) return Pair(Pair(rails[0], 0), Pair(rails[0], 0))
+            else {
+                // TODO 探索
+                val edge = rails.mapIndexed { index, block ->
+                    Pair(block, index)
+                }.filter {
+                    val connectedBoth = it.first.isConnectedBoth(rails)
+                    if (connectedBoth == null) return@filter false
+                    else return@filter !connectedBoth
+                }
+
+                if (edge.size == 2) {
+                    return Pair(edge[0], edge[1])
+                } else {
+                    throw Exception("in getEdge,The Edge Size is not 2")
+                }
+            }
+        }
+    }
+
+    /**
+     * Railsに含まれているものの中で両方に接続しているか
+     * @return null -> Block is not Rail
+     */
+    private fun Block.isConnectedBoth(rails: MutableList<Block>): Boolean? {
+        if (!isRail()) return null
+        return getConnectedRail().toList().filterNotNull()
+            .filter { rails.map { rail -> rail.location }.contains(it.location) }.size == 2
+    }
+
+    /**
+     * @return locationがこのレール群に接続可能か
+     */
     override fun joinOf(loc: Location): Boolean {
         if (rails.isEmpty()) return true
-        return rails.last().getRailableRelative()
-            .map { it.location }.any { it == loc }
+        val edge = getEdge() ?: return true
+        return edge.toList().map { ed -> ed.getRailableRelative().map { it.location } }
+            .any { list -> list.any { it == loc } }
+        // 何が起きているかは聞かないでくれ
     }
 
     /**

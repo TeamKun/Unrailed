@@ -51,7 +51,7 @@ fun Block.getAllRelative(): List<Block> {
  */
 @Suppress("SpellCheckingInspection")
 fun Block.getRailableRelative(): List<Block> {
-    val l = listOf(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST)
+    val l = RailFace
     return l.map { getRelative(it) } + l.map { getRelative(it).getRelative(BlockFace.UP) } + l.map {
         getRelative(it).getRelative(
             BlockFace.DOWN
@@ -158,4 +158,33 @@ fun Block.getBlockFace(other: Block): BlockFace? {
  */
 fun BlockFace.toVector(): Vector {
     return Vector(this.modX, this.modY, this.modZ)
+}
+
+/**
+ * レールが両端接続済みか
+ */
+fun Block.isConnectedBoth(): Boolean {
+    return if (!isRail()) false
+    else {
+        getConnectedRail().isNotNull()
+    }
+}
+
+/**
+ * @return Pairどちらかがnullかどうか
+ */
+fun <T, K> Pair<T?, K?>.isNull(): Boolean {
+    return this.first == null || this.second == null
+}
+
+fun <T, K> Pair<T?, K?>.isNotNull(): Boolean {
+    return !isNull()
+}
+
+/**
+ * @return レールがto(レール)に接続可能か
+ */
+fun Block.isConnective(to:Block):Boolean{
+    if(!isRail() || !to.isRail()) return false
+    return getRailableRails().contains(to)
 }

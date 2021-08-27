@@ -59,7 +59,15 @@ fun command(unrailed: Unrailed) =
             .addTabChain(
                 TabChain(
                     TabObject("test"),
-                    TabObject("combine", "RailRecognize", "Train", "MinecartDelete", "RailShape", "RailConnecting")
+                    TabObject(
+                        "combine",
+                        "RailRecognize",
+                        "Train",
+                        "MinecartDelete",
+                        "RailShape",
+                        "RailConnecting",
+                        "EdgeTest"
+                    )
                 )
             )
             .setInvoker { plugin, sender, arr ->
@@ -81,6 +89,9 @@ fun command(unrailed: Unrailed) =
                     }
                     "RailConnecting" -> {
                         RailConnectingTest.getInstance(plugin)
+                    }
+                    "EdgeTest" -> {
+                        EdgeTest.getInstance(plugin)
                     }
                     else -> null
                 }
