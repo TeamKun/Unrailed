@@ -247,3 +247,9 @@ fun <T, R> T?.nullOr(f: (T) -> R): R? {
         null
     }
 }
+
+fun <T, K> MutableMap<T, K>.setForeach(f: (T) -> K) {
+    for (key in this.keys) {
+        this[key] = f(key)
+    }
+}

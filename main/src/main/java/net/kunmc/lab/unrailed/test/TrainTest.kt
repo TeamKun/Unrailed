@@ -1,10 +1,13 @@
 package net.kunmc.lab.unrailed.test
 
+import com.github.bun133.flylib2.utils.ComponentUtils
 import net.kunmc.lab.unrailed.Unrailed
 import net.kunmc.lab.unrailed.car.EngineCar
 import net.kunmc.lab.unrailed.car.StorageCar
 import net.kunmc.lab.unrailed.rail.Rail
 import net.kunmc.lab.unrailed.train.Train
+import net.kunmc.lab.unrailed.util.setForeach
+import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
@@ -21,7 +24,10 @@ class TrainTest(unrailed: Unrailed) : TestCase(unrailed) {
 
     init {
         unrailed.server.pluginManager.registerEvents(this, unrailed)
+        unrailed.server.scheduler.runTaskTimer(unrailed, Runnable { tick() }, 1, 1)
     }
+
+    var trains = mutableMapOf<Train, Int>()
 
     @EventHandler
     fun onRightClick(e: PlayerInteractEvent) {
@@ -38,6 +44,7 @@ class TrainTest(unrailed: Unrailed) : TestCase(unrailed) {
                         rail,
                         unrailed
                     )
+                    trains[train] = 0
 
                     for (i in 0..TrainLength - 2) {
                         val storageCar = StorageCar(unrailed, rail.rails[i].location.toCenterLocation())
@@ -46,9 +53,31 @@ class TrainTest(unrailed: Unrailed) : TestCase(unrailed) {
 
                     train.isMoving = true
                     unrailed.isGoingOn = true
-                    isGoingOn = false
+                    isGoingOn = true
                 } catch (e: IndexOutOfBoundsException) {
                     //握りつぶします。はい。何か悪いですか？
+                }
+            }
+        }
+    }
+
+    fun tick() {
+        if (isGoingOn) {
+            trains.setForeach {
+                val firstLocation = it.getFirstLocation()
+                if (firstLocation == null) {
+                    Bukkit.broadcastMessage("Train Broken")
+                    return@setForeach 0
+                }
+                val progress = it.rail.getIndex(firstLocation.block)
+                if (progress == null) {
+                    Bukkit.broadcastMessage("Train out of bounds")
+                    return@setForeach 0
+                } else {
+                    if (progress != trains[it]) {
+                        Bukkit.broadcastMessage("Train Progress:${progress}/${it.rail.rails.size}")
+                    }
+                    return@setForeach progress
                 }
             }
         }
