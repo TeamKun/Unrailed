@@ -3,8 +3,6 @@ package net.kunmc.lab.unrailed.rail
 import net.kunmc.lab.unrailed.util.*
 import org.bukkit.Location
 import org.bukkit.block.Block
-import org.bukkit.block.BlockFace
-import org.bukkit.block.data.Rail
 
 class Rail(val first: Block) : AbstractRail() {
     val rails = mutableListOf<Block>()
@@ -24,7 +22,7 @@ class Rail(val first: Block) : AbstractRail() {
                     val connectiveRail = edgeIndexed.toList().filter {
                         it.first.isConnective(block)
                     }
-                    if (connectiveRail.isEmpty()) throw Exception("in Rail#add Rail can join,while not connective any.")
+                    if (connectiveRail.isEmpty()) throw Exception("in Rail#add Rail can join,while not connective to any.")
 
                     when (val maxRailIndex = connectiveRail.maxOfOrNull { it.second }!!) {
                         0 -> {
@@ -33,10 +31,16 @@ class Rail(val first: Block) : AbstractRail() {
                         }
                         rails.lastIndex -> {
                             // 最後のレールの後にレールが設置された
-                            rails.add(maxRailIndex, block)
+                            rails.add(block)
                         }
                         else -> {
-                            throw Exception("in Rail#add Rail added to neither first Rail nor final Rail")
+                            val connectiveMaxRail = connectiveRail.maxByOrNull { it.second }
+
+                            throw RailBlockException(
+                                this,
+                                block,
+                                "in Rail#add Rail added to neither first Rail nor final Rail,index:${maxRailIndex},lastIndex:${rails.lastIndex},connectiveMaxRail:${connectiveMaxRail}"
+                            )
                         }
                     }
                 }
@@ -81,7 +85,7 @@ class Rail(val first: Block) : AbstractRail() {
                 if (edge.size == 2) {
                     return Pair(edge[0], edge[1])
                 } else {
-                    throw Exception("in getEdge,The Edge Size is not 2")
+                    throw RailException(this, "in getEdgeIndexed,The Edge Size is not 2")
                 }
             }
         }
@@ -155,3 +159,6 @@ class Rail(val first: Block) : AbstractRail() {
     }
 }
 
+
+open class RailException(val rail: Rail, message: String) : Exception(message)
+class RailBlockException(rail: Rail, val block: Block, message: String) : RailException(rail, message)

@@ -88,9 +88,11 @@ fun Block.getRailRelative(face: BlockFace): Block? {
 }
 
 /**
- * RailのShapeに基づいてつながっているRailを取得
+ * RailのShapeに基づいてつながっているであろうRailを取得
+ *
+ * @see getConnectedRail
  */
-fun Block.getConnectedRail(): Pair<Block?, Block?> {
+fun Block.getConnectiveRail(): Pair<Block?, Block?> {
     if (!isRail()) return Pair(null, null)
     val faces = when ((blockData as Rail).shape) {
         Rail.Shape.ASCENDING_EAST -> {
@@ -127,22 +129,52 @@ fun Block.getConnectedRail(): Pair<Block?, Block?> {
 
     val blocks = faces.map { getRailRelative(it) }
 
-    return if (blocks.size == 2) {
-        if (blocks[0] != null && blocks[0]!!.isRail()) {
-            if (blocks[1] != null && blocks[1]!!.isRail()) {
-                Pair(blocks[0], blocks[1])
-            } else {
-                Pair(blocks[0], null)
-            }
-        } else {
-            if (blocks[1] != null && blocks[1]!!.isRail()) {
-                Pair(null, blocks[1])
-            }
-            Pair(null, null)
+    return Pair(
+        blocks[0].nullOr {
+            if (it.isRail()) it else null
+        },
+        blocks[1].nullOr {
+            if (it.isRail()) it else null
         }
-    } else {
-        Pair(null, null)
+    )
+
+//    return if (blocks[0] != null && blocks[0]!!.isRail()) {
+//        if (blocks[1] != null && blocks[1]!!.isRail()) {
+//            Pair(blocks[0], blocks[1])
+//        } else {
+//            Pair(blocks[0], null)
+//        }
+//    } else {
+//        if (blocks[1] != null && blocks[1]!!.isRail()) {
+//            Pair(null, blocks[1])
+//        }
+//        Pair(null, null)
+//    }
+}
+
+/**
+ * RailのShapeに基づいてつながっているRailを取得
+ */
+fun Block.getConnectedRail(): Pair<Block?, Block?> {
+    var connective = getConnectiveRail()
+
+    if (connective.first != null) {
+        // 相手側からもつながっているかチェック
+        val b = connective.first!!.getConnectiveRail().contain(this)
+        if (!b) {
+            connective = connective.first(null)
+        }
     }
+
+    if (connective.second != null) {
+        // 相手側からもつながっているかチェック
+        val b = connective.second!!.getConnectiveRail().contain(this)
+        if (!b) {
+            connective = connective.second(null)
+        }
+    }
+
+    return connective
 }
 
 
@@ -181,10 +213,37 @@ fun <T, K> Pair<T?, K?>.isNotNull(): Boolean {
     return !isNull()
 }
 
+fun <T> Pair<T?, T?>.contain(t: T): Boolean {
+    var b = false
+    if (first != null) {
+        b = b || first!! == t
+    }
+    if (second != null) {
+        b = b || second!! == t
+    }
+    return b
+}
+
+fun <T, K> Pair<T?, K?>.first(t: T): Pair<T, K?> {
+    return Pair(t, this.second)
+}
+
+fun <T, K> Pair<T?, K?>.second(k: K): Pair<T?, K> {
+    return Pair(this.first, k)
+}
+
 /**
  * @return レールがto(レール)に接続可能か
  */
-fun Block.isConnective(to:Block):Boolean{
-    if(!isRail() || !to.isRail()) return false
-    return getRailableRails().contains(to)
+fun Block.isConnective(to: Block): Boolean {
+    if (!isRail() || !to.isRail()) return false
+    return getRailableRails().map { it.location }.contains(to.location)
+}
+
+fun <T, R> T?.nullOr(f: (T) -> R): R? {
+    return if (this != null) {
+        f(this)
+    } else {
+        null
+    }
 }

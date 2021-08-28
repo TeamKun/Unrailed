@@ -2,6 +2,9 @@ package net.kunmc.lab.unrailed.test
 
 import net.kunmc.lab.unrailed.Unrailed
 import net.kunmc.lab.unrailed.rail.Rail
+import net.kunmc.lab.unrailed.rail.RailBlockException
+import net.kunmc.lab.unrailed.rail.RailException
+import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
@@ -28,8 +31,17 @@ class RailRecognize(unrailed: Unrailed) : TestCase(unrailed) {
     fun onRightClick(e: PlayerInteractEvent) {
         if (isGoingOn) {
             if (e.action == Action.RIGHT_CLICK_BLOCK) {
-                val rail = Rail(e.clickedBlock!!)
-                e.player.sendMessage("Rails Length:${rail.rails.size}")
+                try {
+                    val rail = Rail(e.clickedBlock!!)
+                    e.player.sendMessage("Rails Length:${rail.rails.size}")
+//                    rail.rails.forEach { it.type = Material.STONE }
+                } catch (ex: RailBlockException) {
+                    // 握りつぶす
+                    val block = ex.block
+                    e.player.sendMessage("RailException at ${block.location}")
+                    e.player.sendMessage("RailException:${ex.message}")
+                    block.type = Material.STONE
+                }
             }
         }
     }
