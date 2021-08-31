@@ -10,7 +10,15 @@ class Rail(val first: Block) : AbstractRail() {
     override fun getAll(): MutableList<Block> = rails.toMutableList()
 
     override fun add(block: Block): Boolean {
+        return add(block, listOf())
+    }
+
+    /**
+     * @param exceptFor 特定のblockを除いて探索
+     */
+    fun add(block: Block, exceptFor: List<Block>): Boolean {
         return if (block.isRail()) {
+            if (exceptFor.contains(block)) return false
             if (contain(block)) return false
             if (joinOf(block.location)) {
                 // このレール群と引数のレールが接続できる

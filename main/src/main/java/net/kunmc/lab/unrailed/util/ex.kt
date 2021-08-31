@@ -253,3 +253,9 @@ fun <T, K> MutableMap<T, K>.setForeach(f: (T) -> K) {
         this[key] = f(key)
     }
 }
+
+fun Box.fill(material: Material) {
+    getBlocks().forEach {
+        it.type = material
+    }
+}
