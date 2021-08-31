@@ -6,6 +6,8 @@ import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Rail
 import org.bukkit.entity.Minecart
+import org.bukkit.event.Listener
+import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.Vector
 
 val Rails = listOf(Material.RAIL, Material.ACTIVATOR_RAIL, Material.POWERED_RAIL, Material.DETECTOR_RAIL)
@@ -258,4 +260,8 @@ fun Box.fill(material: Material) {
     getBlocks().forEach {
         it.type = material
     }
+}
+
+fun JavaPlugin.registerEvents(listener: Listener) {
+    this.server.pluginManager.registerEvents(listener, this)
 }

@@ -1,5 +1,6 @@
 package net.kunmc.lab.unrailed.generator.terrain.generator
 
+import net.kunmc.lab.unrailed.util.Box
 import net.kunmc.lab.unrailed.util.Direction
 import org.bukkit.Location
 import org.bukkit.Material
@@ -15,5 +16,6 @@ class BaseTerrainGenerator(val block: Material) : AbstractTerrainGenerator() {
         direction: Direction,
         level: Int
     ) {
+        val box = Box(startLocation, width, terrainSize, 10,direction)
     }
 }

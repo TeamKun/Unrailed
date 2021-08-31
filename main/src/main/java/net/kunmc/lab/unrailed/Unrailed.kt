@@ -66,7 +66,9 @@ fun command(unrailed: Unrailed) =
                         "MinecartDelete",
                         "RailShape",
                         "RailConnecting",
-                        "EdgeTest"
+                        "EdgeTest",
+                        "BoxTest",
+                        "BoxFillTest"
                     )
                 )
             )
@@ -92,6 +94,12 @@ fun command(unrailed: Unrailed) =
                     }
                     "EdgeTest" -> {
                         EdgeTest.getInstance(plugin)
+                    }
+                    "BoxTest" -> {
+                        BoxTest.getInstance(plugin)
+                    }
+                    "BoxFillTest" -> {
+                        BoxFillTest.getInstance(plugin)
                     }
                     else -> null
                 }
