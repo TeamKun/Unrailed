@@ -25,7 +25,7 @@ class WoodTerrainGenerator(val wood: Material) : AbstractTerrainGenerator() {
             startLocation.copy().add(.0, 1.0, .0),
             width,
             terrainSize,
-            0,
+            1,
             direction
         )
 
