@@ -39,7 +39,7 @@ class GeneratorTest(unrailed: Unrailed) : TestCase(unrailed) {
                         false,
                         Material.BEDROCK,
                         15,
-                        Random(0).nextLong(Long.MIN_VALUE, Long.MAX_VALUE)
+                        Random.nextLong(Long.MIN_VALUE, Long.MAX_VALUE)
                     )
                 )
             }

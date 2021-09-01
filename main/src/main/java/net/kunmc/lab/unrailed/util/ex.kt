@@ -9,6 +9,7 @@ import org.bukkit.entity.Minecart
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.Vector
+import kotlin.random.Random
 
 val Rails = listOf(Material.RAIL, Material.ACTIVATOR_RAIL, Material.POWERED_RAIL, Material.DETECTOR_RAIL)
 val RailFace = listOf(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST)
@@ -264,4 +265,8 @@ fun Box.fill(material: Material) {
 
 fun JavaPlugin.registerEvents(listener: Listener) {
     this.server.pluginManager.registerEvents(listener, this)
+}
+
+fun RandomDo(vararg functions: () -> Unit) {
+    functions[Random.nextInt(0, functions.size)]()
 }
