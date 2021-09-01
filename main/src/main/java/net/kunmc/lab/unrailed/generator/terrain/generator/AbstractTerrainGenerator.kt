@@ -10,7 +10,7 @@ import org.bukkit.Location
  */
 abstract class AbstractTerrainGenerator {
     fun onGenerate(setting: GenerateSetting, startLocation: Location, level: Int) {
-        return onGenerate(startLocation, setting.width, setting.terrainSize, setting.direction, level)
+        return onGenerate(startLocation, setting.width, setting.terrainSize, setting.direction, level, setting.seed)
     }
 
     /**
@@ -20,12 +20,14 @@ abstract class AbstractTerrainGenerator {
      * @param direction 生成方向
      * @param level この地形生成の難易度(1が一番易しい)
      * @note levelが高くなればなるほど、川や壊せない石などを多く生成
+     * @param seed シード値
      */
     abstract fun onGenerate(
         startLocation: Location,
         width: Int,
         terrainSize: Int,
         direction: Direction,
-        level: Int
+        level: Int,
+        seed: Long
     )
 }

@@ -68,7 +68,8 @@ fun command(unrailed: Unrailed) =
                         "RailConnecting",
                         "EdgeTest",
                         "BoxTest",
-                        "BoxFillTest"
+                        "BoxFillTest",
+                        "GeneratorTest"
                     )
                 )
             )
@@ -100,6 +101,9 @@ fun command(unrailed: Unrailed) =
                     }
                     "BoxFillTest" -> {
                         BoxFillTest.getInstance(plugin)
+                    }
+                    "GeneratorTest" -> {
+                        GeneratorTest.getInstance(plugin)
                     }
                     else -> null
                 }

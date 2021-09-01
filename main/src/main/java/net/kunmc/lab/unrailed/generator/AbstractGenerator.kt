@@ -20,7 +20,7 @@ abstract class AbstractGenerator {
  * @param isNeedWall width外左右それぞれ1ブロックに壁を作るかどうか
  * @param wallBlock 壁の材質
  * @param terrainSize 地形生成時に次の地形に何ブロックで移行するか
- * @param terrainGenerator 地形生成機
+ * @param seed シード値
  */
 data class GenerateSetting(
     val startLocation: Location,
@@ -29,5 +29,5 @@ data class GenerateSetting(
     val isNeedWall: Boolean,
     val wallBlock: Material = Material.BEDROCK,
     val terrainSize: Int,
-    val terrainGenerator: AbstractTerrainGenerator
+    val seed: Long
 )

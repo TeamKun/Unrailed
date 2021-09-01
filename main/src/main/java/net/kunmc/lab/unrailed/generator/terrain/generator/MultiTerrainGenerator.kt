@@ -12,10 +12,11 @@ class MultiTerrainGenerator(val generators: List<AbstractTerrainGenerator>) : Ab
         width: Int,
         terrainSize: Int,
         direction: Direction,
-        level: Int
+        level: Int,
+        seed: Long
     ) {
         generators.forEach {
-            it.onGenerate(startLocation, width, terrainSize, direction, level)
+            it.onGenerate(startLocation, width, terrainSize, direction, level, seed)
         }
     }
 }
