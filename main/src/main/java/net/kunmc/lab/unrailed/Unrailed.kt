@@ -23,6 +23,7 @@ class Unrailed : JavaPlugin() {
 
     override fun onEnable() {
         // Plugin startup logic
+        saveDefaultConfig()
         command(this).register("ur")
     }
 
@@ -69,7 +70,8 @@ fun command(unrailed: Unrailed) =
                         "EdgeTest",
                         "BoxTest",
                         "BoxFillTest",
-                        "GeneratorTest"
+                        "GeneratorTest",
+                        "WriteOutStructureTest"
                     )
                 )
             )
@@ -104,6 +106,9 @@ fun command(unrailed: Unrailed) =
                     }
                     "GeneratorTest" -> {
                         GeneratorTest.getInstance(plugin)
+                    }
+                    "WriteOutStructureTest" -> {
+                        WriteOutStructureTest.getInstance(plugin)
                     }
                     else -> null
                 }

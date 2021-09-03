@@ -5,10 +5,13 @@ import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Rail
+import org.bukkit.configuration.ConfigurationSection
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Minecart
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.Vector
+import org.jetbrains.annotations.Nullable
 import kotlin.random.Random
 
 val Rails = listOf(Material.RAIL, Material.ACTIVATOR_RAIL, Material.POWERED_RAIL, Material.DETECTOR_RAIL)
@@ -269,4 +272,40 @@ fun JavaPlugin.registerEvents(listener: Listener) {
 
 fun RandomDo(vararg functions: () -> Unit) {
     functions[Random.nextInt(0, functions.size)]()
+}
+
+fun ConfigurationSection.getOrDefault(path: String, default: Any = ""): Any {
+    val o = this[path]
+    if (o != null) return o
+    else {
+        this[path] = default
+    }
+    return this[path]!!
+}
+
+inline fun <reified T> ConfigurationSection.getOrDefaultT(path: String, default: T): T {
+    val o = this[path]
+    return if (o != null) {
+        if (o !is T) {
+            this[path] = default
+            this[path]!! as T
+        } else {
+            o
+        }
+    } else {
+        this[path] = default
+        this[path] as T
+    }
+}
+
+fun ConfigurationSection.getConfigurationSectionOrDefault(path: String): ConfigurationSection {
+    val section = getConfigurationSection(path)
+    return section ?: createSection(path)
+}
+
+fun ConfigurationSection.reset() {
+    for (key in getKeys(true)) {
+        // reset Config
+        this[key] = null
+    }
 }
