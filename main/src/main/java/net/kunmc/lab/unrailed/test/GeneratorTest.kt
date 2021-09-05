@@ -42,7 +42,7 @@ class GeneratorTest(unrailed: Unrailed) : TestCase(unrailed) {
                         Random.nextLong(Long.MIN_VALUE, Long.MAX_VALUE),
                         50
                     )
-                )
+                ) {}
             }
         }
     }

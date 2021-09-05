@@ -72,7 +72,8 @@ fun command(unrailed: Unrailed) =
                         "BoxFillTest",
                         "GeneratorTest",
                         "WriteOutStructureTest",
-                        "StructureLoadTest"
+                        "StructureLoadTest",
+                        "GameInstanceTest"
                     )
                 )
             )
@@ -113,6 +114,9 @@ fun command(unrailed: Unrailed) =
                     }
                     "StructureLoadTest" -> {
                         StructureLoadTest.getInstance(plugin)
+                    }
+                    "GameInstanceTest" -> {
+                        GameInstanceTest.getInstance(plugin)
                     }
                     else -> null
                 }

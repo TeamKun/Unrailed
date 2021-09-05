@@ -64,7 +64,6 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
      */
     fun move() {
         if (!isMoving) {
-            println("move is called,this train is not moving")
             return
         }
 
@@ -118,6 +117,17 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
                 // 握りつぶす
             }
         }
+    }
+
+
+    /**
+     * 今あるトロッコ全部を消滅
+     */
+    fun removeAll() {
+        this.getCars().forEach {
+            it.getMinecart().remove()
+        }
+        this.car.clear()
     }
 
 

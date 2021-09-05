@@ -10,12 +10,25 @@ import net.kunmc.lab.unrailed.rail.Rail
 import net.kunmc.lab.unrailed.rail.RailBlockException
 import net.kunmc.lab.unrailed.rail.RailException
 import net.kunmc.lab.unrailed.train.Train
+import net.kunmc.lab.unrailed.train.TrainBuilder
+import net.kunmc.lab.unrailed.util.Direction
+import net.kunmc.lab.unrailed.util.broadCast
+import net.kunmc.lab.unrailed.util.copy
 import net.kunmc.lab.unrailed.util.getCenter
+import org.bukkit.Bukkit
+import org.bukkit.Location
 
 /**
  * 1つのゲームを表すクラス
  */
 class GameInstance(val unrailed: Unrailed) {
+    companion object {
+        /**
+         * 列車がゲーム開始から何tick後に動くか
+         */
+        const val MovingTime = 15 * 20L
+    }
+
     val lanes = mutableListOf<LaneInstance>()
 
     fun addLane(
@@ -24,17 +37,25 @@ class GameInstance(val unrailed: Unrailed) {
         generator: AbstractGenerator = StandardGenerator()
     ): LaneInstance? {
         try {
-            val startTerrainCenter = g.startLocation.add(g.direction.toVector(g.terrainSize.getCenter().toDouble()))
+            val startTerrainCenter =
+                g.startLocation.copy().add(g.direction.toVector(g.terrainSize.getCenter().toDouble())).toBlockLocation()
             val rail = Rail(startTerrainCenter.block)
             val lane = LaneInstance(
                 this,
-                Train(EngineCar(unrailed, startTerrainCenter.add(.0, 1.0, .0)), rail, unrailed),
+                object : TrainBuilder {
+                    override fun onBuild(location: Location, direction: Direction): Train {
+                        return Train(
+                            EngineCar(unrailed, startTerrainCenter.add(.0, 1.0, .0)),
+                            rail,
+                            unrailed
+                        )
+                    }
+                },
                 g,
                 generator
             )
 
             lane.teamMember.addAll(members)
-
             lanes.add(lane)
 
             return lane
@@ -45,5 +66,43 @@ class GameInstance(val unrailed: Unrailed) {
             e.print()
             return null
         }
+    }
+
+    /**
+     * このゲームの開始処理
+     */
+    fun start() {
+        broadCast("開始処理中...")
+        lanes.forEachIndexed { index, lane ->
+            lane.generateAll {
+                broadCast("生成中 ${index + 1}/${lanes.size}:${it}")
+            }
+            lane.start()
+        }
+        unrailed.server.scheduler.runTaskLater(unrailed, Runnable { startMoving() }, MovingTime)
+    }
+
+    /**
+     * このゲームのすべての列車を動かし始める処理
+     */
+    fun startMoving() {
+        broadCast("開始!")
+        lanes.forEach {
+            it.startMoving()
+        }
+    }
+
+    /**
+     * このゲーム内のレーンがクリアしたときの処理
+     */
+    fun onClear(lane: LaneInstance) {
+
+    }
+
+    /**
+     * このゲーム内のレーンが脱落した時の処理
+     */
+    fun onFail(lane: LaneInstance) {
+
     }
 }

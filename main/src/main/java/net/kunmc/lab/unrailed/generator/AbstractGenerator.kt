@@ -9,7 +9,7 @@ import org.bukkit.Material
  * ステージ生成クラス
  */
 abstract class AbstractGenerator {
-    abstract fun onGenerate(s: GenerateSetting)
+    abstract fun onGenerate(s: GenerateSetting,logCallBack: (Double) -> Unit)
 }
 
 /**

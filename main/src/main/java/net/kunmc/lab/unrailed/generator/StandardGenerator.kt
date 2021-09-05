@@ -32,7 +32,7 @@ class StandardGenerator : AbstractGenerator() {
         )
     )
 
-    override fun onGenerate(s: GenerateSetting) {
+    override fun onGenerate(s: GenerateSetting, logCallBack: (Double) -> Unit) {
         for (index in 0 until s.terrains) {
             val location = getStartLocation(s, index)
             // TODO ここでいろいろ生成
@@ -46,6 +46,9 @@ class StandardGenerator : AbstractGenerator() {
                     generate(stoneTerrain, s, location)
                 }
             )
+
+
+            logCallBack((((index + 1) * 100) / (s.terrains).toDouble()))
         }
     }
 

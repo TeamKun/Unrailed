@@ -16,5 +16,11 @@ class GamePlayer(val p: Player, val game: GameInstance) : Listener {
 
     val perks = mutableListOf<Perk>()
 
+    /**
+     * Playerが木を切ったり石を掘ったりレールを敷いたりしたらもらえるポイント
+     * Perk解放に使える
+     */
+    var points = 0
+
     // TODO Prevent Events (Run,Jump,Inventory etc.)
 }
