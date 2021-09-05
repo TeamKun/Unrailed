@@ -77,8 +77,8 @@ SandStation:
           z: 2.0
     '3':
       '0':
-        material: SANDSTONE
-        data: minecraft:sandstone
+        material: AIR
+        data: minecraft:air
         pos:
           ==: Vector
           x: 0.0
@@ -93,8 +93,8 @@ SandStation:
           y: 3.0
           z: 1.0
       '2':
-        material: AIR
-        data: minecraft:air
+        material: SANDSTONE
+        data: minecraft:sandstone
         pos:
           ==: Vector
           x: 0.0
@@ -471,6 +471,14 @@ SandStation:
           x: 4.0
           y: 2.0
           z: 1.0
+      '2':
+        material: SANDSTONE
+        data: minecraft:sandstone
+        pos:
+          ==: Vector
+          x: 4.0
+          y: 2.0
+          z: 2.0
     '3':
       '0':
         material: AIR
@@ -482,15 +490,15 @@ SandStation:
           z: 0.0
       '1':
         material: SANDSTONE_STAIRS
-        data: minecraft:sandstone_stairs[facing=south,half=bottom,shape=outer_right,waterlogged=false]
+        data: minecraft:sandstone_stairs[facing=south,half=bottom,shape=straight,waterlogged=false]
         pos:
           ==: Vector
           x: 4.0
           y: 3.0
           z: 1.0
       '2':
-        material: AIR
-        data: minecraft:air
+        material: SANDSTONE
+        data: minecraft:sandstone
         pos:
           ==: Vector
           x: 4.0

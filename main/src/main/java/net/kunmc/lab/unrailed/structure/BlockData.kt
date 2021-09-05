@@ -1,5 +1,6 @@
 package net.kunmc.lab.unrailed.structure
 
+import net.kunmc.lab.unrailed.util.copy
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Server
@@ -11,7 +12,7 @@ import org.bukkit.util.Vector
 class BlockData(
     val data: BlockData,
     val material: Material,
-    val pos: Vector
+    var pos: Vector
 ) {
     constructor(loc: Location, base: Location) : this(loc.block, base)
     constructor(block: Block, base: Location) : this(block.blockData.clone(), block.type, base, block.location)
@@ -30,7 +31,7 @@ class BlockData(
 
     fun copyTo(loc: Location): Block {
         // さてどうなるか
-        val l = pos.add(loc.toVector()).toLocation(loc.world)
+        val l = pos.copy().add(loc.toVector()).toLocation(loc.world)
         l.block.type = material
         l.block.blockData = data
         return l.block

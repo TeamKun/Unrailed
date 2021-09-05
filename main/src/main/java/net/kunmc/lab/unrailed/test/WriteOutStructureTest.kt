@@ -8,6 +8,8 @@ import net.kunmc.lab.unrailed.util.registerEvents
 import org.bukkit.Location
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.Action
+import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.PlayerInteractEvent
 
 class WriteOutStructureTest(unrailed: Unrailed) : TestCase(unrailed) {
@@ -27,24 +29,46 @@ class WriteOutStructureTest(unrailed: Unrailed) : TestCase(unrailed) {
     var startLocation: Location? = null
 
     @EventHandler
-    fun onRightClick(e: PlayerInteractEvent) {
+    fun onBreakBlock(e: BlockBreakEvent) {
         if (isGoingOn) {
-            if (e.action == Action.RIGHT_CLICK_BLOCK) {
-                val clickedBlock = e.clickedBlock!!
-                if (startLocation == null) {
-                    startLocation = clickedBlock.location
-                } else {
-                    if (startLocation!! == clickedBlock.location) return
-                    val box = Box(startLocation!!, clickedBlock.location)
-                    val blockSet = BlockSet(box)
-                    blockSet.toConfig(unrailed.config.getConfigurationSectionOrDefault("WriteOutStructureTest"))
+            val clickedBlock = e.block
+            if (startLocation == null) {
+                startLocation = clickedBlock.location
+            } else {
+                if (startLocation!! == clickedBlock.location) return
+                val box = Box(startLocation!!, clickedBlock.location)
+                val blockSet = BlockSet(box)
+                blockSet.toConfig(unrailed.config.getConfigurationSectionOrDefault("WriteOutStructureTest"))
 
-                    unrailed.saveConfig()
+                unrailed.saveConfig()
 
-                    println("Saved to Config")
+                println("Saved to Config#onBreakBlock")
+                isGoingOn = false
+            }
 
-                    isGoingOn = false
-                }
+            e.isCancelled = true
+        }
+    }
+
+    @EventHandler
+    fun onPlaceBlock(e: BlockPlaceEvent) {
+        if (isGoingOn) {
+            val clickedBlock = e.block
+            if (startLocation == null) {
+                startLocation = clickedBlock.location
+            } else {
+                if (startLocation!! == clickedBlock.location) return
+                val box = Box(startLocation!!, clickedBlock.location)
+                val blockSet = BlockSet(box)
+
+                blockSet.toConfig(unrailed.config.getConfigurationSectionOrDefault("WriteOutStructureTest"))
+
+                unrailed.saveConfig()
+
+                println("Saved to Config#onPlaceBlock")
+
+                e.isCancelled = true
+                isGoingOn = false
             }
         }
     }
