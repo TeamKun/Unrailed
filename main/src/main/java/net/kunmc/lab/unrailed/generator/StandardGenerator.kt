@@ -26,8 +26,13 @@ class StandardGenerator : AbstractGenerator() {
         )
     )
 
-    override fun onGenerate(s: GenerateSetting) {
+    private val stationTerrain = MultiTerrainGenerator(
+        listOf(
+            // TODO
+        )
+    )
 
+    override fun onGenerate(s: GenerateSetting) {
         for (index in 0 until s.terrains) {
             val location = getStartLocation(s, index)
             // TODO ここでいろいろ生成
@@ -52,7 +57,12 @@ class StandardGenerator : AbstractGenerator() {
      * @return count個目の地形の生成開始地点
      * @param terrainSize 実際の奥行 - 1
      */
-    private fun getStartLocation(base: Location, direction: Direction, count: Int, terrainSize: Int): Location {
+    private fun getStartLocation(
+        base: Location,
+        direction: Direction,
+        count: Int,
+        terrainSize: Int
+    ): Location {
         return base.copy().add(direction.toVector(terrainSize.toDouble()).scale(terrainSize + 1.0).multiply(count))
     }
 
@@ -63,7 +73,11 @@ class StandardGenerator : AbstractGenerator() {
     /**
      * startLocationから地形を生成
      */
-    private fun generate(generator: MultiTerrainGenerator, s: GenerateSetting, startLocation: Location) {
+    private fun generate(
+        generator: MultiTerrainGenerator,
+        s: GenerateSetting,
+        startLocation: Location
+    ) {
         generator.onGenerate(
             startLocation,
             s.width,

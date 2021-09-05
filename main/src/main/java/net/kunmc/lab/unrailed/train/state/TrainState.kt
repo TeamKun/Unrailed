@@ -25,4 +25,14 @@ class TrainState(val train: Train) {
     }
 
     val speedModifier = mutableListOf<SpeedModifier>()
+
+    /**
+     * @return 列車が線路から落ちているかどうか = ゲームオーバーかどうか
+     */
+    var isDropped = false
+
+    /**
+     * @return 列車が線路から落ちそうかどうか = ゲームオーバーになりかけているかどうか
+     */
+    var toDrop = false
 }

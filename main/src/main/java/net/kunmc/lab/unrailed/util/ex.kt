@@ -309,3 +309,11 @@ fun ConfigurationSection.reset() {
         this[key] = null
     }
 }
+
+fun Int.getCenter(): Int {
+    return if (this % 2 == 0) {
+        this / 2
+    } else {
+        (this + 1) / 2
+    }
+}

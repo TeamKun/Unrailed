@@ -72,6 +72,7 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
         if (speed == null) {
             // TODO 先頭車爆発後処理
 //            println("[ERROR] Train is Running,Speed State is Null")
+            state().isDropped = true
             return
         }
 
@@ -81,15 +82,23 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
             if (next == null) {
                 // 車両の先のレールがない
                 // TODO どうしよ
+                state().isDropped = true
+                // 速度維持
                 return@applyVectors vector.scale(speed)
             } else {
                 val face = now.getFace(next)
                 if (face == null) {
                     // 次のレールブロックが近くにない
                     println("次のレールブロックが近くにない")
-                    return@applyVectors Vector().zero()
+                    state().toDrop = true
+                    // 速度維持
+                    return@applyVectors vector.scale(speed)
                 } else {
+                    state().isDropped = false
+                    state().toDrop = false
+
                     val v = face.toVector()
+                    // 次のブロックの方向に基づいて速度維持
                     return@applyVectors v.scale(speed)
                 }
             }
