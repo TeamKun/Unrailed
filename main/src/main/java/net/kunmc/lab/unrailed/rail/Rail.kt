@@ -168,5 +168,14 @@ class Rail(val first: Block) : AbstractRail() {
 }
 
 
-open class RailException(val rail: Rail, message: String) : Exception(message)
-class RailBlockException(rail: Rail, val block: Block, message: String) : RailException(rail, message)
+open class RailException(val rail: Rail, message: String) : Exception(message) {
+    open fun print() {
+        println("RailException:{Rail:${rail},Message:${message}}")
+    }
+}
+
+class RailBlockException(rail: Rail, val block: Block, message: String) : RailException(rail, message) {
+    override fun print() {
+        println("RailBlockException:{Rail:${rail},Block:${block},Message:${message}}")
+    }
+}
