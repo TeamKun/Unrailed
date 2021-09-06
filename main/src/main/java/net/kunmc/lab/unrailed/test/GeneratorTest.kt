@@ -30,7 +30,7 @@ class GeneratorTest(unrailed: Unrailed) : TestCase(unrailed) {
         if (isGoingOn) {
             if (e.action == Action.RIGHT_CLICK_BLOCK) {
                 val clickedBlock = e.clickedBlock!!
-                val generator = StandardGenerator()
+                val generator = StandardGenerator(unrailed)
                 generator.onGenerate(
                     GenerateSetting(
                         clickedBlock.location,
@@ -40,7 +40,8 @@ class GeneratorTest(unrailed: Unrailed) : TestCase(unrailed) {
                         Material.BEDROCK,
                         9,
                         Random.nextLong(Long.MIN_VALUE, Long.MAX_VALUE),
-                        50
+                        10,
+                        3
                     )
                 ) {}
             }

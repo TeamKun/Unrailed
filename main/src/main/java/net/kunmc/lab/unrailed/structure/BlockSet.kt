@@ -80,4 +80,13 @@ class BlockSet(private var blocks: List<BlockData>) {
             it.toConfig(z)
         }
     }
+
+    fun toBox(base: Location): Box {
+        return Box(
+            base,
+            blocks.maxOf { it.pos.blockX } - blocks.minOf { it.pos.blockX } + 1,
+            blocks.maxOf { it.pos.blockZ } - blocks.minOf { it.pos.blockZ } + 1,
+            blocks.maxOf { it.pos.blockY } - blocks.minOf { it.pos.blockY } + 1
+        )
+    }
 }

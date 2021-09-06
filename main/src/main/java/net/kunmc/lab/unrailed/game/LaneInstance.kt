@@ -55,6 +55,7 @@ class LaneInstance(
      */
     fun startMoving() {
         train!!.isMoving = true
+        // TODO 最初にちょこっと押してあげないとだめ
     }
 
     /**

@@ -81,7 +81,6 @@ class Rail(val first: Block) : AbstractRail() {
         else {
             if (rails.size == 1) return Pair(Pair(rails[0], 0), Pair(rails[0], 0))
             else {
-                // TODO 探索
                 val edge = rails.mapIndexed { index, block ->
                     Pair(block, index)
                 }.filter {

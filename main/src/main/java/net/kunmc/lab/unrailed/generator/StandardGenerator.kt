@@ -1,9 +1,8 @@
 package net.kunmc.lab.unrailed.generator
 
-import net.kunmc.lab.unrailed.generator.terrain.generator.BaseTerrainGenerator
-import net.kunmc.lab.unrailed.generator.terrain.generator.MultiTerrainGenerator
-import net.kunmc.lab.unrailed.generator.terrain.generator.StoneTerrainGenerator
-import net.kunmc.lab.unrailed.generator.terrain.generator.WoodTerrainGenerator
+import net.kunmc.lab.unrailed.Unrailed
+import net.kunmc.lab.unrailed.generator.terrain.generator.*
+import net.kunmc.lab.unrailed.structure.StructureCollection
 import net.kunmc.lab.unrailed.util.Direction
 import net.kunmc.lab.unrailed.util.RandomDo
 import net.kunmc.lab.unrailed.util.copy
@@ -11,17 +10,22 @@ import net.kunmc.lab.unrailed.util.scale
 import org.bukkit.Location
 import org.bukkit.Material
 
-class StandardGenerator : AbstractGenerator() {
+class StandardGenerator(val unrailed: Unrailed) : AbstractGenerator() {
+    companion object {
+        // 各地形の土台
+        var baseBlock = Material.SANDSTONE
+    }
+
     private val woodTerrain = MultiTerrainGenerator(
         listOf(
-            BaseTerrainGenerator(Material.SANDSTONE),
+            BaseTerrainGenerator(baseBlock),
             WoodTerrainGenerator(Material.ACACIA_WOOD)
         )
     )
 
     private val stoneTerrain = MultiTerrainGenerator(
         listOf(
-            BaseTerrainGenerator(Material.SANDSTONE),
+            BaseTerrainGenerator(baseBlock),
             StoneTerrainGenerator(Material.STONE)
         )
     )
@@ -29,20 +33,30 @@ class StandardGenerator : AbstractGenerator() {
     private val stationTerrain = MultiTerrainGenerator(
         listOf(
             // TODO
+            BaseTerrainGenerator(baseBlock),
+            StationTerrainGenerator(StructureCollection.getInstance(unrailed).stations.SandStation)
         )
     )
 
+    /**
+     *
+     */
     override fun onGenerate(s: GenerateSetting, logCallBack: (Double) -> Unit) {
         for (index in 0 until s.terrains) {
             val location = getStartLocation(s, index)
+
+            if (index % (s.betweenStation + 1) == 0) {
+                // 駅の生成
+                generate(stationTerrain, s, location)
+                continue
+            }
+
             // TODO ここでいろいろ生成
             RandomDo(
                 {
-                    println("woodTerrain")
                     generate(woodTerrain, s, location)
                 },
                 {
-                    println("stoneTerrain")
                     generate(stoneTerrain, s, location)
                 }
             )

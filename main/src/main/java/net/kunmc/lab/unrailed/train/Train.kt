@@ -80,7 +80,6 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
             val next = rail.getAfter(now)
             if (next == null) {
                 // 車両の先のレールがない
-                // TODO どうしよ
                 state().isDropped = true
                 // 速度維持
                 return@applyVectors vector.scale(speed)

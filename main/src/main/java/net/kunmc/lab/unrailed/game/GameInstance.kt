@@ -34,7 +34,7 @@ class GameInstance(val unrailed: Unrailed) {
     fun addLane(
         g: GenerateSetting,
         members: List<GamePlayer> = listOf(),
-        generator: AbstractGenerator = StandardGenerator()
+        generator: AbstractGenerator = StandardGenerator(unrailed)
     ): LaneInstance? {
         try {
             val startTerrainCenter =
