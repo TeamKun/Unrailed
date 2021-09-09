@@ -317,3 +317,10 @@ fun Int.getCenter(): Int {
         (this + 1) / 2
     }
 }
+
+/**
+ * 細かい数字を切り捨てる
+ */
+fun Vector.toBlockPos(): Vector {
+    return Vector(blockX, blockY, blockZ)
+}

@@ -8,7 +8,7 @@ import net.kunmc.lab.unrailed.util.getCenter
 import org.bukkit.Location
 import org.bukkit.Material
 
-class StationTerrainGenerator(val stationStructure: BlockSet) : AbstractTerrainGenerator() {
+class StationTerrainGenerator(private val stationStructure: BlockSet) : AbstractTerrainGenerator() {
     override fun onGenerate(
         startLocation: Location,
         width: Int,
@@ -41,8 +41,23 @@ class StationTerrainGenerator(val stationStructure: BlockSet) : AbstractTerrainG
                 .add(direction.rotateLeft(1).toVector(1.0))
                 .toBlockLocation()
 
-        val rotatedStationStructure = stationStructure.rotateAroundY(Math.toRadians(90.0))
 
-        val stationSize = stationStructure.toBox(stationCenter)
+        // いい感じに回転できるはず!!!!!
+        val rotatedStationStructure =
+            stationStructure.copy()
+                .rotateAroundY(Math.toRadians(stationStructure.direction!!.getDegree(direction).toDouble()))
+
+        val stationSize = rotatedStationStructure.toBox(stationCenter)
+
+        val stationStart =
+            stationCenter.toVector()
+                .add(
+                    direction.opposite().toVector(
+                        stationSize.getLengthFor(direction.toAxis()).getCenter().toDouble()
+                    )
+                )  // 横方向調整
+//                .add(direction.rotateLeft(1).toVector(stationSize.width.toDouble()))
+
+        rotatedStationStructure.copyTo(stationStart.toLocation(startLocation.world))
     }
 }

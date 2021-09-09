@@ -1,5 +1,6 @@
 package net.kunmc.lab.unrailed.util
 
+import org.bukkit.Axis
 import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.util.Vector
@@ -56,4 +57,13 @@ class Box(val base: Location, val width: Int, val weight: Int, val height: Int) 
                 .add(Vector(0, height, 0))
         )
     )
+
+
+    fun getLengthFor(axis: Axis): Int {
+        return when (axis) {
+            Axis.X -> width
+            Axis.Y -> height
+            Axis.Z -> weight
+        }
+    }
 }

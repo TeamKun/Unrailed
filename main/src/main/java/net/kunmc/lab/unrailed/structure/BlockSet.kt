@@ -1,36 +1,38 @@
 package net.kunmc.lab.unrailed.structure
 
-import net.kunmc.lab.unrailed.util.Box
-import net.kunmc.lab.unrailed.util.getConfigurationSectionOrDefault
-import net.kunmc.lab.unrailed.util.reset
+import net.kunmc.lab.unrailed.util.*
 import org.bukkit.Location
 import org.bukkit.Server
 import org.bukkit.configuration.ConfigurationSection
+import org.bukkit.util.Vector
 
-class BlockSet(private var blocks: List<BlockData>) {
+class BlockSet(private var blocks: List<BlockData>, val direction: Direction? = null) {
     constructor(from: Location, to: Location) : this(Box(from, to))
     constructor(box: Box) : this(processBlocks(box))
     constructor(config: ConfigurationSection, server: Server) : this(fromConfig(config, server))
+    constructor(pair: Pair<List<BlockData>, Direction?>) : this(pair.first, pair.second)
 
     companion object {
         fun processBlocks(box: Box): List<BlockData> {
             return box.getBlocks().map { BlockData(it, box.base) }
         }
 
-        fun fromConfig(yaml: ConfigurationSection, server: Server): List<BlockData> {
+        fun fromConfig(yaml: ConfigurationSection, server: Server): Pair<List<BlockData>, Direction?> {
+            val direction = yaml.getString("direction").nullOr { Direction.valueOf(it) }
+
             val list = mutableListOf<BlockData>()
             for (x in yaml.getKeys(false)) {
-                val xSection = yaml.getConfigurationSection(x)!!
+                val xSection = yaml.getConfigurationSection(x) ?: continue
                 for (y in xSection.getKeys(false)) {
-                    val ySection = xSection.getConfigurationSection(y)!!
+                    val ySection = xSection.getConfigurationSection(y) ?: continue
                     for (z in ySection.getKeys(false)) {
-                        val zSection = ySection.getConfigurationSection(z)!!
+                        val zSection = ySection.getConfigurationSection(z) ?: continue
                         val block = loadBlock(zSection, server)
                         if (block != null) list.add(block)
                     }
                 }
             }
-            return list
+            return Pair(list, direction)
         }
 
         private fun loadBlock(yaml: ConfigurationSection, server: Server): BlockData? {
@@ -54,16 +56,35 @@ class BlockSet(private var blocks: List<BlockData>) {
         }
     }
 
-    fun rotateAroundX(angle: Double) {
+    fun rotateAroundX(angle: Double): BlockSet {
         blocks.forEach { it.pos.rotateAroundX(angle) }
+        normalize()
+        return this
     }
 
-    fun rotateAroundY(angle: Double) {
+    fun rotateAroundY(angle: Double): BlockSet {
         blocks.forEach { it.pos.rotateAroundY(angle) }
+        normalize()
+        return this
     }
 
-    fun rotateAroundZ(angle: Double) {
+    fun rotateAroundZ(angle: Double): BlockSet {
         blocks.forEach { it.pos.rotateAroundZ(angle) }
+        normalize()
+        return this
+    }
+
+    /**
+     * 位置を調整するやーつ
+     */
+    private fun normalize() {
+//        blocks.forEach { it.pos = it.pos.toBlockPos() }
+        val minx = blocks.minOf { it.pos.blockX }.toInt()
+        val miny = blocks.minOf { it.pos.blockY }.toInt()
+        val minz = blocks.minOf { it.pos.blockZ }.toInt()
+        blocks.forEach {
+            it.pos = it.pos.add(Vector(-minx, -miny, -minz))
+        }
     }
 
     fun blocks() = blocks.toMutableList()
@@ -88,5 +109,9 @@ class BlockSet(private var blocks: List<BlockData>) {
             blocks.maxOf { it.pos.blockZ } - blocks.minOf { it.pos.blockZ } + 1,
             blocks.maxOf { it.pos.blockY } - blocks.minOf { it.pos.blockY } + 1
         )
+    }
+
+    fun copy(): BlockSet {
+        return BlockSet(this.blocks.toMutableList(), direction)
     }
 }

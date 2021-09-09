@@ -1,4 +1,8 @@
+# Positive X方向が長辺
+# EAST
 SandStation:
+  direction: EAST
+
   '0':
     '0':
       '0':
