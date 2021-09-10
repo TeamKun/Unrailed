@@ -27,7 +27,7 @@ class DegreeTest(unrailed: Unrailed) : TestCase(unrailed) {
             if (e.action == Action.RIGHT_CLICK_BLOCK) {
                 val direction = Direction.fromBlockFace(e.player.facing)!!
 
-                val di = Direction.NORTH
+                val di = Direction.EAST
 
                 e.player.sendMessage("Degree Between $di and $direction is ${di.getDegree(direction)}")
             }

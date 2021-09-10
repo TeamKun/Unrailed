@@ -35,7 +35,7 @@ class RotateStructureTest(unrailed: Unrailed) : TestCase(unrailed) {
                     val direction = Direction.fromBlockFace(e.player.facing)!!
                     val degree = copiedStructure.direction!!.getDegree(direction).toDouble()
                     val rotatedStationStructure = copiedStructure.copy().rotateAroundY(Math.toRadians(degree))
-                    e.player.sendMessage("Rotated for ${degree} degree.")
+                    e.player.sendMessage("Rotated for $degree degree.")
                     rotatedStationStructure.copyTo(clickedBlock.location)
                     timer.time = 20 // 1秒クールダウン
                 } else {

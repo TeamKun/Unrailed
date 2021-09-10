@@ -46,4 +46,8 @@ class BlockData(
         yaml["data"] = data.asString
         yaml["pos"] = pos
     }
+
+    fun copy(): net.kunmc.lab.unrailed.structure.BlockData {
+        return BlockData(data.clone(), material, pos.copy())
+    }
 }

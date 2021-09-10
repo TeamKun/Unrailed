@@ -57,18 +57,21 @@ class BlockSet(private var blocks: List<BlockData>, val direction: Direction? = 
     }
 
     fun rotateAroundX(angle: Double): BlockSet {
+        if (angle == 0.0) return this
         blocks.forEach { it.pos.rotateAroundX(angle) }
         normalize()
         return this
     }
 
     fun rotateAroundY(angle: Double): BlockSet {
+        if (angle == 0.0) return this
         blocks.forEach { it.pos.rotateAroundY(angle) }
         normalize()
         return this
     }
 
     fun rotateAroundZ(angle: Double): BlockSet {
+        if (angle == 0.0) return this
         blocks.forEach { it.pos.rotateAroundZ(angle) }
         normalize()
         return this
@@ -79,12 +82,12 @@ class BlockSet(private var blocks: List<BlockData>, val direction: Direction? = 
      */
     private fun normalize() {
 //        blocks.forEach { it.pos = it.pos.toBlockPos() }
-        val minx = blocks.minOf { it.pos.blockX }.toInt()
-        val miny = blocks.minOf { it.pos.blockY }.toInt()
-        val minz = blocks.minOf { it.pos.blockZ }.toInt()
-        blocks.forEach {
-            it.pos = it.pos.add(Vector(-minx, -miny, -minz))
-        }
+//        val minx = blocks.minOf { it.pos.blockX }.toInt()
+//        val miny = blocks.minOf { it.pos.blockY }.toInt()
+//        val minz = blocks.minOf { it.pos.blockZ }.toInt()
+//        blocks.forEach {
+//            it.pos = it.pos.add(Vector(-minx, -miny, -minz))
+//        }
     }
 
     fun blocks() = blocks.toMutableList()
@@ -112,6 +115,15 @@ class BlockSet(private var blocks: List<BlockData>, val direction: Direction? = 
     }
 
     fun copy(): BlockSet {
-        return BlockSet(this.blocks.toMutableList(), direction)
+        return BlockSet(copyDataDeeply(), direction)
+    }
+
+    private fun copyDataDeeply(): MutableList<BlockData> {
+        val copied = mutableListOf<BlockData>()
+        blocks.forEach {
+            copied.add(it.copy())
+        }
+
+        return copied
     }
 }

@@ -66,7 +66,7 @@ enum class Direction(val num: Int) {
     }
 
     fun opposite(): Direction {
-        return when(this){
+        return when (this) {
             NORTH -> SOUTH
             WEST -> EAST
             SOUTH -> NORTH
@@ -78,7 +78,12 @@ enum class Direction(val num: Int) {
      * @return このDirectionから見た角度
      */
     fun getDegree(to: Direction): Int {
-        return 90 * (max(num, to.num) - min(num, to.num))
+        if (this.num == to.num) return 0
+        if (to.num < this.num) {
+            return 90 * (to.num + 4 - this.num)
+        } else {
+            return 90 * (this.num - to.num)
+        }
     }
 
     fun toAxis(): Axis {
