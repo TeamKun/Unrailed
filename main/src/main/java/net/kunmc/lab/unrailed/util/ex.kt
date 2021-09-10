@@ -324,3 +324,21 @@ fun Int.getCenter(): Int {
 fun Vector.toBlockPos(): Vector {
     return Vector(blockX, blockY, blockZ)
 }
+
+/**
+ * BlockFaceを回したものを返す
+ * @param times 90 * 何回分回すか
+ */
+fun BlockFace.rotateAroundY(times: Int): BlockFace? {
+    return when (this) {
+        BlockFace.UP, BlockFace.DOWN -> this
+        BlockFace.NORTH,
+        BlockFace.EAST,
+        BlockFace.SOUTH,
+        BlockFace.WEST -> {
+            val direction = Direction.fromBlockFace(this)!!
+            direction.rotateLeft(times).toBlockFace()
+        }
+        else -> null
+    }
+}

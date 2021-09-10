@@ -38,14 +38,17 @@ class StationTerrainGenerator(private val stationStructure: BlockSet) : Abstract
             startLocation.copy()
                 .add(.0, 1.0, .0)
                 .add(direction.toVector(terrainSize.getCenter().toDouble()))
-                .add(direction.rotateLeft(1).toVector(1.0))
+//                .add(direction.rotateLeft(1).toVector(1.0))
                 .toBlockLocation()
 
 
         // いい感じに回転できるはず!!!!!
         val rotatedStationStructure =
             stationStructure.copy()
-                .rotateAroundY(Math.toRadians(stationStructure.direction!!.getDegree(direction).toDouble()))
+                .rotateAroundY(
+                    Math.toRadians(stationStructure.direction!!.getDegree(direction).toDouble()),
+                    startLocation.world
+                )
 
         val stationSize = rotatedStationStructure.toBox(stationCenter)
 

@@ -3,8 +3,9 @@ package net.kunmc.lab.unrailed.structure
 import net.kunmc.lab.unrailed.util.*
 import org.bukkit.Location
 import org.bukkit.Server
+import org.bukkit.World
+import org.bukkit.block.data.Directional
 import org.bukkit.configuration.ConfigurationSection
-import org.bukkit.util.Vector
 
 class BlockSet(private var blocks: List<BlockData>, val direction: Direction? = null) {
     constructor(from: Location, to: Location) : this(Box(from, to))
@@ -56,6 +57,9 @@ class BlockSet(private var blocks: List<BlockData>, val direction: Direction? = 
         }
     }
 
+    /**
+     * 位置・BlockFaceを回転
+     */
     fun rotateAroundX(angle: Double): BlockSet {
         if (angle == 0.0) return this
         blocks.forEach { it.pos.rotateAroundX(angle) }
@@ -63,10 +67,37 @@ class BlockSet(private var blocks: List<BlockData>, val direction: Direction? = 
         return this
     }
 
-    fun rotateAroundY(angle: Double): BlockSet {
+    fun rotateAroundY(angle: Double, world: World): BlockSet {
         if (angle == 0.0) return this
         blocks.forEach { it.pos.rotateAroundY(angle) }
+        rotateFaceAroundY(angle, world)
         normalize()
+        return this
+    }
+
+    /**
+     * BlockFaceを回転
+     */
+    fun rotateFaceAroundY(angle: Double, world: World): BlockSet {
+        // 何回転するか
+        val times = (angle / Math.toRadians(90.0)).toInt()
+        this.blocks.forEach {
+            val block = it.pos.toLocation(world).block
+            if (block.blockData is Directional) {
+                val data = block.blockData as Directional
+                println("isDirectional")
+                // TODO HERE
+                val exceptTo = data.facing.rotateAroundY(times)!!
+                if (data.faces.contains(exceptTo)) {
+                    // その方向に回転可能
+                    println("Block Facing:${data.facing} Rotated into $exceptTo in Rotating $times times")
+                    data.facing = exceptTo
+                }
+
+                block.blockData = data
+            }
+        }
+
         return this
     }
 
