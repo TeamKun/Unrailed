@@ -10,10 +10,6 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 
 class BoxTest(unrailed: Unrailed) : TestCase(unrailed) {
-    init {
-        unrailed.registerEvents(this)
-    }
-
     companion object {
         private var ins: BoxTest? = null
         fun getInstance(unrailed: Unrailed): BoxTest {

@@ -13,10 +13,6 @@ import org.bukkit.event.player.PlayerInteractEvent
 import kotlin.random.Random
 
 class GeneratorTest(unrailed: Unrailed) : TestCase(unrailed) {
-    init {
-        unrailed.registerEvents(this)
-    }
-
     companion object {
         private var ins: GeneratorTest? = null
         fun getInstance(unrailed: Unrailed): GeneratorTest {

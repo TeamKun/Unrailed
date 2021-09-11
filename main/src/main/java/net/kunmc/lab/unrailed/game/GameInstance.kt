@@ -9,12 +9,10 @@ import net.kunmc.lab.unrailed.generator.StandardGenerator
 import net.kunmc.lab.unrailed.rail.Rail
 import net.kunmc.lab.unrailed.rail.RailBlockException
 import net.kunmc.lab.unrailed.rail.RailException
+import net.kunmc.lab.unrailed.train.DefaultTrainBuilder
 import net.kunmc.lab.unrailed.train.Train
 import net.kunmc.lab.unrailed.train.TrainBuilder
-import net.kunmc.lab.unrailed.util.Direction
-import net.kunmc.lab.unrailed.util.broadCast
-import net.kunmc.lab.unrailed.util.copy
-import net.kunmc.lab.unrailed.util.getCenter
+import net.kunmc.lab.unrailed.util.*
 import org.bukkit.Bukkit
 import org.bukkit.Location
 
@@ -34,7 +32,8 @@ class GameInstance(val unrailed: Unrailed) {
     fun addLane(
         g: GenerateSetting,
         members: List<GamePlayer> = listOf(),
-        generator: AbstractGenerator = StandardGenerator(unrailed)
+        generator: AbstractGenerator = StandardGenerator(unrailed),
+        trainBuilder: TrainBuilder? = null
     ): LaneInstance? {
         try {
             val startTerrainCenter =
@@ -42,15 +41,7 @@ class GameInstance(val unrailed: Unrailed) {
             val rail = Rail(startTerrainCenter.block)
             val lane = LaneInstance(
                 this,
-                object : TrainBuilder {
-                    override fun onBuild(location: Location, direction: Direction): Train {
-                        return Train(
-                            EngineCar(unrailed, startTerrainCenter.add(.0, 1.0, .0)),
-                            rail,
-                            unrailed
-                        )
-                    }
-                },
+                trainBuilder.nullMap { DefaultTrainBuilder(unrailed, startTerrainCenter, rail) },
                 g,
                 generator
             )

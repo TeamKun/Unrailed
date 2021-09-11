@@ -13,10 +13,6 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.PlayerInteractEvent
 
 class WriteOutStructureTest(unrailed: Unrailed) : TestCase(unrailed) {
-    init {
-        unrailed.registerEvents(this)
-    }
-
     companion object {
         private var ins: WriteOutStructureTest? = null
         fun getInstance(unrailed: Unrailed): WriteOutStructureTest {

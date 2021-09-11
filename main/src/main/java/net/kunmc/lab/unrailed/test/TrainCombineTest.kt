@@ -47,7 +47,7 @@ class TrainCombineTest(unrailed: Unrailed) : TestCase(unrailed) {
 
             val rail = Rail(e.block.location.copy().block)
 
-            train = Train(EngineCar(unrailed, rail.first.location.copy().toCenterLocation()), rail, unrailed)
+            train = Train(EngineCar(unrailed, e.block.location.copy().toCenterLocation()), rail, unrailed)
 
             train!!.isMoving = true
             unrailed.isGoingOn = true

@@ -8,10 +8,6 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 
 class DegreeTest(unrailed: Unrailed) : TestCase(unrailed) {
-    init {
-        unrailed.registerEvents(this)
-    }
-
     companion object {
         private var ins: DegreeTest? = null
         fun getInstance(unrailed: Unrailed): DegreeTest {

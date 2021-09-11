@@ -22,11 +22,6 @@ class RailRecognize(unrailed: Unrailed) : TestCase(unrailed) {
         }
     }
 
-
-    init {
-        unrailed.server.pluginManager.registerEvents(this, unrailed)
-    }
-
     @EventHandler
     fun onRightClick(e: PlayerInteractEvent) {
         if (isGoingOn) {

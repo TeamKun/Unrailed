@@ -8,10 +8,6 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.vehicle.VehicleDamageEvent
 
 class MinecartDelete(unrailed: Unrailed) : TestCase(unrailed) {
-    init {
-        unrailed.server.pluginManager.registerEvents(this, unrailed)
-    }
-
     companion object {
         private var ins: MinecartDelete? = null
         fun getInstance(unrailed: Unrailed): MinecartDelete {

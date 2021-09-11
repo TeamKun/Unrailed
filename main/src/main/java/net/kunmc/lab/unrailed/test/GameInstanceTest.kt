@@ -15,10 +15,6 @@ import org.bukkit.event.player.PlayerInteractEvent
 import kotlin.random.Random
 
 class GameInstanceTest(unrailed: Unrailed) : TestCase(unrailed) {
-    init {
-        unrailed.registerEvents(this)
-    }
-
     companion object {
         private var ins: GameInstanceTest? = null
         fun getInstance(unrailed: Unrailed): GameInstanceTest {

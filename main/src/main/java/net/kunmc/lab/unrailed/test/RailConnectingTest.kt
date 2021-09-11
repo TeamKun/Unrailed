@@ -9,10 +9,6 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 
 class RailConnectingTest(unrailed: Unrailed) : TestCase(unrailed) {
-    init {
-        unrailed.server.pluginManager.registerEvents(this,unrailed)
-    }
-
     companion object{
         private var ins:RailConnectingTest? = null
         fun getInstance(unrailed: Unrailed):RailConnectingTest{

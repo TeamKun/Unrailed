@@ -4,10 +4,26 @@ import net.kunmc.lab.unrailed.util.*
 import org.bukkit.Location
 import org.bukkit.block.Block
 
-class Rail(val first: Block) : AbstractRail() {
+/**
+ * @param first 最初の探索開始地点
+ */
+class Rail(first: Block) : AbstractRail() {
     val rails = mutableListOf<Block>()
 
     override fun getAll(): MutableList<Block> = rails.toMutableList()
+
+    /**
+     * @param loc 指定したロケーションからレール網を再探索(たぶんめっちゃ重い)
+     */
+    fun recognizeFrom(loc: Location, exceptFor: List<Block> = listOf()) {
+        recognizeFrom(loc.block, exceptFor)
+    }
+
+    fun recognizeFrom(block: Block, exceptFor: List<Block> = listOf()) {
+        this.rails.clear()
+        add(block, exceptFor)
+    }
+
 
     override fun add(block: Block): Boolean {
         return add(block, listOf())

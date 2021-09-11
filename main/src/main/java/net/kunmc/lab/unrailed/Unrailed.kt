@@ -4,12 +4,21 @@ import com.github.bun133.flylib2.commands.Commander
 import com.github.bun133.flylib2.commands.CommanderBuilder
 import com.github.bun133.flylib2.commands.TabChain
 import com.github.bun133.flylib2.commands.TabObject
+import net.kunmc.lab.unrailed.game.GameInstance
+import net.kunmc.lab.unrailed.listener.EventAll
 import net.kunmc.lab.unrailed.test.*
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 
 class Unrailed : JavaPlugin() {
+    companion object {
+        /**
+         * The list of games going on
+         */
+        val goingOnGames = mutableListOf<GameInstance>()
+    }
+
     var isGoingOn = false
 
     fun start(loc: Location) {
@@ -18,13 +27,12 @@ class Unrailed : JavaPlugin() {
     fun stop() {
     }
 
-    companion object {
-    }
-
     override fun onEnable() {
         // Plugin startup logic
         saveDefaultConfig()
         command(this).register("ur")
+        EventAll.getInstance(this)
+        EventAll.init(this)
     }
 
     override fun onDisable() {

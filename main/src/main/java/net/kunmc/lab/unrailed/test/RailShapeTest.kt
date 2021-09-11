@@ -8,10 +8,6 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 
 class RailShapeTest(unrailed: Unrailed) : TestCase(unrailed) {
-    init {
-        unrailed.server.pluginManager.registerEvents(this,unrailed)
-    }
-
     companion object{
         private var ins:RailShapeTest? = null
         fun getInstance(unrailed: Unrailed):RailShapeTest{

@@ -17,10 +17,6 @@ class StructureLoadTest(unrailed: Unrailed) : TestCase(unrailed) {
         }
     }
 
-    init {
-        unrailed.registerEvents(this)
-    }
-
     @EventHandler
     fun onRightClick(e: PlayerInteractEvent) {
         if (isGoingOn) {

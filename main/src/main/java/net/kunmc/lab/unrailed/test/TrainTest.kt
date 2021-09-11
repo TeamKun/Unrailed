@@ -23,7 +23,6 @@ class TrainTest(unrailed: Unrailed) : TestCase(unrailed) {
     }
 
     init {
-        unrailed.server.pluginManager.registerEvents(this, unrailed)
         unrailed.server.scheduler.runTaskTimer(unrailed, Runnable { tick() }, 1, 1)
     }
 

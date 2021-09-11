@@ -7,10 +7,6 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 
 class EdgeTest(unrailed: Unrailed) : TestCase(unrailed) {
-    init {
-        unrailed.server.pluginManager.registerEvents(this, unrailed)
-    }
-
     companion object{
         private var ins:EdgeTest? = null
         fun getInstance(unrailed: Unrailed):EdgeTest{
