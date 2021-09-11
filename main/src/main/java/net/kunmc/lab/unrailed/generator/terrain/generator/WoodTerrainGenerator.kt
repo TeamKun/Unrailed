@@ -1,5 +1,6 @@
 package net.kunmc.lab.unrailed.generator.terrain.generator
 
+import net.kunmc.lab.unrailed.generator.GenerateSetting
 import net.kunmc.lab.unrailed.util.Box
 import net.kunmc.lab.unrailed.util.Direction
 import net.kunmc.lab.unrailed.util.copy
@@ -10,10 +11,11 @@ import org.bukkit.util.noise.PerlinNoiseGenerator
 class WoodTerrainGenerator(val wood: Material) : AbstractTerrainGenerator() {
     override fun onGenerate(
         startLocation: Location,
+        setting: GenerateSetting,
+        level: Int,
         width: Int,
         terrainSize: Int,
         direction: Direction,
-        level: Int,
         seed: Long
     ) {
         val noise = PerlinNoiseGenerator(seed)

@@ -38,6 +38,13 @@ class StandardGenerator(val unrailed: Unrailed) : AbstractGenerator() {
         )
     )
 
+    private val startStationTerrain = MultiTerrainGenerator(
+        listOf(
+            stationTerrain,
+            StartWoolTerrainGenerator()
+        )
+    )
+
     /**
      *
      */
@@ -45,7 +52,10 @@ class StandardGenerator(val unrailed: Unrailed) : AbstractGenerator() {
         for (index in 0 until s.terrains) {
             val location = getStartLocation(s, index)
 
-            if (index % (s.betweenStation + 1) == 0) {
+            if (index == 0) {
+                generate(startStationTerrain, s, location)
+                continue
+            } else if (index % (s.betweenStation + 1) == 0) {
                 // 駅の生成
                 generate(stationTerrain, s, location)
                 continue
@@ -96,12 +106,9 @@ class StandardGenerator(val unrailed: Unrailed) : AbstractGenerator() {
         startLocation: Location
     ) {
         generator.onGenerate(
-            startLocation,
-            s.width,
-            s.terrainSize,
-            s.direction,
-            1,
-            s.seed
+            setting = s,
+            startLocation = startLocation,
+            level = 1
         )
     }
 }

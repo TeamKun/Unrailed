@@ -1,5 +1,6 @@
 package net.kunmc.lab.unrailed.generator.terrain.generator
 
+import net.kunmc.lab.unrailed.generator.GenerateSetting
 import net.kunmc.lab.unrailed.structure.BlockSet
 import net.kunmc.lab.unrailed.util.Box
 import net.kunmc.lab.unrailed.util.Direction
@@ -11,10 +12,11 @@ import org.bukkit.Material
 class StationTerrainGenerator(private val stationStructure: BlockSet) : AbstractTerrainGenerator() {
     override fun onGenerate(
         startLocation: Location,
+        setting: GenerateSetting,
+        level: Int,
         width: Int,
         terrainSize: Int,
         direction: Direction,
-        level: Int,
         seed: Long
     ) {
         // TODO 駅の生成どうしようかな

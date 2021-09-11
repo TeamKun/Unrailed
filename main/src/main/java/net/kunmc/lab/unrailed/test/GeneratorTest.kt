@@ -5,6 +5,8 @@ import net.kunmc.lab.unrailed.generator.GenerateSetting
 import net.kunmc.lab.unrailed.generator.StandardGenerator
 import net.kunmc.lab.unrailed.generator.terrain.generator.BaseTerrainGenerator
 import net.kunmc.lab.unrailed.util.Direction
+import net.kunmc.lab.unrailed.util.WoolColor
+import net.kunmc.lab.unrailed.util.random
 import net.kunmc.lab.unrailed.util.registerEvents
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
@@ -37,7 +39,8 @@ class GeneratorTest(unrailed: Unrailed) : TestCase(unrailed) {
                         9,
                         Random.nextLong(Long.MIN_VALUE, Long.MAX_VALUE),
                         10,
-                        3
+                        3,
+                        WoolColor.BLACK.random(Unrailed.goingOnGames.map { it.lanes.map { it.generateSetting.teamColor } }.flatten())!!
                     )
                 ) {}
             }

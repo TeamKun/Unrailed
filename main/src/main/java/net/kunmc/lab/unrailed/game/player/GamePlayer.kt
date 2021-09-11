@@ -2,6 +2,7 @@ package net.kunmc.lab.unrailed.game.player
 
 import net.kunmc.lab.unrailed.game.GameInstance
 import net.kunmc.lab.unrailed.game.player.perk.Perk
+import net.kunmc.lab.unrailed.listener.ListenerBase
 import net.kunmc.lab.unrailed.util.registerEvents
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
@@ -9,11 +10,7 @@ import org.bukkit.event.Listener
 /**
  * @see net.kunmc.lab.unrailed.game.GameInstance ごとに毎回生成されるゲームインスタンス用プレイヤー
  */
-class GamePlayer(val p: Player, val game: GameInstance) : Listener {
-    init {
-        game.unrailed.registerEvents(this)
-    }
-
+class GamePlayer(val p: Player, val game: GameInstance) : ListenerBase(game.unrailed) {
     val perks = mutableListOf<Perk>()
 
     /**

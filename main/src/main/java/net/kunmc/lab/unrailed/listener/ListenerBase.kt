@@ -9,9 +9,7 @@ import org.bukkit.event.Listener
  * @note no need to register implemented class
  */
 open class ListenerBase(val unrailed: Unrailed) : Listener {
-
     init {
-        println("ListenerBase INIT")
         EventAll.getInstance(unrailed).register(this)
     }
 }

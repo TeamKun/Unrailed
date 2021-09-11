@@ -16,7 +16,7 @@ class EventAll(val unrailed: Unrailed) {
         }
 
         fun init(unrailed: Unrailed) {
-            JumpEvent(unrailed)
+            GamePlayerListener(unrailed)
         }
     }
 

@@ -1,5 +1,6 @@
 package net.kunmc.lab.unrailed.util
 
+import net.kunmc.lab.unrailed.Unrailed
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -8,6 +9,7 @@ import org.bukkit.block.data.Rail
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Minecart
+import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.Vector
@@ -377,5 +379,31 @@ fun Rail.Shape.rotateRightOnce(): Rail.Shape {
         Rail.Shape.SOUTH_WEST -> Rail.Shape.NORTH_WEST
         Rail.Shape.NORTH_WEST -> Rail.Shape.NORTH_EAST
         Rail.Shape.NORTH_EAST -> Rail.Shape.SOUTH_EAST
+    }
+}
+
+/**
+ * 指定したプレイヤーが現在進行中のゲームに参加しているかどうか
+ */
+fun Player.isGoingOn(): Boolean {
+    return Unrailed.goingOnGames.any { game ->
+        game.lanes.any { l ->
+            l.teamMember.map { it.p }.contains(this)
+        }
+    }
+}
+
+inline fun <reified T : Enum<T>> T.random(): T {
+    return enumValues<T>().random()
+}
+
+/**
+ * @return null when filtered EnumValues are empty
+ */
+inline fun <reified T : Enum<T>> T.random(exceptFor: List<T>): T? {
+    return try {
+        enumValues<T>().filter { !exceptFor.contains(it) }.random()
+    } catch (e: NoSuchElementException) {
+        null
     }
 }

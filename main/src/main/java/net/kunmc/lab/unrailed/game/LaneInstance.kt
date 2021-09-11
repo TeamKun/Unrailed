@@ -5,6 +5,8 @@ import net.kunmc.lab.unrailed.generator.AbstractGenerator
 import net.kunmc.lab.unrailed.generator.GenerateSetting
 import net.kunmc.lab.unrailed.train.Train
 import net.kunmc.lab.unrailed.train.TrainBuilder
+import net.kunmc.lab.unrailed.util.WoolColor
+import org.bukkit.Color
 import org.bukkit.scheduler.BukkitTask
 
 
@@ -16,11 +18,8 @@ class LaneInstance(
     val game: GameInstance,
     val trainBuilder: TrainBuilder,
     var generateSetting: GenerateSetting,
-    val generator: AbstractGenerator
+    val generator: AbstractGenerator,
 ) {
-    init {
-    }
-
     val teamMember = mutableListOf<GamePlayer>()
     var train: Train? = null
     var tickTask: BukkitTask? = null
@@ -30,7 +29,7 @@ class LaneInstance(
      * @param logCallBack Double:進行度
      */
     fun generateAll(logCallBack: (Double) -> Unit = {}) {
-        generator.onGenerate(generateSetting,logCallBack)
+        generator.onGenerate(generateSetting, logCallBack)
     }
 
     /**

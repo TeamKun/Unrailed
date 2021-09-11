@@ -9,10 +9,6 @@ import org.bukkit.Location
  * これを連続的に交換しつつ生成する
  */
 abstract class AbstractTerrainGenerator {
-    fun onGenerate(setting: GenerateSetting, startLocation: Location, level: Int) {
-        return onGenerate(startLocation, setting.width, setting.terrainSize, setting.direction, level, setting.seed)
-    }
-
     /**
      * @param startLocation 地形生成開始地点
      * @param width 生成幅(startLocationが中心に左右それぞれ何マスか)
@@ -24,10 +20,11 @@ abstract class AbstractTerrainGenerator {
      */
     abstract fun onGenerate(
         startLocation: Location,
-        width: Int,
-        terrainSize: Int,
-        direction: Direction,
+        setting: GenerateSetting,
         level: Int,
-        seed: Long
+        width: Int = setting.width,
+        terrainSize: Int = setting.terrainSize,
+        direction: Direction = setting.direction,
+        seed: Long = setting.seed
     )
 }

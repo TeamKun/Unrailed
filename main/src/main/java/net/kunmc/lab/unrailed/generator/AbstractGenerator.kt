@@ -2,6 +2,7 @@ package net.kunmc.lab.unrailed.generator
 
 import net.kunmc.lab.unrailed.generator.terrain.generator.AbstractTerrainGenerator
 import net.kunmc.lab.unrailed.util.Direction
+import net.kunmc.lab.unrailed.util.WoolColor
 import org.bukkit.Location
 import org.bukkit.Material
 
@@ -34,7 +35,8 @@ data class GenerateSetting(
     val terrainSize: Int,
     val seed: Long,
     val betweenStation: Int,
-    val stations: Int
+    val stations: Int,
+    val teamColor: WoolColor
 ) {
     val terrains = (betweenStation + 1) * (stations - 1) + 1
 }

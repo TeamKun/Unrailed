@@ -1,5 +1,6 @@
 package net.kunmc.lab.unrailed.generator.terrain.generator
 
+import net.kunmc.lab.unrailed.generator.GenerateSetting
 import net.kunmc.lab.unrailed.util.Direction
 import org.bukkit.Location
 
@@ -9,14 +10,15 @@ import org.bukkit.Location
 class MultiTerrainGenerator(val generators: List<AbstractTerrainGenerator>) : AbstractTerrainGenerator() {
     override fun onGenerate(
         startLocation: Location,
+        setting: GenerateSetting,
+        level: Int,
         width: Int,
         terrainSize: Int,
         direction: Direction,
-        level: Int,
         seed: Long
     ) {
         generators.forEach {
-            it.onGenerate(startLocation, width, terrainSize, direction, level, seed)
+            it.onGenerate(startLocation = startLocation, setting = setting, level = level)
         }
     }
 }
