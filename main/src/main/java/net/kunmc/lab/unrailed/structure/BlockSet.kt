@@ -5,6 +5,7 @@ import org.bukkit.Location
 import org.bukkit.Server
 import org.bukkit.World
 import org.bukkit.block.data.Directional
+import org.bukkit.block.data.Rail
 import org.bukkit.configuration.ConfigurationSection
 
 class BlockSet(private var blocks: List<BlockData>, val direction: Direction? = null) {
@@ -82,22 +83,20 @@ class BlockSet(private var blocks: List<BlockData>, val direction: Direction? = 
         // 何回転するか
         val times = (angle / Math.toRadians(90.0)).toInt()
         this.blocks.forEach {
-            val block = it.pos.toLocation(world).block
-            if (block.blockData is Directional) {
-                val data = block.blockData as Directional
-                println("isDirectional")
-                // TODO HERE
+            if (it.data is Directional) {
+                val data = it.data
                 val exceptTo = data.facing.rotateAroundY(times)!!
                 if (data.faces.contains(exceptTo)) {
                     // その方向に回転可能
-                    println("Block Facing:${data.facing} Rotated into $exceptTo in Rotating $times times")
                     data.facing = exceptTo
                 }
-
-                block.blockData = data
+//                block.blockData = data // 必要ない?
+            } else if (it.data.material.isRail()) {
+                // レールの回転
+                val rail = (it.data as Rail)
+                rail.shape = rail.shape.rotateRight(times)
             }
         }
-
         return this
     }
 

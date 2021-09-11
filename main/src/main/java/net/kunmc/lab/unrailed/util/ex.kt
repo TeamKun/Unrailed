@@ -46,6 +46,10 @@ fun Block.isRail(): Boolean {
     return Rails.contains(this.type)
 }
 
+fun Material.isRail(): Boolean {
+    return Rails.contains(this)
+}
+
 fun Block.getAllRelative(): List<Block> {
     return BlockFace.values().map {
         getRelative(it)
@@ -340,5 +344,32 @@ fun BlockFace.rotateAroundY(times: Int): BlockFace? {
             direction.rotateLeft(times).toBlockFace()
         }
         else -> null
+    }
+}
+
+fun Rail.Shape.rotateRight(times: Int): Rail.Shape {
+    val t = times % 4
+    var shape = this
+
+    for (i in 0 until t) {
+        // Rotate
+        shape = shape.rotateRightOnce()
+    }
+
+    return shape
+}
+
+fun Rail.Shape.rotateRightOnce(): Rail.Shape {
+    return when (this) {
+        Rail.Shape.NORTH_SOUTH -> Rail.Shape.EAST_WEST
+        Rail.Shape.EAST_WEST -> Rail.Shape.NORTH_SOUTH
+        Rail.Shape.ASCENDING_EAST -> Rail.Shape.ASCENDING_SOUTH
+        Rail.Shape.ASCENDING_WEST -> Rail.Shape.ASCENDING_NORTH
+        Rail.Shape.ASCENDING_NORTH -> Rail.Shape.ASCENDING_EAST
+        Rail.Shape.ASCENDING_SOUTH -> Rail.Shape.ASCENDING_WEST
+        Rail.Shape.SOUTH_EAST -> Rail.Shape.SOUTH_WEST
+        Rail.Shape.SOUTH_WEST -> Rail.Shape.NORTH_WEST
+        Rail.Shape.NORTH_WEST -> Rail.Shape.NORTH_EAST
+        Rail.Shape.NORTH_EAST -> Rail.Shape.SOUTH_EAST
     }
 }
