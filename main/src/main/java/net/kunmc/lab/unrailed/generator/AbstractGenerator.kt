@@ -3,8 +3,12 @@ package net.kunmc.lab.unrailed.generator
 import net.kunmc.lab.unrailed.generator.terrain.generator.AbstractTerrainGenerator
 import net.kunmc.lab.unrailed.util.Direction
 import net.kunmc.lab.unrailed.util.WoolColor
+import net.kunmc.lab.unrailed.util.copy
+import net.kunmc.lab.unrailed.util.getCenter
 import org.bukkit.Location
 import org.bukkit.Material
+import org.jetbrains.annotations.NotNull
+import kotlin.math.min
 
 /**
  * ステージ生成クラス
@@ -39,4 +43,15 @@ data class GenerateSetting(
     val teamColor: WoolColor
 ) {
     val terrains = (betweenStation + 1) * (stations - 1) + 1
+
+    fun getStartWoolLocation(): Location {
+        val terrainCenter =
+            startLocation.copy()
+                .add(direction.toVector(terrainSize.getCenter().toDouble()))
+                .toBlockLocation()
+
+        val moveSize = min(width, 3)
+
+        return terrainCenter.add(direction.rotateLeft(1).toVector(moveSize.toDouble())).toBlockLocation()
+    }
 }

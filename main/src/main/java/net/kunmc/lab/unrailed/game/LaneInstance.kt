@@ -6,9 +6,12 @@ import net.kunmc.lab.unrailed.generator.GenerateSetting
 import net.kunmc.lab.unrailed.train.Train
 import net.kunmc.lab.unrailed.train.TrainBuilder
 import net.kunmc.lab.unrailed.util.WoolColor
+import net.kunmc.lab.unrailed.util.getOrRegisterTeam
+import net.kunmc.lab.unrailed.util.setColor
 import org.bukkit.Color
+import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
-
+import org.bukkit.scoreboard.Team
 
 /**
  * @see GameInstance 内における、一つのレーン(チーム)
@@ -20,9 +23,37 @@ class LaneInstance(
     var generateSetting: GenerateSetting,
     val generator: AbstractGenerator,
 ) {
-    val teamMember = mutableListOf<GamePlayer>()
+    private val teamMember = mutableListOf<GamePlayer>()
+    val team: Team =
+        game.unrailed.server.scoreboardManager.mainScoreboard.getOrRegisterTeam("Unrailed-${generateSetting.teamColor}")
+            .setColor(generateSetting.teamColor)
     var train: Train? = null
     var tickTask: BukkitTask? = null
+
+    fun addTeamMember(g: GamePlayer) {
+        teamMember.add(g)
+        team.addEntry(g.p.name)
+    }
+
+    fun addTeamMember(vararg g: GamePlayer) {
+        g.forEach { addTeamMember(it) }
+    }
+
+    fun removeTeamMember(g: GamePlayer): Boolean {
+        if (teamMember.contains(g)) {
+            teamMember.remove(g)
+            team.removeEntry(g.p.name)
+            return true
+        } else return false
+    }
+
+    fun removeTeamMember(p: Player): Boolean {
+        val g = getAllTeamMember().filter { it.p == p }.getOrNull(0)
+        if (g == null) return false
+        else return removeTeamMember(g)
+    }
+
+    fun getAllTeamMember() = teamMember.toMutableList()
 
     /**
      * @memo 絶対重い
@@ -55,6 +86,7 @@ class LaneInstance(
     fun startMoving() {
         train!!.isMoving = true
         // TODO 最初にちょこっと押してあげないとだめ
+        train!!.applyVectors(generateSetting.direction.toVector(0.2))
     }
 
     /**
@@ -76,3 +108,5 @@ class LaneInstance(
         // TODO State Update
     }
 }
+
+

@@ -14,9 +14,9 @@ import org.bukkit.plugin.java.JavaPlugin
 class Unrailed : JavaPlugin() {
     companion object {
         /**
-         * The list of games going on
+         * The game going on
          */
-        val goingOnGames = mutableListOf<GameInstance>()
+        var goingOnGame: GameInstance? = null
     }
 
     var isGoingOn = false

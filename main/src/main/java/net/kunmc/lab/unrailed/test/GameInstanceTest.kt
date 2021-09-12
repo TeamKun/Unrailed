@@ -6,14 +6,12 @@ import net.kunmc.lab.unrailed.game.LaneInstance
 import net.kunmc.lab.unrailed.game.player.GamePlayer
 import net.kunmc.lab.unrailed.generator.GenerateSetting
 import net.kunmc.lab.unrailed.generator.StandardGenerator
-import net.kunmc.lab.unrailed.util.Direction
-import net.kunmc.lab.unrailed.util.WoolColor
-import net.kunmc.lab.unrailed.util.random
-import net.kunmc.lab.unrailed.util.registerEvents
+import net.kunmc.lab.unrailed.util.*
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
+import kotlin.error
 import kotlin.random.Random
 
 class GameInstanceTest(unrailed: Unrailed) : TestCase(unrailed) {
@@ -41,12 +39,21 @@ class GameInstanceTest(unrailed: Unrailed) : TestCase(unrailed) {
                     Random.nextLong(Long.MIN_VALUE, Long.MAX_VALUE),
                     10,
                     3,
-                    WoolColor.BLACK.random(Unrailed.goingOnGames.map { it.lanes.map { it.generateSetting.teamColor } }.flatten())!!
+                    WoolColor.BLACK.random(
+                        Unrailed.goingOnGame?.lanes?.map { it.generateSetting.teamColor }
+                            .nullMap { listOf() })!!
                 )
 
-                val gameInstance = GameInstance(unrailed)
-                val laneInstance =
-                    gameInstance.addLane(generateSetting, listOf(e.player).map { GamePlayer(it, gameInstance) })
+                val gameInstance = if (Unrailed.goingOnGame != null) {
+                    Unrailed.goingOnGame!!
+                } else {
+                    GameInstance(unrailed)
+                }
+
+
+                val laneInstance = gameInstance.addLane(generateSetting, listOf(e.player))
+
+
                 if (laneInstance == null) {
                     error("Fail to Generate LaneInstance")
                 } else {

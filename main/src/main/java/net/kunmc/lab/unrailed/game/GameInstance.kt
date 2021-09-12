@@ -15,6 +15,7 @@ import net.kunmc.lab.unrailed.train.TrainBuilder
 import net.kunmc.lab.unrailed.util.*
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.entity.Player
 
 /**
  * 1つのゲームを表すクラス
@@ -27,11 +28,21 @@ class GameInstance(val unrailed: Unrailed) {
         const val MovingTime = 15 * 20L
     }
 
+    init {
+        if (Unrailed.goingOnGame == null) {
+            Unrailed.goingOnGame = this
+        } else {
+            println("GameInstance Already Generated!")
+            Unrailed.goingOnGame!!.onAllDone()
+            Unrailed.goingOnGame = this
+        }
+    }
+
     val lanes = mutableListOf<LaneInstance>()
 
     fun addLane(
         g: GenerateSetting,
-        members: List<GamePlayer> = listOf(),
+        members: List<Player> = listOf(),
         generator: AbstractGenerator = StandardGenerator(unrailed),
         trainBuilder: TrainBuilder? = null
     ): LaneInstance? {
@@ -46,7 +57,7 @@ class GameInstance(val unrailed: Unrailed) {
                 generator
             )
 
-            lane.teamMember.addAll(members)
+            lane.addTeamMember(*(members.map { GamePlayer.getOrRegister(it,this) }.toTypedArray()))
             lanes.add(lane)
 
             return lane
@@ -58,6 +69,19 @@ class GameInstance(val unrailed: Unrailed) {
             return null
         }
     }
+
+    fun getLane(color: WoolColor): LaneInstance? {
+        return this.lanes.filter { it.generateSetting.teamColor == color }.getOrNull(0)
+    }
+
+    fun getLane(p: Player): LaneInstance? {
+        return this.lanes.filter { it.getAllTeamMember().map { g -> g.p }.contains(p) }.getOrNull(0)
+    }
+
+    /**
+     * @see GamePlayer.getFromPlayer
+     */
+    val players = mutableListOf<GamePlayer>()
 
     /**
      * このゲームの開始処理
@@ -95,5 +119,12 @@ class GameInstance(val unrailed: Unrailed) {
      */
     fun onFail(lane: LaneInstance) {
 
+    }
+
+    /**
+     * すべてのレーンが終了した時の処理
+     */
+    fun onAllDone() {
+        // TODO Clean Up all Lane's team
     }
 }

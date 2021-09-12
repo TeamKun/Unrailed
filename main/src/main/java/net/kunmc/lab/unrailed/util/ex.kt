@@ -12,7 +12,11 @@ import org.bukkit.entity.Minecart
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scoreboard.Scoreboard
+import org.bukkit.scoreboard.ScoreboardManager
+import org.bukkit.scoreboard.Team
 import org.bukkit.util.Vector
+import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
 import kotlin.random.Random
 
@@ -386,11 +390,9 @@ fun Rail.Shape.rotateRightOnce(): Rail.Shape {
  * 指定したプレイヤーが現在進行中のゲームに参加しているかどうか
  */
 fun Player.isGoingOn(): Boolean {
-    return Unrailed.goingOnGames.any { game ->
-        game.lanes.any { l ->
-            l.teamMember.map { it.p }.contains(this)
-        }
-    }
+    return Unrailed.goingOnGame?.lanes?.any { l ->
+        l.getAllTeamMember().map { it.p }.contains(this)
+    }.nullMap { false }
 }
 
 inline fun <reified T : Enum<T>> T.random(): T {
@@ -406,4 +408,26 @@ inline fun <reified T : Enum<T>> T.random(exceptFor: List<T>): T? {
     } catch (e: NoSuchElementException) {
         null
     }
+}
+
+fun Scoreboard.getOrRegisterTeam(name: String): Team {
+    val team = getTeam(name)
+    if (team != null) {
+        return team
+    } else {
+        return registerNewTeam(name)
+    }
+}
+
+fun Team.setColor(color: WoolColor): Team {
+    this.color(color.toNamedTextColor())
+    return this
+}
+
+fun Block.isWool(): Boolean {
+    return type.isWool()
+}
+
+fun Material.isWool(): Boolean {
+    return WoolColor.values().map { it.woolMaterial }.contains(this)
 }
