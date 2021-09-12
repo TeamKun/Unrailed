@@ -420,7 +420,15 @@ fun Scoreboard.getOrRegisterTeam(name: String): Team {
 }
 
 fun Team.setColor(color: WoolColor): Team {
-    this.color(color.toNamedTextColor())
+    val textColor = color.namedTextColor
+    if (textColor != null) {
+        this.color(textColor)
+    }
+    return this
+}
+
+fun Team.setColorForce(color: WoolColor): Team {
+    this.color(color.toNamedTextColorForce())
     return this
 }
 

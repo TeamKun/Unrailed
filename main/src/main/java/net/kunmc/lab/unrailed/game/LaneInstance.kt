@@ -8,6 +8,8 @@ import net.kunmc.lab.unrailed.train.TrainBuilder
 import net.kunmc.lab.unrailed.util.WoolColor
 import net.kunmc.lab.unrailed.util.getOrRegisterTeam
 import net.kunmc.lab.unrailed.util.setColor
+import net.kyori.adventure.text.format.TextColor
+import org.bukkit.ChatColor
 import org.bukkit.Color
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
@@ -33,6 +35,7 @@ class LaneInstance(
     fun addTeamMember(g: GamePlayer) {
         teamMember.add(g)
         team.addEntry(g.p.name)
+        g.p.sendMessage("" + ChatColor.GREEN + "${generateSetting.teamColor.displayName}色チームに参加しました!")
     }
 
     fun addTeamMember(vararg g: GamePlayer) {

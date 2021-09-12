@@ -15,7 +15,7 @@ import org.bukkit.util.Vector
 class WoolListener(unrailed: Unrailed) : ListenerBase(unrailed) {
     @EventHandler
     fun onMove(e: PlayerMoveEvent) {
-        if (e.player.isGoingOn()) {
+        if (unrailed.isGoingOn) {
             // TODO ゲーム開始以降は必要ないのでは
             val block = e.player.location.toBlockLocation().add(Vector(.0, -1.0, .0)).block
             if (block.isWool()) {
@@ -29,12 +29,11 @@ class WoolListener(unrailed: Unrailed) : ListenerBase(unrailed) {
                         AfterLane.addTeamMember(GamePlayer(e.player, AfterLane.game))
                     }
                 } else {
-                    if (BeforeLane != null) {
-                        BeforeLane.removeTeamMember(gamePlayer)
-                    }
-
-                    if (AfterLane != null) {
-                        AfterLane.addTeamMember(gamePlayer)
+                    if (BeforeLane != null && AfterLane != null) {
+                        if (AfterLane != BeforeLane) {
+                            BeforeLane.removeTeamMember(gamePlayer)
+                            AfterLane.addTeamMember(gamePlayer)
+                        }
                     }
                 }
             }

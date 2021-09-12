@@ -29,6 +29,13 @@ class GameInstanceTest(unrailed: Unrailed) : TestCase(unrailed) {
         if (isGoingOn) {
             if (e.action == Action.RIGHT_CLICK_BLOCK) {
                 val clickedBlock = e.clickedBlock!!
+
+                val gameInstance = if (Unrailed.goingOnGame != null) {
+                    Unrailed.goingOnGame!!
+                } else {
+                    GameInstance(unrailed)
+                }
+
                 val generateSetting = GenerateSetting(
                     clickedBlock.location,
                     Direction.fromBlockFace(e.player.facing)!!,
@@ -39,21 +46,12 @@ class GameInstanceTest(unrailed: Unrailed) : TestCase(unrailed) {
                     Random.nextLong(Long.MIN_VALUE, Long.MAX_VALUE),
                     10,
                     3,
-                    WoolColor.BLACK.random(
-                        Unrailed.goingOnGame?.lanes?.map { it.generateSetting.teamColor }
-                            .nullMap { listOf() })!!
+                    WoolColor.namedTextColor().random()
                 )
-
-                val gameInstance = if (Unrailed.goingOnGame != null) {
-                    Unrailed.goingOnGame!!
-                } else {
-                    GameInstance(unrailed)
-                }
-
 
                 val laneInstance = gameInstance.addLane(generateSetting, listOf(e.player))
 
-
+                unrailed.isGoingOn = true
                 if (laneInstance == null) {
                     error("Fail to Generate LaneInstance")
                 } else {

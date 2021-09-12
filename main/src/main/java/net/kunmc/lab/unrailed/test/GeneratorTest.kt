@@ -1,6 +1,7 @@
 package net.kunmc.lab.unrailed.test
 
 import net.kunmc.lab.unrailed.Unrailed
+import net.kunmc.lab.unrailed.game.GameInstance
 import net.kunmc.lab.unrailed.generator.GenerateSetting
 import net.kunmc.lab.unrailed.generator.StandardGenerator
 import net.kunmc.lab.unrailed.generator.terrain.generator.BaseTerrainGenerator
@@ -26,6 +27,12 @@ class GeneratorTest(unrailed: Unrailed) : TestCase(unrailed) {
             if (e.action == Action.RIGHT_CLICK_BLOCK) {
                 val clickedBlock = e.clickedBlock!!
                 val generator = StandardGenerator(unrailed)
+                val gameInstance = if (Unrailed.goingOnGame != null) {
+                    Unrailed.goingOnGame!!
+                } else {
+                    GameInstance(unrailed)
+                }
+
                 generator.onGenerate(
                     GenerateSetting(
                         clickedBlock.location,
@@ -37,8 +44,7 @@ class GeneratorTest(unrailed: Unrailed) : TestCase(unrailed) {
                         Random.nextLong(Long.MIN_VALUE, Long.MAX_VALUE),
                         10,
                         3,
-                        WoolColor.BLACK.random(Unrailed.goingOnGame?.lanes?.map { it.generateSetting.teamColor }
-                            .nullMap { listOf() })!!
+                        WoolColor.namedTextColor().random()
                     )
                 ) {}
             }
