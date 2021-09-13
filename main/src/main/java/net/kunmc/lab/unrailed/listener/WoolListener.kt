@@ -3,7 +3,6 @@ package net.kunmc.lab.unrailed.listener
 import net.kunmc.lab.unrailed.Unrailed
 import net.kunmc.lab.unrailed.game.player.GamePlayer
 import net.kunmc.lab.unrailed.util.WoolColor
-import net.kunmc.lab.unrailed.util.isGoingOn
 import net.kunmc.lab.unrailed.util.isWool
 import org.bukkit.event.EventHandler
 import org.bukkit.event.player.PlayerMoveEvent

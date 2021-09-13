@@ -24,10 +24,12 @@ class GameInstanceTest(unrailed: Unrailed) : TestCase(unrailed) {
         }
     }
 
+    var timer = Timer(unrailed)
+
     @EventHandler
     fun onRightClick(e: PlayerInteractEvent) {
         if (isGoingOn) {
-            if (e.action == Action.RIGHT_CLICK_BLOCK) {
+            if (e.action == Action.RIGHT_CLICK_BLOCK && timer.isUp()) {
                 val clickedBlock = e.clickedBlock!!
 
                 val gameInstance = if (Unrailed.goingOnGame != null) {
@@ -57,6 +59,8 @@ class GameInstanceTest(unrailed: Unrailed) : TestCase(unrailed) {
                 } else {
                     gameInstance.start()
                 }
+
+                timer.time = 20
             }
         }
     }

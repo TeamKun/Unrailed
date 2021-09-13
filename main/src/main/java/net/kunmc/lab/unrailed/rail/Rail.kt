@@ -84,6 +84,15 @@ class Rail(first: Block) : AbstractRail() {
         }
     }
 
+    fun remove(block: Block): Boolean {
+        if (contain(block)) {
+            rails.remove(block)
+            return true
+        } else {
+            return false
+        }
+    }
+
     fun getEdge(): Pair<Block, Block>? {
         val indexed = getEdgeIndexed() ?: return null
         return Pair(indexed.first.first, indexed.second.first)

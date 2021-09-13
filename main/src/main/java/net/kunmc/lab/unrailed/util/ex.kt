@@ -1,23 +1,23 @@
 package net.kunmc.lab.unrailed.util
 
 import net.kunmc.lab.unrailed.Unrailed
+import net.kunmc.lab.unrailed.game.phase.GamePhase
+import net.kunmc.lab.unrailed.game.phase.Phase
+import net.kunmc.lab.unrailed.game.player.GamePlayer
+import net.kunmc.lab.unrailed.train.Train
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Rail
 import org.bukkit.configuration.ConfigurationSection
-import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Minecart
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scoreboard.Scoreboard
-import org.bukkit.scoreboard.ScoreboardManager
 import org.bukkit.scoreboard.Team
 import org.bukkit.util.Vector
-import org.jetbrains.annotations.NotNull
-import org.jetbrains.annotations.Nullable
 import kotlin.random.Random
 
 val Rails = listOf(Material.RAIL, Material.ACTIVATOR_RAIL, Material.POWERED_RAIL, Material.DETECTOR_RAIL)
@@ -389,10 +389,22 @@ fun Rail.Shape.rotateRightOnce(): Rail.Shape {
 /**
  * 指定したプレイヤーが現在進行中のゲームに参加しているかどうか
  */
+@Deprecated(message = "Use Player#.isPhase(Phase)")
 fun Player.isGoingOn(): Boolean {
-    return Unrailed.goingOnGame?.lanes?.any { l ->
-        l.getAllTeamMember().map { it.p }.contains(this)
-    }.nullMap { false }
+    val phase = getPhase() ?: return false
+    return phase is GamePhase
+}
+
+/**
+ * 指定したプレイヤーが指定したPhaseかどうか
+ */
+inline fun <reified T : Phase> Player.isPhase(t: T): Boolean {
+    val phase = getPhase() ?: return false
+    return phase is T
+}
+
+fun Player.getPhase(): Phase? {
+    return Unrailed.goingOnGame?.getLane(this)?.game?.nowPhase
 }
 
 inline fun <reified T : Enum<T>> T.random(): T {
@@ -438,4 +450,8 @@ fun Block.isWool(): Boolean {
 
 fun Material.isWool(): Boolean {
     return WoolColor.values().map { it.woolMaterial }.contains(this)
+}
+
+fun Player.isJoinedGame(): Boolean {
+    return Unrailed.goingOnGame?.players?.map { it.p }?.contains(this).nullMap { false }
 }

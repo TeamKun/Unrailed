@@ -29,6 +29,8 @@ class LaneInstance(
     val team: Team =
         game.unrailed.server.scoreboardManager.mainScoreboard.getOrRegisterTeam("Unrailed-${generateSetting.teamColor}")
             .setColor(generateSetting.teamColor)
+
+
     var train: Train? = null
     var tickTask: BukkitTask? = null
 

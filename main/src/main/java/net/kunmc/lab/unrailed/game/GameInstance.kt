@@ -2,6 +2,10 @@ package net.kunmc.lab.unrailed.game
 
 import net.kunmc.lab.unrailed.Unrailed
 import net.kunmc.lab.unrailed.car.EngineCar
+import net.kunmc.lab.unrailed.game.phase.EndPhase
+import net.kunmc.lab.unrailed.game.phase.GamePhase
+import net.kunmc.lab.unrailed.game.phase.Phase
+import net.kunmc.lab.unrailed.game.phase.PreparePhase
 import net.kunmc.lab.unrailed.game.player.GamePlayer
 import net.kunmc.lab.unrailed.generator.AbstractGenerator
 import net.kunmc.lab.unrailed.generator.GenerateSetting
@@ -57,7 +61,7 @@ class GameInstance(val unrailed: Unrailed) {
                 generator
             )
 
-            lane.addTeamMember(*(members.map { GamePlayer.getOrRegister(it,this) }.toTypedArray()))
+            lane.addTeamMember(*(members.map { GamePlayer.getOrRegister(it, this) }.toTypedArray()))
             lanes.add(lane)
 
             return lane
@@ -83,6 +87,9 @@ class GameInstance(val unrailed: Unrailed) {
      */
     val players = mutableListOf<GamePlayer>()
 
+    var nowPhase: Phase = PreparePhase()
+
+
     /**
      * このゲームの開始処理
      */
@@ -101,6 +108,7 @@ class GameInstance(val unrailed: Unrailed) {
      * このゲームのすべての列車を動かし始める処理
      */
     fun startMoving() {
+        nowPhase = GamePhase()
         broadCast("開始!")
         lanes.forEach {
             it.startMoving()
@@ -126,5 +134,6 @@ class GameInstance(val unrailed: Unrailed) {
      */
     fun onAllDone() {
         // TODO Clean Up all Lane's team
+        nowPhase = EndPhase()
     }
 }
