@@ -3,6 +3,7 @@ package net.kunmc.lab.unrailed.game
 import net.kunmc.lab.unrailed.game.player.GamePlayer
 import net.kunmc.lab.unrailed.generator.AbstractGenerator
 import net.kunmc.lab.unrailed.generator.GenerateSetting
+import net.kunmc.lab.unrailed.station.Station
 import net.kunmc.lab.unrailed.train.Train
 import net.kunmc.lab.unrailed.train.TrainBuilder
 import net.kunmc.lab.unrailed.util.WoolColor
@@ -11,6 +12,7 @@ import net.kunmc.lab.unrailed.util.setColor
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.ChatColor
 import org.bukkit.Color
+import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.scoreboard.Team
@@ -25,14 +27,15 @@ class LaneInstance(
     var generateSetting: GenerateSetting,
     val generator: AbstractGenerator,
 ) {
+    /////////// Lane Data ////////////
     private val teamMember = mutableListOf<GamePlayer>()
     val team: Team =
         game.unrailed.server.scoreboardManager.mainScoreboard.getOrRegisterTeam("Unrailed-${generateSetting.teamColor}")
             .setColor(generateSetting.teamColor)
-
-
     var train: Train? = null
     var tickTask: BukkitTask? = null
+    var stations:MutableList<Station>? = null
+    /////////// Lane Data ////////////
 
     fun addTeamMember(g: GamePlayer) {
         teamMember.add(g)
@@ -66,6 +69,7 @@ class LaneInstance(
      */
     fun generateAll(logCallBack: (Double) -> Unit = {}) {
         generator.onGenerate(generateSetting, logCallBack)
+        //TODO Collect Stations to stations(mutable list)
     }
 
     /**
@@ -104,12 +108,13 @@ class LaneInstance(
     /**
      * このレーンが脱落したときの処理
      */
-    fun onFail() {
-        game.onFail(this)
+    fun onFail(failLocation: Location) {
+        game.onFail(this,failLocation)
     }
 
     fun tick() {
         // TODO State Update
+        // TODO 駅への接続確認
     }
 }
 

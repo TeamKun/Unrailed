@@ -52,9 +52,8 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
                 // 地面に落ちているワゴンを削除
                 // TODO 演出
                 println("地面に落ちているワゴンを削除")
+                getLane()?.onFail(minecart.location)
                 minecart.remove()
-
-                getLane()?.onFail()
             }
             return@removeAll !minecart.isOnRail()
         }
@@ -93,6 +92,7 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
                     println("次のレールブロックが近くにない")
                     state().toDrop = true
                     // 速度維持
+                    // TODO レールの先にブロックがあったら?
                     return@applyVectors vector.scale(speed)
                 } else {
                     state().isDropped = false

@@ -186,6 +186,14 @@ class Rail(first: Block) : AbstractRail() {
         return contain(loc.block)
     }
 
+    fun containAll(rail: Rail): Boolean {
+        return rail.rails.all { contain(it) }
+    }
+
+    fun containAny(rail: Rail): Boolean {
+        return rail.rails.any { contain(it) }
+    }
+
     init {
         add(first)
     }

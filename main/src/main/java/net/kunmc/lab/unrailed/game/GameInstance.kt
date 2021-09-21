@@ -18,6 +18,7 @@ import net.kunmc.lab.unrailed.train.Train
 import net.kunmc.lab.unrailed.train.TrainBuilder
 import net.kunmc.lab.unrailed.util.*
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -29,7 +30,7 @@ class GameInstance(val unrailed: Unrailed) {
         /**
          * 列車がゲーム開始から何tick後に動くか
          */
-        const val MovingTime = 15 * 20L
+        const val MovingTime = 30 * 20L
     }
 
     init {
@@ -43,6 +44,15 @@ class GameInstance(val unrailed: Unrailed) {
     }
 
     val lanes = mutableListOf<LaneInstance>()
+
+    /**
+     * レーンのゲーム結果を保存
+     * Boolean
+     * null -> ゲーム中
+     * true -> クリア
+     * false -> 失敗
+     */
+    var laneResult = mutableMapOf<LaneInstance, Boolean?>()
 
     fun addLane(
         g: GenerateSetting,
@@ -111,6 +121,9 @@ class GameInstance(val unrailed: Unrailed) {
             }
             lane.start()
         }
+        // Status Reset
+        laneResult = mutableMapOf()
+        lanes.forEach { laneResult[it] = null }
         unrailed.server.scheduler.runTaskLater(unrailed, Runnable { startMoving() }, MovingTime)
     }
 
@@ -129,14 +142,31 @@ class GameInstance(val unrailed: Unrailed) {
      * このゲーム内のレーンがクリアしたときの処理
      */
     fun onClear(lane: LaneInstance) {
-
+        laneResult[lane] = true
+        checkAllResult()
     }
 
     /**
      * このゲーム内のレーンが脱落した時の処理
      */
-    fun onFail(lane: LaneInstance) {
+    fun onFail(lane: LaneInstance, failLocation: Location) {
+        broadCaseMessage("${lane.generateSetting.teamColor.chatColor}${lane.generateSetting.teamColor.displayName}色${ChatColor.RESET}チーム 脱落!")
+        broadCaseMessage(
+            "記録:${
+                failLocation.toVector().distance(lane.generateSetting.startLocation.toVector()).toInt()
+            }ブロック"
+        )
+        laneResult[lane] = false
+        checkAllResult()
+    }
 
+    /**
+     * check whether all lane is done.
+     */
+    private fun checkAllResult(){
+        if(laneResult.all { it.value != null }){
+            onAllDone()
+        }
     }
 
     /**
@@ -145,5 +175,6 @@ class GameInstance(val unrailed: Unrailed) {
     fun onAllDone() {
         // TODO Clean Up all Lane's team
         nowPhase = EndPhase()
+        broadCaseMessage("すべてのチームが終了しました")
     }
 }

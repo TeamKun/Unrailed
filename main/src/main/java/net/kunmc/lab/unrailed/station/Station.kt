@@ -14,4 +14,9 @@ class Station(val rail: Rail) : AbstractStation() {
     }
 
     override fun getAllRails(): List<Block> = rail.rails
+
+    /**
+     * レールがこの駅につながっているかどうか
+     */
+    fun isConnected(rail: Rail) = rail.containAny(this.rail)
 }
