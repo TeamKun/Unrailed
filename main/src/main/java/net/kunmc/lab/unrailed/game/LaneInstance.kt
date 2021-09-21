@@ -90,7 +90,6 @@ class LaneInstance(
      */
     fun startMoving() {
         train!!.isMoving = true
-        // TODO 最初にちょこっと押してあげないとだめ
         train!!.applyVectors(generateSetting.direction.toVector(0.2))
     }
 

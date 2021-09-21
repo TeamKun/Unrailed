@@ -32,7 +32,6 @@ class StandardGenerator(val unrailed: Unrailed) : AbstractGenerator() {
 
     private val stationTerrain = MultiTerrainGenerator(
         listOf(
-            // TODO
             BaseTerrainGenerator(baseBlock),
             StationTerrainGenerator(StructureCollection.getInstance(unrailed).stations.SandStation)
         )
@@ -61,7 +60,7 @@ class StandardGenerator(val unrailed: Unrailed) : AbstractGenerator() {
                 continue
             }
 
-            // TODO ここでいろいろ生成
+            // TODO ここでいろいろ生成(改善の余地ありありのあり)
             RandomDo(
                 {
                     generate(woodTerrain, s, location)

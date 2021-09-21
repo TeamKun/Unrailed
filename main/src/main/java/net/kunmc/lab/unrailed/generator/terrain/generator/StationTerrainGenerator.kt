@@ -19,8 +19,6 @@ class StationTerrainGenerator(private val stationStructure: BlockSet) : Abstract
         direction: Direction,
         seed: Long
     ) {
-        // TODO 駅の生成どうしようかな
-
         // 土台の上
         val box = Box(
             startLocation.copy().add(.0, 1.0, .0),

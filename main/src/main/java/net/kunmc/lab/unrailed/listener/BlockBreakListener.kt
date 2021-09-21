@@ -2,6 +2,8 @@ package net.kunmc.lab.unrailed.listener
 
 import net.kunmc.lab.unrailed.Unrailed
 import net.kunmc.lab.unrailed.generator.StandardGenerator
+import net.kunmc.lab.unrailed.util.contain
+import net.kunmc.lab.unrailed.util.info
 import net.kunmc.lab.unrailed.util.isJoinedGame
 import net.kunmc.lab.unrailed.util.isRail
 import org.bukkit.event.EventHandler
@@ -19,18 +21,27 @@ class BlockBreakListener(unrailed: Unrailed) : ListenerBase(unrailed) {
                     e.isCancelled = true
                 } else {
                     val rail = train.rail
-                    if (rail.remove(e.block)) {
-                        // Remove出来た
+                    val edges = rail.getEdge()
+                    e.player.sendMessage("edges: $edges")
+                    if (edges != null && (edges.first == e.block || edges.second == e.block)) {
+                        println("Matched!")
+                        if (rail.remove(e.block)) {
+                            // Remove出来た
+                        } else {
+                            // Remove出来なかった
+                            e.isCancelled = true
+                        }
                     } else {
-                        // Remove出来なかった
                         e.isCancelled = true
                     }
                 }
             } else {
                 if (e.block.type == StandardGenerator.baseBlock) {
                     // 地面掘ってるだけ、許したれ。
-                } else {
+                    // ↑誰が許すかアホ！
                     e.isCancelled = true
+                } else {
+                    // 石とか掘ってるんやろ。たぶん。
                 }
             }
         }

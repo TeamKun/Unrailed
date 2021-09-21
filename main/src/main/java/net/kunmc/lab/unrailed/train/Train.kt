@@ -3,6 +3,7 @@ package net.kunmc.lab.unrailed.train
 import net.kunmc.lab.unrailed.Unrailed
 import net.kunmc.lab.unrailed.car.AbstractCar
 import net.kunmc.lab.unrailed.car.EngineCar
+import net.kunmc.lab.unrailed.game.LaneInstance
 import net.kunmc.lab.unrailed.rail.Rail
 import net.kunmc.lab.unrailed.train.state.TrainState
 import net.kunmc.lab.unrailed.util.copy
@@ -52,6 +53,8 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
                 // TODO 演出
                 println("地面に落ちているワゴンを削除")
                 minecart.remove()
+
+                getLane()?.onFail()
             }
             return@removeAll !minecart.isOnRail()
         }
@@ -137,5 +140,11 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
             e.isCollisionCancelled = true
             e.isCancelled = true
         }
+    }
+
+
+    ////////////////// Game ///////////////
+    fun getLane(): LaneInstance? {
+        return Unrailed.goingOnGame?.getLane(this)
     }
 }

@@ -61,7 +61,13 @@ class GameInstance(val unrailed: Unrailed) {
                 generator
             )
 
-            lane.addTeamMember(*(members.map { GamePlayer.getOrRegister(it, this) }.toTypedArray()))
+            val gamePlayers = members.map { GamePlayer.getOrRegister(it, this) }.toTypedArray()
+            gamePlayers.forEach {
+                // ほかのレーンから削除してない
+                it.getLane()?.removeTeamMember(it)
+            }
+
+            lane.addTeamMember(*gamePlayers)
             lanes.add(lane)
 
             return lane
@@ -80,6 +86,10 @@ class GameInstance(val unrailed: Unrailed) {
 
     fun getLane(p: Player): LaneInstance? {
         return this.lanes.filter { it.getAllTeamMember().map { g -> g.p }.contains(p) }.getOrNull(0)
+    }
+
+    fun getLane(train: Train): LaneInstance? {
+        return this.lanes.filter { it.train == train }.getOrNull(0)
     }
 
     /**

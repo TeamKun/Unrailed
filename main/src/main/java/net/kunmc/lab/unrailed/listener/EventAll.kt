@@ -19,6 +19,7 @@ class EventAll(val unrailed: Unrailed) {
             GamePlayerListener(unrailed)
             WoolListener(unrailed)
             BlockPlaceListener(unrailed)
+            BlockBreakListener(unrailed)
         }
     }
 

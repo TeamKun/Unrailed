@@ -3,7 +3,6 @@ package net.kunmc.lab.unrailed.car
 import net.kunmc.lab.unrailed.car.upgrade.UpGradeSetting
 import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Minecart
 import org.bukkit.material.MaterialData
 import org.bukkit.plugin.java.JavaPlugin
@@ -28,7 +27,7 @@ class EngineCar(
         /**
          * EngineCarの初期スピード
          */
-        const val BaseSpeed = 0.150
+        const val BaseSpeed = 0.10
 
         /**
          * 最低スピード
