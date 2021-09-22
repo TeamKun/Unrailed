@@ -20,6 +20,7 @@ class EventAll(val unrailed: Unrailed) {
             WoolListener(unrailed)
             BlockPlaceListener(unrailed)
             BlockBreakListener(unrailed)
+            InventoryEventListener(unrailed)
         }
     }
 

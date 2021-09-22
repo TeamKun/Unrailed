@@ -100,9 +100,9 @@ class LaneInstance(
     /**
      * このレーンがクリアしたときの処理
      */
-    fun onClear() {
+    fun onClear(clearLocation: Location) {
         train!!.isMoving = false
-        game.onClear(this)
+        game.onClear(this,clearLocation)
     }
 
     /**

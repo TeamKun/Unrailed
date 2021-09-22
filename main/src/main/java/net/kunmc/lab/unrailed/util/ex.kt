@@ -14,6 +14,8 @@ import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Minecart
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
+import org.bukkit.inventory.Inventory
+import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scoreboard.Scoreboard
 import org.bukkit.scoreboard.Team
@@ -454,4 +456,71 @@ fun Material.isWool(): Boolean {
 
 fun Player.isJoinedGame(): Boolean {
     return Unrailed.goingOnGame?.players?.map { it.p }?.contains(this).nullMap { false }
+}
+
+/**
+ * @return pair of index of element in array and value
+ */
+public fun <T> Array<out T>.indexed(): List<Pair<T, Int>> {
+    return this.mapIndexed { index, t -> Pair(t, index) }
+}
+
+
+public fun <T> Array<out T>.distinctIndexed(): List<Pair<T, Int>> {
+    return this.indexed().distinct()
+}
+
+inline fun <reified T> filledArrayOf(t: T, size: Int): Array<T> {
+    val arr = mutableListOf<T>()
+    for (i in 0 until size) arr[i] = t
+    return arr.toTypedArray()
+}
+
+inline fun <reified T> filledArrayOf(f: (Int) -> T, size: Int): Array<T> {
+    val arr = mutableListOf<T>()
+    for (i in 0 until size) arr[i] = f(i)
+    return arr.toTypedArray()
+}
+
+/**
+ * distinctの時に数値を足し合わせたり処理をしたいとき用
+ */
+fun <T, Z> List<Pair<T, Z>>.distinctByEx(
+    distinctBy: (Pair<T, Z>, Pair<T, Z>) -> Boolean,
+    value: (Pair<T, Z>, Pair<T, Z>) -> Z
+): MutableList<Pair<T, Z>> {
+    val list = mutableListOf<Pair<T, Z>>()
+    this.forEach { it ->
+        val matchedFirstEntry = list.firstOrNull { l ->
+            distinctBy(it, l)
+        }
+
+        if (matchedFirstEntry == null) {
+            // No Match
+            list.add(it)
+        } else {
+            // Adding
+            list.remove(matchedFirstEntry)
+            list.add(Pair(it.first, value(it, matchedFirstEntry)))
+        }
+    }
+
+    return list
+}
+
+/**
+ * インベントリをいい感じに整理
+ */
+fun Inventory.distinct() {
+    // Pair(material,amount)
+    val distinctInventory =
+        this.contents
+            .filterNotNull()
+            .map { Pair(it.type, it.amount) }
+            .distinctByEx({ pair, pair2 -> pair == pair2 },
+                { pair, pair2 -> pair.second + pair2.second })
+    // clearInventory
+    clear()
+    val items = distinctInventory.map { ItemStack(it.first, it.second) }.toTypedArray()
+    addItem(*items)
 }

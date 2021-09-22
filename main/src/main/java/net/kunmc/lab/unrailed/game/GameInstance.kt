@@ -47,12 +47,11 @@ class GameInstance(val unrailed: Unrailed) {
 
     /**
      * レーンのゲーム結果を保存
-     * Boolean
-     * null -> ゲーム中
-     * true -> クリア
-     * false -> 失敗
+     * Int?
+     * ゲーム中 -> null
+     * ゲーム終了 -> 到達距離
      */
-    var laneResult = mutableMapOf<LaneInstance, Boolean?>()
+    var laneResult = mutableMapOf<LaneInstance, Int?>()
 
     fun addLane(
         g: GenerateSetting,
@@ -141,8 +140,11 @@ class GameInstance(val unrailed: Unrailed) {
     /**
      * このゲーム内のレーンがクリアしたときの処理
      */
-    fun onClear(lane: LaneInstance) {
-        laneResult[lane] = true
+    fun onClear(lane: LaneInstance, clearLocation: Location) {
+        val blocks = clearLocation.toVector().distance(lane.generateSetting.startLocation.toVector()).toInt()
+        broadCaseMessage("${lane.generateSetting.teamColor.chatColor}${lane.generateSetting.teamColor.displayName}色${ChatColor.RESET}チーム クリア!")
+        broadCaseMessage("記録:${blocks}ブロック")
+        laneResult[lane] = blocks
         checkAllResult()
     }
 
@@ -150,21 +152,18 @@ class GameInstance(val unrailed: Unrailed) {
      * このゲーム内のレーンが脱落した時の処理
      */
     fun onFail(lane: LaneInstance, failLocation: Location) {
+        val blocks = failLocation.toVector().distance(lane.generateSetting.startLocation.toVector()).toInt()
         broadCaseMessage("${lane.generateSetting.teamColor.chatColor}${lane.generateSetting.teamColor.displayName}色${ChatColor.RESET}チーム 脱落!")
-        broadCaseMessage(
-            "記録:${
-                failLocation.toVector().distance(lane.generateSetting.startLocation.toVector()).toInt()
-            }ブロック"
-        )
-        laneResult[lane] = false
+        broadCaseMessage("記録:${blocks}ブロック")
+        laneResult[lane] = blocks
         checkAllResult()
     }
 
     /**
      * check whether all lane is done.
      */
-    private fun checkAllResult(){
-        if(laneResult.all { it.value != null }){
+    private fun checkAllResult() {
+        if (laneResult.all { it.value != null }) {
             onAllDone()
         }
     }
