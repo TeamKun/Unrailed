@@ -6,10 +6,8 @@ import net.kunmc.lab.unrailed.car.EngineCar
 import net.kunmc.lab.unrailed.game.LaneInstance
 import net.kunmc.lab.unrailed.rail.Rail
 import net.kunmc.lab.unrailed.train.state.TrainState
-import net.kunmc.lab.unrailed.util.copy
-import net.kunmc.lab.unrailed.util.isOnRail
-import net.kunmc.lab.unrailed.util.scale
-import net.kunmc.lab.unrailed.util.toVector
+import net.kunmc.lab.unrailed.util.*
+import org.bukkit.Location
 import org.bukkit.entity.Minecart
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -29,6 +27,31 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
     override fun getCars(): MutableList<AbstractCar> = car.toMutableList()
     override fun addCar(car: AbstractCar) {
         this.car.add(car)
+    }
+
+    fun addCar(f: (Location, Unrailed) -> AbstractCar): Train {
+        val lastCar = car.last().getMinecart()
+        println("Rail Size:${rail.rails.size}")
+        val lastCarRailIndex = rail.getIndex(lastCar.location.block)
+        val addLocation = when {
+            lastCarRailIndex == null -> {
+                println("in AddCar,lastCarRailIndex is null")
+                // うまくindex取得できなかった場合
+                lastCar.location
+            }
+            lastCarRailIndex != 0 -> {
+                // 中間のレールに乗ってる
+                println("中間のレールに乗ってる")
+                rail.rails[lastCarRailIndex - 1].location
+            }
+            else -> {
+                // 最初のレールに乗ってる
+                println("最初のレールに乗ってる")
+                rail.rails[0].location
+            }
+        }
+        addCar(f(addLocation, plugin))
+        return this
     }
 
     private val trainState = TrainState(this)
@@ -54,7 +77,10 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
                 // 地面に落ちているワゴンを削除
                 // TODO 演出
                 println("地面に落ちているワゴンを削除")
-                getLane()?.onFail(minecart.location)
+                if (it is EngineCar) {
+                    // 先頭車のみ判定に必要
+                    getLane()?.onFail(minecart.location)
+                }
                 minecart.remove()
             }
             return@removeAll !minecart.isOnRail()
@@ -145,9 +171,9 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
     }
 
     @EventHandler
-    fun onBreakVehicle(e:VehicleDestroyEvent){
-        if(e.vehicle is Minecart){
-            if(car.map { it.getMinecart() }.contains(e.vehicle)){
+    fun onBreakVehicle(e: VehicleDestroyEvent) {
+        if (e.vehicle is Minecart) {
+            if (car.map { it.getMinecart() }.contains(e.vehicle)) {
                 e.isCancelled = true
             }
         }

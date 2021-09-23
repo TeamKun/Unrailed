@@ -3,6 +3,7 @@ package net.kunmc.lab.unrailed.game
 import net.kunmc.lab.unrailed.game.player.GamePlayer
 import net.kunmc.lab.unrailed.generator.AbstractGenerator
 import net.kunmc.lab.unrailed.generator.GenerateSetting
+import net.kunmc.lab.unrailed.rail.Rail
 import net.kunmc.lab.unrailed.station.Station
 import net.kunmc.lab.unrailed.train.Train
 import net.kunmc.lab.unrailed.train.TrainBuilder
@@ -26,6 +27,7 @@ class LaneInstance(
     val trainBuilder: TrainBuilder,
     var generateSetting: GenerateSetting,
     val generator: AbstractGenerator,
+    val rail: Rail
 ) {
     /////////// Lane Data ////////////
     private val teamMember = mutableListOf<GamePlayer>()
@@ -34,7 +36,7 @@ class LaneInstance(
             .setColor(generateSetting.teamColor)
     var train: Train? = null
     var tickTask: BukkitTask? = null
-    var stations:MutableList<Station>? = null
+    var stations: MutableList<Station>? = null
     /////////// Lane Data ////////////
 
     fun addTeamMember(g: GamePlayer) {
@@ -69,6 +71,8 @@ class LaneInstance(
      */
     fun generateAll(logCallBack: (Double) -> Unit = {}) {
         generator.onGenerate(generateSetting, logCallBack)
+        rail.recognizeFrom()    // 地形生成後再探索実施 (駅のレールが認識されていない状態で開始してた)
+        println("recognizeFrom:${rail.rails.size}")
         //TODO Collect Stations to stations(mutable list)
     }
 
@@ -102,14 +106,14 @@ class LaneInstance(
      */
     fun onClear(clearLocation: Location) {
         train!!.isMoving = false
-        game.onClear(this,clearLocation)
+        game.onClear(this, clearLocation)
     }
 
     /**
      * このレーンが脱落したときの処理
      */
     fun onFail(failLocation: Location) {
-        game.onFail(this,failLocation)
+        game.onFail(this, failLocation)
     }
 
     fun tick() {

@@ -62,12 +62,13 @@ class GameInstance(val unrailed: Unrailed) {
         try {
             val startTerrainCenter =
                 g.startLocation.copy().add(g.direction.toVector(g.terrainSize.getCenter().toDouble())).toBlockLocation()
-            val rail = Rail(startTerrainCenter.block)
+            val rail = Rail(startTerrainCenter.copy().add(.0,1.0,.0).block)
             val lane = LaneInstance(
                 this,
                 trainBuilder.nullMap { DefaultTrainBuilder(unrailed, startTerrainCenter, rail) },
                 g,
-                generator
+                generator,
+                rail
             )
 
             val gamePlayers = members.map { GamePlayer.getOrRegister(it, this) }.toTypedArray()

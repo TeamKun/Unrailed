@@ -106,46 +106,57 @@ fun Block.getRailRelative(face: BlockFace): Block? {
 }
 
 /**
+ * RailのShapeに基づいて接続可能方向を取得
+ */
+fun Block.getConnectiveRailFace(): Pair<BlockFace, BlockFace>? {
+    if (!isRail()) return null
+    return when ((blockData as Rail).shape) {
+        Rail.Shape.ASCENDING_EAST -> {
+            Pair(BlockFace.EAST, BlockFace.WEST)
+        }
+        Rail.Shape.ASCENDING_WEST -> {
+            Pair(BlockFace.WEST, BlockFace.EAST)
+        }
+        Rail.Shape.ASCENDING_NORTH -> {
+            Pair(BlockFace.NORTH, BlockFace.SOUTH)
+        }
+        Rail.Shape.ASCENDING_SOUTH -> {
+            Pair(BlockFace.SOUTH, BlockFace.NORTH)
+        }
+        Rail.Shape.NORTH_SOUTH -> {
+            Pair(BlockFace.NORTH, BlockFace.SOUTH)
+        }
+        Rail.Shape.EAST_WEST -> {
+            Pair(BlockFace.EAST, BlockFace.WEST)
+        }
+        Rail.Shape.SOUTH_EAST -> {
+            Pair(BlockFace.SOUTH, BlockFace.EAST)
+        }
+        Rail.Shape.SOUTH_WEST -> {
+            Pair(BlockFace.SOUTH, BlockFace.WEST)
+        }
+        Rail.Shape.NORTH_WEST -> {
+            Pair(BlockFace.NORTH, BlockFace.WEST)
+        }
+        Rail.Shape.NORTH_EAST -> {
+            Pair(BlockFace.NORTH, BlockFace.EAST)
+        }
+    }
+}
+
+fun <T> Pair<T, T>.toList(): List<T> {
+    return listOf(this.first, this.second)
+}
+
+/**
  * RailのShapeに基づいてつながっているであろうRailを取得
  *
  * @see getConnectedRail
  */
 fun Block.getConnectiveRail(): Pair<Block?, Block?> {
-    if (!isRail()) return Pair(null, null)
-    val faces = when ((blockData as Rail).shape) {
-        Rail.Shape.ASCENDING_EAST -> {
-            listOf(BlockFace.EAST, BlockFace.WEST)
-        }
-        Rail.Shape.ASCENDING_WEST -> {
-            listOf(BlockFace.WEST, BlockFace.EAST)
-        }
-        Rail.Shape.ASCENDING_NORTH -> {
-            listOf(BlockFace.NORTH, BlockFace.SOUTH)
-        }
-        Rail.Shape.ASCENDING_SOUTH -> {
-            listOf(BlockFace.SOUTH, BlockFace.NORTH)
-        }
-        Rail.Shape.NORTH_SOUTH -> {
-            listOf(BlockFace.NORTH, BlockFace.SOUTH)
-        }
-        Rail.Shape.EAST_WEST -> {
-            listOf(BlockFace.EAST, BlockFace.WEST)
-        }
-        Rail.Shape.SOUTH_EAST -> {
-            listOf(BlockFace.SOUTH, BlockFace.EAST)
-        }
-        Rail.Shape.SOUTH_WEST -> {
-            listOf(BlockFace.SOUTH, BlockFace.WEST)
-        }
-        Rail.Shape.NORTH_WEST -> {
-            listOf(BlockFace.NORTH, BlockFace.WEST)
-        }
-        Rail.Shape.NORTH_EAST -> {
-            listOf(BlockFace.NORTH, BlockFace.EAST)
-        }
-    }
+    val faces = getConnectiveRailFace() ?: return Pair(null, null)
 
-    val blocks = faces.map { getRailRelative(it) }
+    val blocks = faces.toList().map { getRailRelative(it) }
 
     return Pair(
         blocks[0].nullOr {
@@ -168,6 +179,35 @@ fun Block.getConnectiveRail(): Pair<Block?, Block?> {
 //        }
 //        Pair(null, null)
 //    }
+}
+
+fun Block.getConnectedRailFace(): Pair<BlockFace?, BlockFace?> {
+//    val connective = getConnectiveRailFace()
+//    if (connective == null) {
+//        return Pair(null, null)
+//    } else {
+//        val r = mutableListOf<Block>()
+//        if (getRelative(connective.first).getConnectiveRail().contain(this)) {
+//            r.add(getRelative(connective.first))
+//        }
+//
+//        if (getRelative(connective.second).getConnectiveRail().contain(this)) {
+//            r.add(getRelative(connective.second))
+//        }
+//
+//        return Pair(r.getOrNull(0), r.getOrNull(1))
+//    }
+    var result = Pair<BlockFace?, BlockFace?>(null, null)
+
+    val connected = getConnectedRail()
+    if (connected.first != null) {
+        result = Pair(getBlockFace(connected.first!!), result.second)
+    }
+    if (connected.second != null) {
+        result = Pair(result.first, getBlockFace(connected.second!!))
+    }
+
+    return result
 }
 
 /**
