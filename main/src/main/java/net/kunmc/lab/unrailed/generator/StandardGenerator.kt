@@ -110,4 +110,9 @@ class StandardGenerator(val unrailed: Unrailed) : AbstractGenerator() {
             level = 1
         )
     }
+
+    fun getAllStationsLocation(): List<Location> {
+        // TODO return stations location
+        TODO()
+    }
 }

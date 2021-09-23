@@ -35,7 +35,6 @@ class InventoryEventListener(unrailed: Unrailed) : ListenerBase(unrailed) {
      * ピッケル、斧、木か石かレール(1種類のみ許容)
      */
     private fun checkInventory(inventory: PlayerInventory) {
-        println("checkInventory")
         inventory.distinct()
     }
 }

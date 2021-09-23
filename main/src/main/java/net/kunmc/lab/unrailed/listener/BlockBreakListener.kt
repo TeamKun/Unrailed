@@ -22,9 +22,7 @@ class BlockBreakListener(unrailed: Unrailed) : ListenerBase(unrailed) {
                 } else {
                     val rail = train.rail
                     val edges = rail.getEdge()
-                    e.player.sendMessage("edges: $edges")
                     if (edges != null && (edges.first == e.block || edges.second == e.block)) {
-                        println("Matched!")
                         if (rail.remove(e.block)) {
                             // Remove出来た
                         } else {
