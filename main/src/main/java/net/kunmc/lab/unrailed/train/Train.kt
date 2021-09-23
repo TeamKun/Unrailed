@@ -10,9 +10,11 @@ import net.kunmc.lab.unrailed.util.copy
 import net.kunmc.lab.unrailed.util.isOnRail
 import net.kunmc.lab.unrailed.util.scale
 import net.kunmc.lab.unrailed.util.toVector
+import org.bukkit.entity.Minecart
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.vehicle.VehicleCollisionEvent
+import org.bukkit.event.vehicle.VehicleDestroyEvent
 import org.bukkit.event.vehicle.VehicleEntityCollisionEvent
 import org.bukkit.util.Vector
 import java.lang.IllegalArgumentException
@@ -139,6 +141,15 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
         if (car.map { it.getMinecart() }.contains(e.vehicle)) {
             e.isCollisionCancelled = true
             e.isCancelled = true
+        }
+    }
+
+    @EventHandler
+    fun onBreakVehicle(e:VehicleDestroyEvent){
+        if(e.vehicle is Minecart){
+            if(car.map { it.getMinecart() }.contains(e.vehicle)){
+                e.isCancelled = true
+            }
         }
     }
 
