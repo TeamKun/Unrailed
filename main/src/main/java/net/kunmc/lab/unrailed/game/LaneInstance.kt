@@ -71,7 +71,7 @@ class LaneInstance(
      */
     fun generateAll(logCallBack: (Double) -> Unit = {}) {
         generator.onGenerate(generateSetting, logCallBack)
-        rail.recognizeFrom()    // 地形生成後再探索実施 (駅のレールが認識されていない状態で開始してた)
+        rail.recognizeFrom(direction = generateSetting.direction)    // 地形生成後再探索実施 (駅のレールが認識されていない状態で開始してた)
         println("recognizeFrom:${rail.rails.size}")
         //TODO Collect Stations to stations(mutable list)
     }

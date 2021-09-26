@@ -12,20 +12,20 @@ class Rail(val first: Block) : AbstractRail() {
 
     override fun getAll(): MutableList<Block> = rails.toMutableList()
 
-    fun recognizeFrom(exceptFor: List<Block> = listOf()) {
-        recognizeFrom(first, exceptFor)
+    fun recognizeFrom(exceptFor: List<Block> = listOf(), direction: Direction? = null) {
+        recognizeFrom(first, exceptFor,direction)
     }
 
     /**
      * @param loc 指定したロケーションからレール網を再探索(たぶんめっちゃ重い)
      */
-    fun recognizeFrom(loc: Location, exceptFor: List<Block> = listOf()) {
-        recognizeFrom(loc.block, exceptFor)
+    fun recognizeFrom(loc: Location, exceptFor: List<Block> = listOf(), direction: Direction? = null) {
+        recognizeFrom(loc.block, exceptFor,direction)
     }
 
-    fun recognizeFrom(block: Block, exceptFor: List<Block> = listOf()) {
+    fun recognizeFrom(block: Block, exceptFor: List<Block> = listOf(), direction: Direction? = null) {
         this.rails.clear()
-        add(block, exceptFor)
+        add(block, exceptFor,direction)
     }
 
 
@@ -73,11 +73,34 @@ class Rail(val first: Block) : AbstractRail() {
                     }
                 }
 
-                val connective = block.getConnectiveRailFace()
                 // TODO directionに添って追加順序を変更
-                val connected = block.getConnectedRail()
-                connected.first?.let { add(it) }
-                connected.second?.let { add(it) }
+                val connected = block.getConnectedRailWithFace()
+                if (connected.first == null && connected.second == null) {
+                    // これ以上接続なし
+                } else if (connected.first != null && connected.second != null) {
+                    if (direction != null) {
+                        if (connected.first!!.second == direction) {
+                            // firstの方が方向一致
+                            log("Same for First")
+                            connected.first?.let { add(it.first, exceptFor, direction) }
+                            connected.second?.let { add(it.first, exceptFor, direction) }
+                        } else {
+                            // secondの方が方向一致
+                            log("Same for Second")
+                            connected.second?.let { add(it.first, exceptFor, direction) }
+                            connected.first?.let { add(it.first, exceptFor, direction) }
+                        }
+                    } else {
+                        log("Direction Null")
+                        connected.first?.let { add(it.first, exceptFor, direction) }
+                        connected.second?.let { add(it.first, exceptFor, direction) }
+                    }
+                } else {
+                    log("Not Both are non-null")
+                    // どちらかのみ
+                    connected.first?.let { add(it.first, exceptFor, direction) }
+                    connected.second?.let { add(it.first, exceptFor, direction) }
+                }
                 true
             } else {
                 // できない

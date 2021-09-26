@@ -235,6 +235,54 @@ fun Block.getConnectedRail(): Pair<Block?, Block?> {
     return connective
 }
 
+fun Block.getConnectedRailWithFace(): Pair<Pair<Block, Direction>?, Pair<Block, Direction>?> {
+    val connected = getConnectedRail()
+    val first = if (connected.first == null) {
+        null
+    } else {
+        val fd = getDirection(connected.first!!)
+        if (fd == null) {
+            null
+        } else {
+            Pair(connected.first!!, fd)
+        }
+    }
+
+    val second = if (connected.second == null) {
+        null
+    } else {
+        val sd = getDirection(connected.second!!)
+        if (sd == null) {
+            null
+        } else {
+            Pair(connected.second!!, sd)
+        }
+    }
+
+    return Pair(first, second)
+}
+
+/**
+ * @return このブロックから見たtoの方向 垂直方向に存在しない場合null
+ */
+fun Block.getDirection(to: Block): Direction? {
+    val deltaX = location.blockX - to.location.blockX
+    val deltaZ = location.blockZ - to.location.blockZ
+
+    if (deltaX != 0 && deltaZ != 0) return null // 垂直方向以外
+    else return if (deltaX > 0) {
+        Direction.EAST
+    } else if (deltaX < 0) {
+        Direction.WEST
+    } else if (deltaZ > 0) {
+        Direction.SOUTH
+    } else if (deltaZ < 0) {
+        Direction.NORTH
+    } else {
+        null
+    }
+}
+
 
 /**
  * このBlockから見てどの方向にあるか

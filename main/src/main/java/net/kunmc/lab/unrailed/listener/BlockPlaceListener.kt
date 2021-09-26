@@ -1,6 +1,7 @@
 package net.kunmc.lab.unrailed.listener
 
 import net.kunmc.lab.unrailed.Unrailed
+import net.kunmc.lab.unrailed.util.broadCast
 import net.kunmc.lab.unrailed.util.isJoinedGame
 import net.kunmc.lab.unrailed.util.isPhase
 import net.kunmc.lab.unrailed.util.isRail
@@ -26,6 +27,8 @@ class BlockPlaceListener(unrailed: Unrailed) : ListenerBase(unrailed) {
                     if (!result) {
                         // 接続不可
                         e.isCancelled = true
+                    } else {
+                        broadCast("Rail Size is now:${rail.rails.size}")
                     }
                 } else {
                     // 列車生成前
