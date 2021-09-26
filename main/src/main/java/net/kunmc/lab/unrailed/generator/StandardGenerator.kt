@@ -107,12 +107,25 @@ class StandardGenerator(val unrailed: Unrailed) : AbstractGenerator() {
         generator.onGenerate(
             setting = s,
             startLocation = startLocation,
-            level = 1
+            level = s.level
         )
     }
 
-    fun getAllStationsLocation(): List<Location> {
-        // TODO return stations location
-        TODO()
+    /**
+     * @return すべての駅のレールの始点ロケーション
+     */
+    fun getAllStationsLocation(s: GenerateSetting): List<Location> {
+        val locations = mutableListOf<Location>()
+        for (index in 0 until s.terrains) {
+            if (index == 0 || index % (s.betweenStation + 1) == 0) {
+                locations.add(getStartLocation(s, index).add(.0, 1.0, .0))
+            }
+        }
+        return locations
     }
+
+    /**
+     * @return すべての駅のレールの始点ブロック
+     */
+    fun getAllStationsBlock(s: GenerateSetting) = getAllStationsLocation(s).map { it.block }
 }

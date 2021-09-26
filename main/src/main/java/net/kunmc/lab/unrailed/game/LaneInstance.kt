@@ -3,16 +3,14 @@ package net.kunmc.lab.unrailed.game
 import net.kunmc.lab.unrailed.game.player.GamePlayer
 import net.kunmc.lab.unrailed.generator.AbstractGenerator
 import net.kunmc.lab.unrailed.generator.GenerateSetting
+import net.kunmc.lab.unrailed.generator.StandardGenerator
 import net.kunmc.lab.unrailed.rail.Rail
 import net.kunmc.lab.unrailed.station.Station
 import net.kunmc.lab.unrailed.train.Train
 import net.kunmc.lab.unrailed.train.TrainBuilder
-import net.kunmc.lab.unrailed.util.WoolColor
 import net.kunmc.lab.unrailed.util.getOrRegisterTeam
 import net.kunmc.lab.unrailed.util.setColor
-import net.kyori.adventure.text.format.TextColor
 import org.bukkit.ChatColor
-import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
@@ -72,8 +70,11 @@ class LaneInstance(
     fun generateAll(logCallBack: (Double) -> Unit = {}) {
         generator.onGenerate(generateSetting, logCallBack)
         rail.recognizeFrom(direction = generateSetting.direction)    // 地形生成後再探索実施 (駅のレールが認識されていない状態で開始してた)
-        println("recognizeFrom:${rail.rails.size}")
-        //TODO Collect Stations to stations(mutable list)
+        // TODO Collect Stations to stations(mutable list)
+        stations =
+            ((generator as StandardGenerator).getAllStationsBlock(generateSetting)
+                .mapNotNull { Station.generateFrom(it, generateSetting.direction) }
+                .toMutableList())
     }
 
     /**
@@ -82,7 +83,7 @@ class LaneInstance(
      */
     fun start() {
         if (train != null) {
-            println("Game Not Reset")
+            net.kunmc.lab.unrailed.util.error("Game Not Reset")
             train!!.removeAll()
         }
         train = trainBuilder.onBuild(generateSetting.startLocation, generateSetting.direction)

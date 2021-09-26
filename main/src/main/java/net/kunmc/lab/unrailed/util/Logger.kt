@@ -47,6 +47,19 @@ fun log(vararg message: String) {
     }
 }
 
+var debug = true
+fun debug(message: String) {
+    if (debug) println(message)
+}
+
+fun debug(vararg message: String) {
+    if (debug) {
+        message.forEach {
+            println(it)
+        }
+    }
+}
+
 var info = true
 fun info(message: String) {
     if (info) println(message)

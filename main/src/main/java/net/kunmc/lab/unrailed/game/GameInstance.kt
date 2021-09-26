@@ -62,7 +62,7 @@ class GameInstance(val unrailed: Unrailed) {
         try {
             val startTerrainCenter =
                 g.startLocation.copy().add(g.direction.toVector(g.terrainSize.getCenter().toDouble())).toBlockLocation()
-            val rail = Rail(startTerrainCenter.copy().add(.0,1.0,.0).block)
+            val rail = Rail(startTerrainCenter.copy().add(.0, 1.0, .0).block)
             val lane = LaneInstance(
                 this,
                 trainBuilder.nullMap { DefaultTrainBuilder(unrailed, startTerrainCenter, rail) },
@@ -120,6 +120,7 @@ class GameInstance(val unrailed: Unrailed) {
                 broadCast("生成中 ${index + 1}/${lanes.size}:${it}")
             }
             lane.start()
+            debug("Lane Station Size:${lane.stations!!.size}")
         }
         // Status Reset
         laneResult = mutableMapOf()

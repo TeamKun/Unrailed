@@ -28,6 +28,7 @@ abstract class AbstractGenerator {
  * @param seed シード値
  * @param betweenStation 駅間の地形数(両端の駅の地形は含まない)
  * @param stations ゴールまでのすべての駅数(ゴールの駅を含む)
+ * @param level 難易度(1~)
  * @property terrains 生成すべき地形の個数
  */
 data class GenerateSetting(
@@ -40,7 +41,8 @@ data class GenerateSetting(
     val seed: Long,
     val betweenStation: Int,
     val stations: Int,
-    val teamColor: WoolColor
+    val teamColor: WoolColor,
+    val level: Int = 1
 ) {
     val terrains = (betweenStation + 1) * (stations - 1) + 1
 

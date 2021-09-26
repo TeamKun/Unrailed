@@ -7,25 +7,25 @@ import org.bukkit.block.Block
 /**
  * @param first 最初の探索開始地点
  */
-class Rail(val first: Block) : AbstractRail() {
+class Rail(val first: Block, exceptFor: List<Block> = listOf(), direction: Direction? = null) : AbstractRail() {
     val rails = mutableListOf<Block>()
 
     override fun getAll(): MutableList<Block> = rails.toMutableList()
 
     fun recognizeFrom(exceptFor: List<Block> = listOf(), direction: Direction? = null) {
-        recognizeFrom(first, exceptFor,direction)
+        recognizeFrom(first, exceptFor, direction)
     }
 
     /**
      * @param loc 指定したロケーションからレール網を再探索(たぶんめっちゃ重い)
      */
     fun recognizeFrom(loc: Location, exceptFor: List<Block> = listOf(), direction: Direction? = null) {
-        recognizeFrom(loc.block, exceptFor,direction)
+        recognizeFrom(loc.block, exceptFor, direction)
     }
 
     fun recognizeFrom(block: Block, exceptFor: List<Block> = listOf(), direction: Direction? = null) {
         this.rails.clear()
-        add(block, exceptFor,direction)
+        add(block, exceptFor, direction)
     }
 
 
@@ -73,7 +73,6 @@ class Rail(val first: Block) : AbstractRail() {
                     }
                 }
 
-                // TODO directionに添って追加順序を変更
                 val connected = block.getConnectedRailWithFace()
                 if (connected.first == null && connected.second == null) {
                     // これ以上接続なし
@@ -223,7 +222,7 @@ class Rail(val first: Block) : AbstractRail() {
     }
 
     init {
-        add(first)
+        add(first, exceptFor, direction)
     }
 }
 
