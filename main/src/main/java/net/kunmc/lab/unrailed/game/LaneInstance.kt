@@ -9,6 +9,7 @@ import net.kunmc.lab.unrailed.station.Station
 import net.kunmc.lab.unrailed.train.Train
 import net.kunmc.lab.unrailed.train.TrainBuilder
 import net.kunmc.lab.unrailed.util.broadCaseMessage
+import net.kunmc.lab.unrailed.util.debug
 import net.kunmc.lab.unrailed.util.getOrRegisterTeam
 import net.kunmc.lab.unrailed.util.setColor
 import org.bukkit.ChatColor
@@ -83,7 +84,6 @@ class LaneInstance(
     fun generateAll(logCallBack: (Double) -> Unit = {}) {
         generator.onGenerate(generateSetting, logCallBack)
         rail.recognizeFrom(direction = generateSetting.direction)    // 地形生成後再探索実施 (駅のレールが認識されていない状態で開始してた)
-        // TODO Collect Stations to stations(mutable list)
         stations =
             ((generator as StandardGenerator).getAllStationsBlock(generateSetting)
                 .mapNotNull { Station.generateFrom(it, generateSetting.direction) }
@@ -124,6 +124,10 @@ class LaneInstance(
      */
     fun onArrive(station: Station) {
         fromStationIndex = stations!!.indexOf(station) // -1にならないと信じてる
+        if (fromStationIndex!! == stations!!.lastIndex) {
+            // 最後の駅
+            fromStationIndex = null
+        }
         toStationIndex = null // -1にならないと信じてる
         game.onArrive(this, station)
     }
@@ -156,10 +160,24 @@ class LaneInstance(
 
     fun tick() {
         // TODO State Update
-        // TODO 駅への接続確認
-        val station = stations!![toStationIndex!!]
-        if (station.isConnected(rail)) {
-            // TODO 駅に接続された時の判定
+        if (toStationIndex != null) {
+            // 移動中
+            val station = stations!![toStationIndex!!]
+            if (station.isConnected(rail)) {
+                val firstBlock = train!!.getFirstLocation()!!.block
+                if (station.rail.contain(firstBlock)) {
+                    // 列車が駅に進入
+                    // TODO アニメーション
+                } else {
+                    // 列車が駅に進入する前
+                    // (加速?)
+                    // TODO アニメーション
+                }
+            }
+        } else if (fromStationIndex != null) {
+            // 停車中
+        } else {
+            // クリア
         }
     }
     //////////////// Life Cycle /////////////////

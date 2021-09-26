@@ -17,10 +17,16 @@ class BlockPlaceListener(unrailed: Unrailed) : ListenerBase(unrailed) {
             if (e.block.isRail()) {
                 // レール設置
                 val lane = Unrailed.goingOnGame!!.getLane(e.player)!!
+
+                if(lane.generateSetting.startLocation.blockY + 1 != e.blockPlaced.location.blockY){
+                    // レールの高さが違う
+                    e.isCancelled = true
+                    return
+                }
+
                 val train = lane.train
                 if (train != null) {
                     val rail = train.rail
-                    // TODO 高い位置にレールが設置可能
                     val result = rail.add(e.block)
                     if (!result) {
                         // 接続不可
