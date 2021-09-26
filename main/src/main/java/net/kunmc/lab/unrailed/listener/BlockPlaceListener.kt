@@ -1,10 +1,7 @@
 package net.kunmc.lab.unrailed.listener
 
 import net.kunmc.lab.unrailed.Unrailed
-import net.kunmc.lab.unrailed.util.broadCast
-import net.kunmc.lab.unrailed.util.isJoinedGame
-import net.kunmc.lab.unrailed.util.isPhase
-import net.kunmc.lab.unrailed.util.isRail
+import net.kunmc.lab.unrailed.util.*
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.BlockPlaceEvent
 
@@ -23,6 +20,7 @@ class BlockPlaceListener(unrailed: Unrailed) : ListenerBase(unrailed) {
                 val train = lane.train
                 if (train != null) {
                     val rail = train.rail
+                    // TODO 高い位置にレールが設置可能
                     val result = rail.add(e.block)
                     if (!result) {
                         // 接続不可

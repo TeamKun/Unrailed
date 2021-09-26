@@ -46,7 +46,7 @@ class GameInstanceTest(unrailed: Unrailed) : TestCase(unrailed) {
                     Material.BEDROCK,
                     9,
                     Random.nextLong(Long.MIN_VALUE, Long.MAX_VALUE),
-                    10,
+                    3,
                     3,
                     WoolColor.namedTextColor().random()
                 )

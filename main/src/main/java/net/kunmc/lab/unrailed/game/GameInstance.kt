@@ -13,6 +13,7 @@ import net.kunmc.lab.unrailed.generator.StandardGenerator
 import net.kunmc.lab.unrailed.rail.Rail
 import net.kunmc.lab.unrailed.rail.RailBlockException
 import net.kunmc.lab.unrailed.rail.RailException
+import net.kunmc.lab.unrailed.station.Station
 import net.kunmc.lab.unrailed.train.DefaultTrainBuilder
 import net.kunmc.lab.unrailed.train.Train
 import net.kunmc.lab.unrailed.train.TrainBuilder
@@ -137,6 +138,20 @@ class GameInstance(val unrailed: Unrailed) {
         lanes.forEach {
             it.startMoving()
         }
+    }
+
+    /**
+     * このゲーム内のレーンが駅に着いた時の処理
+     */
+    fun onArrive(lane: LaneInstance, station: Station) {
+
+    }
+
+    /**
+     * このゲーム内のレーンが駅を出発する時の処理
+     */
+    fun onDepart(lane: LaneInstance, station: Station) {
+
     }
 
     /**

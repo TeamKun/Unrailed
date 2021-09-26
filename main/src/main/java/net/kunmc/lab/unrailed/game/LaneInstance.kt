@@ -8,6 +8,7 @@ import net.kunmc.lab.unrailed.rail.Rail
 import net.kunmc.lab.unrailed.station.Station
 import net.kunmc.lab.unrailed.train.Train
 import net.kunmc.lab.unrailed.train.TrainBuilder
+import net.kunmc.lab.unrailed.util.broadCaseMessage
 import net.kunmc.lab.unrailed.util.getOrRegisterTeam
 import net.kunmc.lab.unrailed.util.setColor
 import org.bukkit.ChatColor
@@ -35,6 +36,15 @@ class LaneInstance(
     var train: Train? = null
     var tickTask: BukkitTask? = null
     var stations: MutableList<Station>? = null
+
+    /**
+     *  移動中 -> 両方 not null
+     *  停車中 -> fromStationはnot null toStationはnull
+     *  クリア -> 両方 null
+     *  失敗 -> 直前の内容を保持
+     */
+    var fromStationIndex: Int? = null // 出発した駅のIndex
+    var toStationIndex: Int? = null // 到着予定の駅のIndex
     /////////// Lane Data ////////////
 
     fun addTeamMember(g: GamePlayer) {
@@ -62,6 +72,9 @@ class LaneInstance(
     }
 
     fun getAllTeamMember() = teamMember.toMutableList()
+
+    //////////////// Life Cycle /////////////////
+
 
     /**
      * @memo 絶対重い
@@ -91,10 +104,14 @@ class LaneInstance(
         // Tick Task
         if (tickTask != null) tickTask!!.cancel()
         tickTask = game.unrailed.server.scheduler.runTaskTimer(game.unrailed, Runnable { tick() }, 1, 1)
+        // 最初のIndexセット
+        fromStationIndex = 0
+        toStationIndex = 1
     }
 
     /**
      * このレーンの列車を動かし始める処理
+     * @note stationIndex処理忘れずに
      * @see GameInstance.startMoving
      */
     fun startMoving() {
@@ -103,10 +120,30 @@ class LaneInstance(
     }
 
     /**
+     * 駅に突いたときの処理
+     */
+    fun onArrive(station: Station) {
+        fromStationIndex = stations!!.indexOf(station) // -1にならないと信じてる
+        toStationIndex = null // -1にならないと信じてる
+        game.onArrive(this, station)
+    }
+
+    /**
+     * 駅を出発するときの処理
+     */
+    fun onDepart(station: Station) {
+        fromStationIndex = stations!!.indexOf(station) // -1にならないと信じてる
+        toStationIndex = fromStationIndex!! + 1 // -1にならないと信じてる
+        game.onDepart(this, station)
+    }
+
+    /**
      * このレーンがクリアしたときの処理
      */
     fun onClear(clearLocation: Location) {
         train!!.isMoving = false
+        fromStationIndex = null
+        toStationIndex = null
         game.onClear(this, clearLocation)
     }
 
@@ -120,7 +157,12 @@ class LaneInstance(
     fun tick() {
         // TODO State Update
         // TODO 駅への接続確認
+        val station = stations!![toStationIndex!!]
+        if (station.isConnected(rail)) {
+            // TODO 駅に接続された時の判定
+        }
     }
+    //////////////// Life Cycle /////////////////
 }
 
 
