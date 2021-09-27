@@ -75,7 +75,7 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
             val minecart = it.getMinecart()
             if (!minecart.isOnRail()) {
                 // 地面に落ちているワゴンを削除
-                // TODO 演出
+                minecart.world.createExplosion(minecart.location, 3.0f, false, false)
                 println("地面に落ちているワゴンを削除")
                 if (it is EngineCar) {
                     // 先頭車のみ判定に必要

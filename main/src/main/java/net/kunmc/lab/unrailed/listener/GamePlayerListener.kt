@@ -15,14 +15,14 @@ import org.bukkit.event.player.PlayerToggleSprintEvent
 class GamePlayerListener(unrailed: Unrailed) : ListenerBase(unrailed) {
     @EventHandler
     fun onJump(e: PlayerJumpEvent) {
-        if (!e.player.isPhase(EndPhase())) {
+        if (!e.player.isPhase(EndPhase()) && e.player.isJoinedGame()) {
             e.isCancelled = true
         }
     }
 
     @EventHandler
     fun onSprint(e: PlayerToggleSprintEvent) {
-        if (!e.player.isPhase(EndPhase()) && e.isSprinting) {
+        if (!e.player.isPhase(EndPhase()) && e.isSprinting && e.player.isJoinedGame()) {
             e.isCancelled = true
             e.player.isSprinting = false
         }

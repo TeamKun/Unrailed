@@ -164,14 +164,19 @@ class LaneInstance(
             // 移動中
             val station = stations!![toStationIndex!!]
             if (station.isConnected(rail)) {
-                val firstBlock = train!!.getFirstLocation()!!.block
-                if (station.rail.contain(firstBlock)) {
-                    // 列車が駅に進入
-                    // TODO アニメーション
+                val firstLoc = train!!.getFirstLocation()
+                if (firstLoc == null) {
+                    // TODO 先頭車破壊後
                 } else {
-                    // 列車が駅に進入する前
-                    // (加速?)
-                    // TODO アニメーション
+                    val firstBlock = firstLoc.block
+                    if (station.rail.contain(firstBlock)) {
+                        // 列車が駅に進入
+                        // TODO アニメーション
+                    } else {
+                        // 列車が駅に進入する前
+                        // (加速?)
+                        // TODO アニメーション
+                    }
                 }
             }
         } else if (fromStationIndex != null) {
