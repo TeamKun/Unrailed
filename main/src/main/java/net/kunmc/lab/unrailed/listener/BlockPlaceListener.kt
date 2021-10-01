@@ -18,7 +18,7 @@ class BlockPlaceListener(unrailed: Unrailed) : ListenerBase(unrailed) {
                 // レール設置
                 val lane = Unrailed.goingOnGame!!.getLane(e.player)!!
 
-                if(lane.generateSetting.startLocation.blockY + 1 != e.blockPlaced.location.blockY){
+                if (lane.generateSetting.startLocation.blockY + 1 != e.blockPlaced.location.blockY) {
                     // レールの高さが違う
                     e.isCancelled = true
                     return
@@ -32,7 +32,7 @@ class BlockPlaceListener(unrailed: Unrailed) : ListenerBase(unrailed) {
                         // 接続不可
                         e.isCancelled = true
                     } else {
-                        broadCast("Rail Size is now:${rail.rails.size}")
+                        debug("Rail Size is now:${rail.rails.size}")
                     }
                 } else {
                     // 列車生成前
