@@ -21,6 +21,7 @@ class EventAll(val unrailed: Unrailed) {
             BlockPlaceListener(unrailed)
             BlockBreakListener(unrailed)
             InventoryEventListener(unrailed)
+            MinecartListener(unrailed)
         }
     }
 
