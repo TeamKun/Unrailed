@@ -159,10 +159,10 @@ fun Block.getConnectiveRail(): Pair<Block?, Block?> {
     val blocks = faces.toList().map { getRailRelative(it) }
 
     return Pair(
-        blocks[0].nullOr {
+        blocks[0].asNotNull {
             if (it.isRail()) it else null
         },
-        blocks[1].nullOr {
+        blocks[1].asNotNull {
             if (it.isRail()) it else null
         }
     )
@@ -346,7 +346,10 @@ fun Block.isConnective(to: Block): Boolean {
     return getRailableRails().map { it.location }.contains(to.location)
 }
 
-fun <T, R> T?.nullOr(f: (T) -> R): R? {
+/**
+ * Not Nullかのように～
+ */
+fun <T, R> T?.asNotNull(f: (T) -> R): R? {
     return if (this != null) {
         f(this)
     } else {
@@ -354,6 +357,9 @@ fun <T, R> T?.nullOr(f: (T) -> R): R? {
     }
 }
 
+/**
+ * @return null -> notnull,notnull -> notnull
+ */
 fun <T> T?.nullMap(f: () -> T): T {
     if (this == null) {
         return f()
@@ -611,4 +617,13 @@ fun Inventory.distinct() {
     clear()
     val items = distinctInventory.map { ItemStack(it.first, it.second) }.toTypedArray()
     addItem(*items)
+}
+
+inline fun <reified T : Enum<T>> T.safeValueOf(name: String): T? {
+    return try{
+        enumValueOf<T>(name)
+    }catch (e:IllegalArgumentException){
+        // Suppress
+        null
+    }
 }

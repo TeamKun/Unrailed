@@ -20,7 +20,7 @@ class BlockSet(private var blocks: List<BlockData>, val direction: Direction? = 
         }
 
         fun fromConfig(yaml: ConfigurationSection, server: Server): Pair<List<BlockData>, Direction?> {
-            val direction = yaml.getString("direction").nullOr { Direction.valueOf(it) }
+            val direction = yaml.getString("direction").asNotNull { Direction.valueOf(it) }
 
             val list = mutableListOf<BlockData>()
             for (x in yaml.getKeys(false)) {
