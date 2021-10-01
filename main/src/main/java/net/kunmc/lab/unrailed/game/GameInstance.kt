@@ -144,14 +144,14 @@ class GameInstance(val unrailed: Unrailed) {
      * このゲーム内のレーンが駅に着いた時の処理
      */
     fun onArrive(lane: LaneInstance, station: Station) {
-
+        log("GameInstance ${lane.generateSetting.teamColor.displayName}#onArrive@${station}")
     }
 
     /**
      * このゲーム内のレーンが駅を出発する時の処理
      */
     fun onDepart(lane: LaneInstance, station: Station) {
-
+        log("GameInstance ${lane.generateSetting.teamColor.displayName}#onDepart@${station}")
     }
 
     /**
@@ -192,5 +192,11 @@ class GameInstance(val unrailed: Unrailed) {
         // TODO Clean Up all Lane's team
         nowPhase = EndPhase()
         broadCaseMessage("すべてのチームが終了しました")
+        // TODO 結果発表
+        broadCaseMessage("-------- 結果発表 --------")
+        val sortedMap = laneResult.toList().sortedBy { it.second.nullMap { -1 } }.toMap()
+        sortedMap.toList().forEachIndexed { index, pair ->
+            broadCaseMessage("${index + 1}位 ${pair.first.generateSetting.teamColor.chatColor}${pair.first.generateSetting.teamColor.displayName}色${ChatColor.RESET}チーム 記録:${pair.second.nullMap { -1 }}ブロック")
+        }
     }
 }
