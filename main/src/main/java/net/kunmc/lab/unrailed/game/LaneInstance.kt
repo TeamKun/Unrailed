@@ -8,10 +8,7 @@ import net.kunmc.lab.unrailed.rail.Rail
 import net.kunmc.lab.unrailed.station.Station
 import net.kunmc.lab.unrailed.train.Train
 import net.kunmc.lab.unrailed.train.TrainBuilder
-import net.kunmc.lab.unrailed.util.broadCaseMessage
-import net.kunmc.lab.unrailed.util.debug
-import net.kunmc.lab.unrailed.util.getOrRegisterTeam
-import net.kunmc.lab.unrailed.util.setColor
+import net.kunmc.lab.unrailed.util.*
 import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -31,8 +28,10 @@ class LaneInstance(
 ) {
     /////////// Lane Data ////////////
     private val teamMember = mutableListOf<GamePlayer>()
+
+    // Team名16文字制限に引っかかるので変更
     val team: Team =
-        game.unrailed.server.scoreboardManager.mainScoreboard.getOrRegisterTeam("Unrailed-${generateSetting.teamColor}")
+        game.unrailed.server.scoreboardManager.mainScoreboard.getOrRegisterTeam("Ur-${generateSetting.teamColor}")
             .setColor(generateSetting.teamColor)
     var train: Train? = null
     var tickTask: BukkitTask? = null
@@ -123,6 +122,7 @@ class LaneInstance(
      * 駅に突いたときの処理
      */
     fun onArrive(station: Station) {
+        debug("Lane ${generateSetting.teamColor.displayName}#onArrive@${station}")
         fromStationIndex = stations!!.indexOf(station) // -1にならないと信じてる
         if (fromStationIndex!! == stations!!.lastIndex) {
             // 最後の駅
@@ -136,6 +136,7 @@ class LaneInstance(
      * 駅を出発するときの処理
      */
     fun onDepart(station: Station) {
+        debug("Lane ${generateSetting.teamColor.displayName}#onDepart@${station}")
         fromStationIndex = stations!!.indexOf(station) // -1にならないと信じてる
         toStationIndex = fromStationIndex!! + 1 // -1にならないと信じてる
         game.onDepart(this, station)
