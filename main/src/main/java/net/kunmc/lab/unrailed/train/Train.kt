@@ -11,6 +11,7 @@ import org.bukkit.Location
 import org.bukkit.entity.Minecart
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.vehicle.VehicleBlockCollisionEvent
 import org.bukkit.event.vehicle.VehicleCollisionEvent
 import org.bukkit.event.vehicle.VehicleDestroyEvent
 import org.bukkit.event.vehicle.VehicleEntityCollisionEvent
@@ -68,7 +69,7 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
 
     private fun onUpdate() {
         if (!plugin.isGoingOn) return
-        //TODO 先頭車両に後続車両をびっちりくっつける
+        //TODO 先頭車両に後続車両をびっちりくっつける // 死ぬ
         if (!isMoving) return
 
         car.removeAll {
@@ -99,7 +100,6 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
 
         val speed = state().getSpeed()
         if (speed == null) {
-            // TODO 先頭車爆発後処理
 //            println("[ERROR] Train is Running,Speed State is Null")
             state().isDropped = true
             return
@@ -120,7 +120,6 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
                     println("次のレールブロックが近くにない")
                     state().toDrop = true
                     // 速度維持
-                    // TODO レールの先にブロックがあったら?
                     return@applyVectors vector.scale(speed)
                 } else {
                     state().isDropped = false
@@ -158,25 +157,6 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
             it.getMinecart().remove()
         }
         this.car.clear()
-    }
-
-
-    ////////////////// Listener ////////////////////
-    @EventHandler
-    fun onVehicleCollide(e: VehicleEntityCollisionEvent) {
-        if (car.map { it.getMinecart() }.contains(e.vehicle)) {
-            e.isCollisionCancelled = true
-            e.isCancelled = true
-        }
-    }
-
-    @EventHandler
-    fun onBreakVehicle(e: VehicleDestroyEvent) {
-        if (e.vehicle is Minecart) {
-            if (car.map { it.getMinecart() }.contains(e.vehicle)) {
-                e.isCancelled = true
-            }
-        }
     }
 
 
