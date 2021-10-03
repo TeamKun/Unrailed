@@ -43,6 +43,4 @@ class GamePlayer(val p: Player, val game: GameInstance) : ListenerBase(game.unra
     fun getLane(): LaneInstance? {
         return Unrailed.goingOnGame?.getLane(this.p)
     }
-
-    // TODO Prevent Events (Run,Jump,Inventory etc.)
 }

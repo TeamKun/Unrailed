@@ -48,6 +48,7 @@ class GameInstanceTest(unrailed: Unrailed) : TestCase(unrailed) {
                     Random.nextLong(Long.MIN_VALUE, Long.MAX_VALUE),
                     3,
                     3,
+                    // TODO 色がかぶる
                     WoolColor.namedTextColor().random()
                 )
 

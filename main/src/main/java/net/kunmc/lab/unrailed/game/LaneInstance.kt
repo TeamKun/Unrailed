@@ -95,7 +95,7 @@ class LaneInstance(
      */
     fun start() {
         if (train != null) {
-            net.kunmc.lab.unrailed.util.error("Game Not Reset")
+            error("Game Not Reset")
             train!!.removeAll()
         }
         train = trainBuilder.onBuild(generateSetting.startLocation, generateSetting.direction)
