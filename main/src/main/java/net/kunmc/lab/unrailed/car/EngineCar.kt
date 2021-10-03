@@ -1,9 +1,12 @@
 package net.kunmc.lab.unrailed.car
 
 import net.kunmc.lab.unrailed.car.upgrade.UpGradeSetting
+import net.kunmc.lab.unrailed.util.CarInteractEvent
+import net.kunmc.lab.unrailed.util.asNotNull
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Minecart
+import org.bukkit.event.Event
 import org.bukkit.material.MaterialData
 import org.bukkit.plugin.java.JavaPlugin
 import kotlin.math.max
@@ -39,6 +42,10 @@ class EngineCar(
 
     override fun onUpgrade(t: Double) {
         speed = engineSetting.tFunction(getUpGradeLevel() + 1)
+    }
+
+    override fun onInteract(e: CarInteractEvent) {
+        // Nothing
     }
 }
 
