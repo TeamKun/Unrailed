@@ -38,7 +38,7 @@ class MinecartListener(unrailed: Unrailed) : ListenerBase(unrailed) {
     fun onCollideWithBlock(e: VehicleBlockCollisionEvent) {
         // どうやら俺らが思うEntityに当たって発火する
         if (e.vehicle is Minecart && !e.block.isRail()) {
-            debug("Type:${e.block.type}")
+            debug("onCollideWithBlock Type:${e.block.type}")
             val train = getTrain(e.vehicle as Minecart)
             if (train != null) {
                 train.state().isDropped = true

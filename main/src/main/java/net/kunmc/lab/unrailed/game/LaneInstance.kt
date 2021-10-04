@@ -149,6 +149,7 @@ class LaneInstance(
         train!!.isMoving = false
         fromStationIndex = null
         toStationIndex = null
+        if (tickTask != null) tickTask!!.cancel()
         game.onClear(this, clearLocation)
     }
 
@@ -156,6 +157,7 @@ class LaneInstance(
      * このレーンが脱落したときの処理
      */
     fun onFail(failLocation: Location) {
+        if (tickTask != null) tickTask!!.cancel()
         game.onFail(this, failLocation)
     }
 
@@ -167,16 +169,14 @@ class LaneInstance(
             if (station.isConnected(rail)) {
                 val firstLoc = train!!.getFirstLocation()
                 if (firstLoc == null) {
-                    // TODO 先頭車破壊後
+                    // 先頭車破壊後
+                    // 何もしない
                 } else {
                     val firstBlock = firstLoc.block
-                    if (station.rail.contain(firstBlock)) {
-                        // 列車が駅に進入
-                        // TODO アニメーション
-                    } else {
-                        // 列車が駅に進入する前
-                        // (加速?)
-                        // TODO アニメーション
+                    if (station.rail.contain(firstBlock) && station.rail.rails.getCenter()!! == firstBlock) {
+                        // 列車が駅の中心に進入
+                        debug("Arriving")
+                        // TODO 止める
                     }
                 }
             }

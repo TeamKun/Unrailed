@@ -620,10 +620,18 @@ fun Inventory.distinct() {
 }
 
 inline fun <reified T : Enum<T>> T.safeValueOf(name: String): T? {
-    return try{
+    return try {
         enumValueOf<T>(name)
-    }catch (e:IllegalArgumentException){
+    } catch (e: IllegalArgumentException) {
         // Suppress
         null
+    }
+}
+
+fun <T> List<T>.getCenter(): T? {
+    return when {
+        this.isEmpty() -> null
+        lastIndex % 2 == 0 -> get(lastIndex / 2 + 1)
+        else -> get(lastIndex / 2)
     }
 }

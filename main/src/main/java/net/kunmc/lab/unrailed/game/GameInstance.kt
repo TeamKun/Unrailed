@@ -189,10 +189,8 @@ class GameInstance(val unrailed: Unrailed) {
      * すべてのレーンが終了した時の処理
      */
     fun onAllDone() {
-        // TODO Clean Up all Lane's team
         nowPhase = EndPhase()
         broadCaseMessage("すべてのチームが終了しました")
-        // TODO 結果発表
         broadCaseMessage("-------- 結果発表 --------")
         val sortedMap = laneResult.toList().sortedBy { it.second.nullMap { -1 } }.toMap()
         sortedMap.toList().forEachIndexed { index, pair ->
