@@ -1,9 +1,8 @@
 package net.kunmc.lab.unrailed.train.state
 
-abstract class SpeedModifier(trainState: TrainState) : StateModifier(trainState) {
-    /**
-     * @param beforeSpeed この効果適用前の列車のスピード
-     * @return 効果適用後のスピード
-     */
-    abstract fun moddedSpeed(beforeSpeed:Double):Double
+import net.kunmc.lab.unrailed.train.AbstractTrain
+
+class SpeedModifier(state: SpeedState, id: String, var f: (AbstractTrain, Double) -> Double) :
+    StateModifier<AbstractTrain, Double>(state, id) {
+    override fun onCalculate(t: AbstractTrain, beforeValue: Double): Double = f(t, beforeValue)
 }

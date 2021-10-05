@@ -1,30 +1,29 @@
 package net.kunmc.lab.unrailed.train.state
 
-import net.kunmc.lab.unrailed.car.EngineCar
+import net.kunmc.lab.unrailed.train.AbstractTrain
 import net.kunmc.lab.unrailed.train.Train
 
 class TrainState(val train: Train) {
-    fun addModifier(modifier: StateModifier) {
+    fun addModifier(modifier: StateModifier<AbstractTrain, *>) {
         when (modifier) {
             is SpeedModifier -> {
-                speedModifier.add(modifier)
+                speed.addModifier(modifier)
+            }
+        }
+    }
+
+    fun setForceModifier(modifier: StateModifier<AbstractTrain, *>) {
+        when (modifier) {
+            is SpeedModifier -> {
+                speed.setForceModifier(modifier)
             }
         }
     }
 
     /**
-     * 現在の列車の速度
+     * 列車の速度のState
      */
-    fun getSpeed(): Double? {
-        val d = train.getComponents(EngineCar::class.java).getOrNull(0)?.speed ?: return null
-        var result = d
-        speedModifier.forEach {
-            result = it.moddedSpeed(result)
-        }
-        return result
-    }
-
-    val speedModifier = mutableListOf<SpeedModifier>()
+    val speed = SpeedState(this)
 
     /**
      * @return 列車が線路から落ちているかどうか = ゲームオーバーかどうか

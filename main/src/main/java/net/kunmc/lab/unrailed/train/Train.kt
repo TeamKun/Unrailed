@@ -98,7 +98,7 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
             return
         }
 
-        val speed = state().getSpeed()
+        val speed = state().speed.get()
         if (speed == null) {
 //            println("[ERROR] Train is Running,Speed State is Null")
             state().isDropped = true

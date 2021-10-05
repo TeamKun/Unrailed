@@ -39,6 +39,7 @@ class EngineCar(
     }
 
     var speed: Double = BaseSpeed
+        private set
 
     override fun onUpgrade(t: Double) {
         speed = engineSetting.tFunction(getUpGradeLevel() + 1)
