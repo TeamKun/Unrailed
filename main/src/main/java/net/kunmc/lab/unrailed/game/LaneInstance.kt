@@ -176,6 +176,8 @@ class LaneInstance(
                     if (station.rail.contain(firstBlock) && station.rail.rails.getCenter()!! == firstBlock) {
                         // 列車が駅の中心に進入
                         debug("Arriving")
+                        val stopResult = train!!.stop()
+                        debug("StopResult:$stopResult")
                         // TODO 止める
                     }
                 }

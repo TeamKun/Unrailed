@@ -17,7 +17,7 @@ open class State<T, R>(val t: T, var baseValue: () -> R?) {
      * @return success or not
      */
     fun addModifier(modifier: StateModifier<T, R>, isStrict: Boolean = false): Boolean {
-        if (modifierList.map { it.id }.contains(modifier.id)) {
+        if (getById(modifier.id) != null) {
             // Duplicated ID
             if (isStrict) {
                 throw Exception("In State#addModifier,Duplicated ID:${modifier.id}")
@@ -35,6 +35,22 @@ open class State<T, R>(val t: T, var baseValue: () -> R?) {
     fun setForceModifier(modifier: StateModifier<T, R>) {
         forceModifier = modifier
     }
+
+    fun removeModifier(modifier: StateModifier<T, R>) = modifierList.remove(modifier)
+    fun removeModifier(id: String): Boolean {
+        val e = getById(id)
+        return if (e == null) false
+        else removeModifier(e)
+    }
+
+
+    fun getById(id: String): StateModifier<T, R>? {
+        return modifierList.firstOrNull { it.id == id }
+            ?: if (forceModifier != null && forceModifier?.id == id) forceModifier!!
+            else null
+    }
+
+    fun exist(id: String) = getById(id) != null
 
     fun calculate() = get()
 

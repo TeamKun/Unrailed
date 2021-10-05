@@ -5,6 +5,7 @@ import net.kunmc.lab.unrailed.car.AbstractCar
 import net.kunmc.lab.unrailed.car.EngineCar
 import net.kunmc.lab.unrailed.game.LaneInstance
 import net.kunmc.lab.unrailed.rail.Rail
+import net.kunmc.lab.unrailed.train.state.SpeedStopper
 import net.kunmc.lab.unrailed.train.state.TrainState
 import net.kunmc.lab.unrailed.util.*
 import org.bukkit.Location
@@ -163,5 +164,30 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
     ////////////////// Game ///////////////
     fun getLane(): LaneInstance? {
         return Unrailed.goingOnGame?.getLane(this)
+    }
+
+
+    /////////////////// Util ///////////////////
+
+    private val stopperId = "Stopper"
+
+    fun stop(): Boolean {
+        val speed = state().speed
+        return if (speed.exist(stopperId)) {
+            false
+        } else {
+            speed.addModifier(SpeedStopper(speed, stopperId))
+            true
+        }
+    }
+
+    fun deStop(): Boolean {
+        val speed = state().speed
+        return if (speed.exist(stopperId)) {
+            speed.removeModifier(stopperId)
+            true
+        } else {
+            false
+        }
     }
 }
