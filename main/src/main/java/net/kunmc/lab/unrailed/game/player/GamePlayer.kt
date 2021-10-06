@@ -32,13 +32,7 @@ class GamePlayer(val p: Player, val game: GameInstance) : ListenerBase(game.unra
         game.players.add(this)
     }
 
-    val perks = mutableListOf<Perk>()
-
-    /**
-     * Playerが木を切ったり石を掘ったりレールを敷いたりしたらもらえるポイント
-     * Perk解放に使える
-     */
-    var points = 0
+    val state = GamePlayerState(this)
 
     fun getLane(): LaneInstance? {
         return Unrailed.goingOnGame?.getLane(this.p)

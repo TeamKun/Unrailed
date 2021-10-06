@@ -2,6 +2,7 @@ package net.kunmc.lab.unrailed.test
 
 import net.kunmc.lab.unrailed.Unrailed
 import net.kunmc.lab.unrailed.game.GameInstance
+import net.kunmc.lab.unrailed.game.GameSetting
 import net.kunmc.lab.unrailed.generator.GenerateSetting
 import net.kunmc.lab.unrailed.generator.StandardGenerator
 import net.kunmc.lab.unrailed.generator.terrain.generator.BaseTerrainGenerator
@@ -30,7 +31,7 @@ class GeneratorTest(unrailed: Unrailed) : TestCase(unrailed) {
                 val gameInstance = if (Unrailed.goingOnGame != null) {
                     Unrailed.goingOnGame!!
                 } else {
-                    GameInstance(unrailed)
+                    GameInstance(unrailed, GameSetting())
                 }
 
                 generator.onGenerate(

@@ -45,6 +45,8 @@ class LaneInstance(
      */
     var fromStationIndex: Int? = null // 出発した駅のIndex
     var toStationIndex: Int? = null // 到着予定の駅のIndex
+
+    val state: LaneState = LaneState(this)
     /////////// Lane Data ////////////
 
     fun addTeamMember(g: GamePlayer) {
@@ -119,17 +121,35 @@ class LaneInstance(
     }
 
     /**
-     * 駅に突いたときの処理
+     * 駅に着いたときの処理
      */
     fun onArrive(station: Station) {
         debug("Lane ${generateSetting.teamColor.displayName}#onArrive@${station}")
+
+        // Update Station Index
         fromStationIndex = stations!!.indexOf(station) // -1にならないと信じてる
         if (fromStationIndex!! == stations!!.lastIndex) {
             // 最後の駅
             fromStationIndex = null
         }
         toStationIndex = null // -1にならないと信じてる
+
+        // Update Lane Keys & GamePlayer Point
+        state.keys += game.gameSetting.keysPerStation
+        teamMember.forEach { it.state.points += game.gameSetting.pointPerStation }
         game.onArrive(this, station)
+
+        // Timer to Hook Departure
+        game.unrailed.server.scheduler.runTaskLater(
+            game.unrailed,
+            Runnable { onDepart(station) },
+            game.gameSetting.ticksOfUpgrade
+        )
+
+        // Set State to upgrade time
+        state.isUpgradeTime = true
+
+        // TODO Upgrade関係
     }
 
     /**
@@ -139,14 +159,18 @@ class LaneInstance(
         debug("Lane ${generateSetting.teamColor.displayName}#onDepart@${station}")
         fromStationIndex = stations!!.indexOf(station) // -1にならないと信じてる
         toStationIndex = fromStationIndex!! + 1 // -1にならないと信じてる
+
+        // Set State to not upgrade time
+        state.isUpgradeTime = false
+
         game.onDepart(this, station)
+        train!!.deStop()
     }
 
     /**
      * このレーンがクリアしたときの処理
      */
     fun onClear(clearLocation: Location) {
-        train!!.isMoving = false
         fromStationIndex = null
         toStationIndex = null
         if (tickTask != null) tickTask!!.cancel()
@@ -173,12 +197,15 @@ class LaneInstance(
                     // 何もしない
                 } else {
                     val firstBlock = firstLoc.block
-                    if (station.rail.contain(firstBlock) && station.rail.rails.getCenter()!! == firstBlock) {
+                    if (station.rail.contain(firstBlock) && station.rail.rails.getCenter()!! == firstBlock && train!!.isMoving) {
                         // 列車が駅の中心に進入
-                        debug("Arriving")
-                        val stopResult = train!!.stop()
-                        debug("StopResult:$stopResult")
-                        // TODO 止める
+                        debug("Stop Result:${train!!.stop()}")
+                        if (toStationIndex!! == stations!!.lastIndex) {
+                            // 最終駅到着
+                            onClear(train!!.getFirstLocation()!!)
+                        } else {
+                            onArrive(station)
+                        }
                     }
                 }
             }

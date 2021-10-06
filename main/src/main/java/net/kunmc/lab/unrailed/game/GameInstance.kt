@@ -26,14 +26,7 @@ import org.bukkit.entity.Player
 /**
  * 1つのゲームを表すクラス
  */
-class GameInstance(val unrailed: Unrailed) {
-    companion object {
-        /**
-         * 列車がゲーム開始から何tick後に動くか
-         */
-        const val MovingTime = 30 * 20L
-    }
-
+class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
     init {
         if (Unrailed.goingOnGame == null) {
             Unrailed.goingOnGame = this
@@ -126,7 +119,7 @@ class GameInstance(val unrailed: Unrailed) {
         // Status Reset
         laneResult = mutableMapOf()
         lanes.forEach { laneResult[it] = null }
-        unrailed.server.scheduler.runTaskLater(unrailed, Runnable { startMoving() }, MovingTime)
+        unrailed.server.scheduler.runTaskLater(unrailed, Runnable { startMoving() }, gameSetting.ticksOfStarting)
     }
 
     /**

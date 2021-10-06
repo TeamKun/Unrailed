@@ -2,6 +2,7 @@ package net.kunmc.lab.unrailed.test
 
 import net.kunmc.lab.unrailed.Unrailed
 import net.kunmc.lab.unrailed.game.GameInstance
+import net.kunmc.lab.unrailed.game.GameSetting
 import net.kunmc.lab.unrailed.game.LaneInstance
 import net.kunmc.lab.unrailed.game.player.GamePlayer
 import net.kunmc.lab.unrailed.generator.GenerateSetting
@@ -35,7 +36,7 @@ class GameInstanceTest(unrailed: Unrailed) : TestCase(unrailed) {
                 val gameInstance = if (Unrailed.goingOnGame != null) {
                     Unrailed.goingOnGame!!
                 } else {
-                    GameInstance(unrailed)
+                    GameInstance(unrailed, GameSetting())
                 }
 
                 val generateSetting = GenerateSetting(
