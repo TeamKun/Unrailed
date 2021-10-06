@@ -10,6 +10,8 @@ class BlockBreakListener(unrailed: Unrailed) : ListenerBase(unrailed) {
     @EventHandler
     fun onBreak(e: BlockBreakEvent) {
         if (e.player.isJoinedGame()) {
+            val gamePlayer = e.player.getGamePlayer()!!
+
             if (e.block.isRail()) {
                 val lane = Unrailed.goingOnGame!!.getLane(e.player)!!
                 val train = lane.train
@@ -37,6 +39,9 @@ class BlockBreakListener(unrailed: Unrailed) : ListenerBase(unrailed) {
                     e.isCancelled = true
                 } else {
                     // 石とか掘ってるんやろ。たぶん。
+
+                    // 加算
+                    gamePlayer.state.points += gamePlayer.game.gameSetting.pointPerBreak
                 }
             }
         }

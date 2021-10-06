@@ -635,3 +635,9 @@ fun <T> List<T>.getCenter(): T? {
         else -> get(lastIndex / 2)
     }
 }
+
+fun Player.getGamePlayer(): GamePlayer? {
+    return Unrailed.goingOnGame.asNotNull {
+        return@asNotNull it.players.firstOrNull { p -> p.p == this }
+    }
+}

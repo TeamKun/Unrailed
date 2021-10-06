@@ -8,7 +8,11 @@ data class GameSetting(
     /**
      * 各駅到着後、どれぐらいPlayerのPointを増やすか
      */
-    val pointPerStation: Int = 1,
+    val pointPerStation: Int = 100,
+    /**
+     * 石や木を破壊したときにどのぐらいPlayerのPointを増やすか
+     */
+    val pointPerBreak: Int = 10,
     /**
      * 各駅到着後のアップグレードの時間の長さ
      */
