@@ -22,6 +22,7 @@ class Unrailed : JavaPlugin() {
     var isGoingOn = false
 
     fun start(loc: Location) {
+        // TODO
     }
 
     fun stop() {
@@ -31,6 +32,7 @@ class Unrailed : JavaPlugin() {
         // Plugin startup logic
         saveDefaultConfig()
         command(this).register("ur")
+        upgradeCommand(this).register("ug")
         EventAll.getInstance(this)
         EventAll.init(this)
     }
