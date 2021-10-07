@@ -75,6 +75,13 @@ class LaneInstance(
 
     fun getAllTeamMember() = teamMember.toMutableList()
 
+    /**
+     * @return The First Player of this Team
+     * in many cases,this value will not be null
+     * this value will be null if teamMember is empty.
+     */
+    fun getLeader() = teamMember.getOrNull(0)
+
     //////////////// Life Cycle /////////////////
 
 

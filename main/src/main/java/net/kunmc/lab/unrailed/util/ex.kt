@@ -641,3 +641,15 @@ fun Player.getGamePlayer(): GamePlayer? {
         return@asNotNull it.players.firstOrNull { p -> p.p == this }
     }
 }
+
+/**
+ * @return if this member is leader of any lane
+ */
+fun Player.isLeader(): Boolean {
+    val gamePlayer = getGamePlayer()
+    if (gamePlayer != null) {
+        return gamePlayer.getLane().asNotNull {
+            return@asNotNull it.getLeader() == gamePlayer
+        }.nullMap { false }
+    } else return false
+}
