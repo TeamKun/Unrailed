@@ -53,6 +53,10 @@ class EngineCar(
 class EngineCarSetting :
     UpGradeSetting<Double>(
         cost = { it * 2 },
-        tFunction = { max(EngineCar.BaseSpeed - it * 0.05, EngineCar.minSpeed) },
+        tFunction = { max(EngineCar.BaseSpeed - it * decreaseSpeedPerLevel, EngineCar.minSpeed) },
         description = { _, speed -> listOf("進行速度が遅くなる", "エンジンが壊れていたかも。", "速度が${speed}になる") }
-    )
+    ) {
+    companion object {
+        const val decreaseSpeedPerLevel = 0.05
+    }
+}

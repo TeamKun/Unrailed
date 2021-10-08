@@ -19,6 +19,7 @@ class StorageCar(
     }
 
     var storageSize = baseStorageSize
+        private set
 
     override fun onUpgrade(t: Int) {
         storageSize = t
@@ -31,6 +32,10 @@ class StorageCar(
 
 class StorageUpgradeSetting : UpGradeSetting<Int>(
     cost = { it },
-    tFunction = { StorageCar.baseStorageSize + it * 2 },
-    description = { level, size -> listOf("ストレージ容量を増加", "ストレージ容量:${StorageCar.baseStorageSize + level * 2}") }
-) {}
+    tFunction = { StorageCar.baseStorageSize + it * increaseItemSizePerLevel },
+    description = { level, size -> listOf("ストレージ容量を増加", "ストレージ容量:${StorageCar.baseStorageSize + level * increaseItemSizePerLevel}") }
+) {
+    companion object{
+        const val increaseItemSizePerLevel = 4
+    }
+}
