@@ -30,6 +30,8 @@ class GamePlayer(val p: Player, val game: GameInstance) : ListenerBase(game.unra
 
     init {
         game.players.add(this)
+        // これがすべてです
+        p.isCollidable = false
     }
 
     val state = GamePlayerState(this)

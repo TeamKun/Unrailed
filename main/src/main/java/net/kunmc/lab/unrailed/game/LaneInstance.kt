@@ -146,6 +146,9 @@ class LaneInstance(
         teamMember.forEach { it.state.points += game.gameSetting.pointPerStation }
         game.onArrive(this, station)
 
+        // Replace The Train (disabled) (not working)
+//        train!!.replace(train!!.getFirstLocation()!!)
+
         // Timer to Hook Departure
         game.unrailed.server.scheduler.runTaskLater(
             game.unrailed,

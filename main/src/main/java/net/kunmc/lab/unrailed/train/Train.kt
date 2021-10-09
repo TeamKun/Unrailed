@@ -56,6 +56,27 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
         return this
     }
 
+    /**
+     * Replace This Train to Exact Location
+     */
+    fun replace(firstLocation: Location) {
+        debug("Train#Replace")
+        val firstCarRailIndex = rail.getIndex(firstLocation.block)
+        if (firstCarRailIndex == null) {
+            debug("Train#Replace:FirstLocation is not on Rail")
+        } else {
+            this.car.forEachIndexed { index, abstractCar ->
+                val railIndex = firstCarRailIndex - index
+                val block = if (railIndex in rail.rails.lastIndex..0) {
+                    rail.rails[railIndex]
+                } else {
+                    rail.rails[0]
+                }
+                abstractCar.getMinecart().location.set(block.x.toDouble(), block.y.toDouble(), block.z.toDouble())
+            }
+        }
+    }
+
     private val trainState = TrainState(this)
     override fun state(): TrainState = trainState
 
@@ -168,7 +189,6 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
 
 
     /////////////////// Util ///////////////////
-
     private val stopperId = "Stopper"
 
     fun stop(): Boolean {
