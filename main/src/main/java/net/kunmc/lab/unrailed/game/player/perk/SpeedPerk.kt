@@ -13,7 +13,7 @@ class SpeedPerk : Perk {
 
     override fun onEffect(gamePlayer: GamePlayer) {
         if (!gamePlayer.p.hasPotionEffect(PotionEffectType.SPEED)) {
-            gamePlayer.p.addPotionEffect(PotionEffect(PotionEffectType.SPEED, Int.MAX_VALUE, 1))
+            gamePlayer.p.addPotionEffect(PotionEffect(PotionEffectType.SPEED, Int.MAX_VALUE, 0))
         }
     }
 

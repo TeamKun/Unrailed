@@ -33,22 +33,22 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
 
     fun addCar(f: (Location, Unrailed) -> AbstractCar): Train {
         val lastCar = car.last().getMinecart()
-        println("Rail Size:${rail.rails.size}")
+        debug("Rail Size:${rail.rails.size}")
         val lastCarRailIndex = rail.getIndex(lastCar.location.block)
         val addLocation = when {
             lastCarRailIndex == null -> {
-                println("in AddCar,lastCarRailIndex is null")
+                debug("in AddCar,lastCarRailIndex is null")
                 // うまくindex取得できなかった場合
                 lastCar.location
             }
             lastCarRailIndex != 0 -> {
                 // 中間のレールに乗ってる
-                println("中間のレールに乗ってる")
+                debug("中間のレールに乗ってる")
                 rail.rails[lastCarRailIndex - 1].location
             }
             else -> {
                 // 最初のレールに乗ってる
-                println("最初のレールに乗ってる")
+                debug("最初のレールに乗ってる")
                 rail.rails[0].location
             }
         }
@@ -78,7 +78,7 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
             if (!minecart.isOnRail()) {
                 // 地面に落ちているワゴンを削除
                 minecart.world.createExplosion(minecart.location, 3.0f, false, false)
-                println("地面に落ちているワゴンを削除")
+                debug("地面に落ちているワゴンを削除")
                 if (it is EngineCar) {
                     // 先頭車のみ判定に必要
                     getLane()?.onFail(minecart.location)
@@ -118,7 +118,7 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
                 val face = now.getFace(next)
                 if (face == null) {
                     // 次のレールブロックが近くにない
-                    println("次のレールブロックが近くにない")
+                    debug("次のレールブロックが近くにない")
                     state().toDrop = true
                     // 速度維持
                     return@applyVectors vector.scale(speed)

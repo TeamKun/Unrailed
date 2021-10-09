@@ -653,3 +653,7 @@ fun Player.isLeader(): Boolean {
         }.nullMap { false }
     } else return false
 }
+
+inline fun <reified T> List<*>.containSameType(t: T): Boolean {
+    return any { it is T }
+}

@@ -30,6 +30,7 @@ class MinecartListener(unrailed: Unrailed) : ListenerBase(unrailed) {
             if (train != null) {
                 e.isCollisionCancelled = true
                 e.isCancelled = true
+                debug("Canceled VehicleEntityCollisionEvent")
             }
         }
     }
