@@ -4,6 +4,7 @@ import net.kunmc.lab.unrailed.Unrailed
 import net.kunmc.lab.unrailed.car.AbstractCar
 import net.kunmc.lab.unrailed.car.EngineCar
 import net.kunmc.lab.unrailed.car.StorageCar
+import net.kunmc.lab.unrailed.game.phase.EndPhase
 import net.kunmc.lab.unrailed.train.Train
 import net.kunmc.lab.unrailed.util.CarInteractEvent
 import net.kunmc.lab.unrailed.util.asNotNull
@@ -56,6 +57,9 @@ class MinecartListener(unrailed: Unrailed) : ListenerBase(unrailed) {
 
     @EventHandler
     fun onBreak(e: VehicleDestroyEvent) {
+        if (Unrailed.goingOnGame.asNotNull { it.nowPhase is EndPhase } == true) {
+            return
+        }
         if (e.vehicle is Minecart) {
             val car = getCar(e.vehicle as Minecart)
             if (car != null) {
@@ -99,8 +103,8 @@ class MinecartListener(unrailed: Unrailed) : ListenerBase(unrailed) {
     }
 
     private fun getCar(minecart: Minecart): AbstractCar? {
-        return Unrailed.goingOnGame.asNotNull {
-            it.lanes
+        return Unrailed.goingOnGame.asNotNull { gameInstance ->
+            gameInstance.lanes
                 .mapNotNull { l -> l.train }
                 .map { t -> t.getCars() }.flatten()
                 .first { it.getMinecart() == minecart }
