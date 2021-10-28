@@ -10,6 +10,7 @@ import net.kunmc.lab.unrailed.game.player.GamePlayer
 import net.kunmc.lab.unrailed.generator.AbstractGenerator
 import net.kunmc.lab.unrailed.generator.GenerateSetting
 import net.kunmc.lab.unrailed.generator.StandardGenerator
+import net.kunmc.lab.unrailed.hud.HUDManager
 import net.kunmc.lab.unrailed.rail.Rail
 import net.kunmc.lab.unrailed.rail.RailBlockException
 import net.kunmc.lab.unrailed.rail.RailException
@@ -119,6 +120,11 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
         // Status Reset
         laneResult = mutableMapOf()
         lanes.forEach { laneResult[it] = null }
+
+        // Init HUDs
+        hudManager.init()
+
+        // Pass to #startMoving
         unrailed.server.scheduler.runTaskLater(unrailed, Runnable { startMoving() }, gameSetting.ticksOfStarting)
     }
 
@@ -190,4 +196,8 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
             broadCaseMessage("${index + 1}位 ${pair.first.generateSetting.teamColor.chatColor}${pair.first.generateSetting.teamColor.displayName}色${ChatColor.RESET}チーム 記録:${pair.second.nullMap { -1 }}ブロック")
         }
     }
+
+
+    //////////////// HUD ///////////////
+    val hudManager = HUDManager(unrailed, this)
 }
