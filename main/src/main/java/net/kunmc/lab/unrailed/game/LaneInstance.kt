@@ -53,6 +53,10 @@ class LaneInstance(
         teamMember.add(g)
         team.addEntry(g.p.name)
         g.p.sendMessage("" + ChatColor.GREEN + "${generateSetting.teamColor.displayName}色チームに参加しました!")
+        if (g.p.isLeader()) {
+            // Notify player that you are the leader of this lane
+            g.p.sendMessage("" + ChatColor.GREEN + "${generateSetting.teamColor.displayName}色チームのリーダーになりました!")
+        }
     }
 
     fun addTeamMember(vararg g: GamePlayer) {
