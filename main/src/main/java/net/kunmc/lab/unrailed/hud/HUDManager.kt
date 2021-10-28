@@ -5,16 +5,28 @@ import net.kunmc.lab.unrailed.game.GameInstance
 import net.kunmc.lab.unrailed.game.phase.EndPhase
 import net.kunmc.lab.unrailed.game.phase.GamePhase
 import net.kunmc.lab.unrailed.game.phase.PreparePhase
+import org.bukkit.scheduler.BukkitTask
 
 /**
  * Manager of All HUD
  */
 class HUDManager(val unrailed: Unrailed, val gameInstance: GameInstance) {
+    private var task: BukkitTask? = null
+
     /**
      * @note this function should be called when the game is starting
      */
     fun init() {
-        unrailed.server.scheduler.runTaskTimer(unrailed, Runnable { tick() }, 1, 1)
+        task = unrailed.server.scheduler.runTaskTimer(unrailed, Runnable { tick() }, 1, 1)
+    }
+
+    /**
+     * @note this function should be called when the game is regenerating
+     */
+    fun dispose() {
+        if (task != null) {
+            task!!.cancel()
+        }
     }
 
     private val prepareHUD = PreparePhaseHUD()

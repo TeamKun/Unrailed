@@ -198,6 +198,15 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
     }
 
 
+    /**
+     * Dispose this GameInstance
+     */
+    fun dispose() {
+        // TODO Call this function when regenerate gameInstance
+        hudManager.dispose()
+    }
+
+
     //////////////// HUD ///////////////
     val hudManager = HUDManager(unrailed, this)
 }
