@@ -39,6 +39,7 @@ class InventoryEventListener(unrailed: Unrailed) : ListenerBase(unrailed) {
     private fun checkInventory(e: EntityPickupItemEvent) {
         val count = (e.entity as Player).inventory.storageContents.filterNotNull().count()
         if (count >= 1) {
+            // TODO おんなじ種類でスタック可能だったら?
             e.isCancelled = true
         }
         checkInventory((e.entity as Player).inventory, e.entity as Player)

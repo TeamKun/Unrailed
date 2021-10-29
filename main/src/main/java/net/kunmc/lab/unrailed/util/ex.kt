@@ -730,7 +730,7 @@ fun Inventory.remove(filter: (ItemStack) -> Boolean, amount: Int): Boolean {
             itemStack
         }
     }.forEachIndexed { index, itemStack ->
-        setItem(index,itemStack)
+        setItem(index, itemStack)
     }
 
 //    storageContents.forEachIndexed { index, itemStack ->
@@ -769,3 +769,10 @@ fun Inventory.remove(filter: (ItemStack) -> Boolean, amount: Int): Boolean {
 }
 
 fun Inventory.remove(material: Material, amount: Int) = remove({ it.type == material }, amount)
+
+fun ItemStack.isMergeable(other: ItemStack, maxStackSize: Int? = null): Boolean {
+    if (maxStackSize != null) {
+        return isSimilar(other) && (amount + other.amount) <= min(maxStackSize, this.maxStackSize)
+    }
+    return isSimilar(other) && (amount + other.amount) <= this.maxStackSize
+}

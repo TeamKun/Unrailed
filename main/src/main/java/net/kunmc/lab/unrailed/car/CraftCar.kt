@@ -1,11 +1,14 @@
 package net.kunmc.lab.unrailed.car
 
 import net.kunmc.lab.unrailed.car.upgrade.UpGradeSetting
+import net.kunmc.lab.unrailed.game.player.GamePlayer
+import net.kunmc.lab.unrailed.listener.InventoryEventListener
 import net.kunmc.lab.unrailed.train.Train
 import net.kunmc.lab.unrailed.util.*
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Minecart
+import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.material.MaterialData
 import org.bukkit.plugin.java.JavaPlugin
@@ -64,6 +67,17 @@ class CraftCar(plugin: JavaPlugin, spawnLocation: Location, Name: String = "ä½œæ
 
     override fun onInteract(e: CarInteractEvent) {
         // TODO Add Rails To Player Inventory
+        val p = e.getPlayer() ?: return
+
+        if (p.inventory.storageContents.filterNotNull().size == 1 && p.inventory.storageContents.filterNotNull()
+                .first().isMergeable(ItemStack(Material.RAIL), GamePlayer.storageSize)
+        ) {
+            // Can be merged
+            val stack = p.inventory.storageContents.filterNotNull().first()
+            stack.amount = stack.amount + 1
+        } else if (p.inventory.storageContents.filterNotNull().isEmpty()) {
+            p.inventory.setItem(InventoryEventListener.inventorySlotIndex, ItemStack(Material.RAIL))
+        }
     }
 
     /**
@@ -80,8 +94,10 @@ class CraftCar(plugin: JavaPlugin, spawnLocation: Location, Name: String = "ä½œæ
             craftTicksCount++
             if (craftTicksCount >= craftTime) {
                 // Complete Crafting
+                remove()
                 railCounts++
                 craftTicksCount = 0
+                debug("Complete Crafting")
             }
         } else {
             craftTicksCount = 0
@@ -98,6 +114,18 @@ class CraftCar(plugin: JavaPlugin, spawnLocation: Location, Name: String = "ä½œæ
             return storageCar[0].woodCount >= 1 && storageCar[0].stoneCount >= 1
         } else {
             error("in CraftCar#isEnoughItems storageCar is Duplicated")
+        }
+        return false
+    }
+
+    private fun remove(): Boolean {
+        val storageCar = train.getComponents(StorageCar::class.java)
+        if (storageCar.size == 1) {
+            storageCar[0].woodCount--
+            storageCar[0].stoneCount--
+            return true
+        } else {
+            error("in CraftCar#remove storageCar is Duplicated")
         }
         return false
     }

@@ -26,6 +26,11 @@ class GamePlayer(val p: Player, val game: GameInstance) : ListenerBase(game.unra
                 return GamePlayer(p, g)
             }
         }
+
+        /**
+         * The amount the player can lift up
+         */
+        const val storageSize = 5
     }
 
     init {
