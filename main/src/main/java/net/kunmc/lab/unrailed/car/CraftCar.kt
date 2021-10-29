@@ -52,7 +52,10 @@ class CraftCar(plugin: JavaPlugin, spawnLocation: Location, Name: String = "ä½œæ
         plugin.server.scheduler.runTaskTimer(plugin, Runnable { tick() }, 1, 1)
     }
 
-    val storage = SizedInventory(1)
+    /**
+     * The amount of rails this craftCar holding
+     */
+    var railCounts = 0
 
     private var craftTime: Int = baseCraftTime
     override fun onUpgrade(t: Int) {
@@ -73,13 +76,12 @@ class CraftCar(plugin: JavaPlugin, spawnLocation: Location, Name: String = "ä½œæ
      * To do something about crafting.........
      */
     private fun tick() {
-        // TODO
         if (isEnoughItems()) {
             craftTicksCount++
             if (craftTicksCount >= craftTime) {
                 // Complete Crafting
-                storage.addStack(ItemStack(Material.RAIL))
-
+                railCounts++
+                craftTicksCount = 0
             }
         } else {
             craftTicksCount = 0
@@ -93,15 +95,7 @@ class CraftCar(plugin: JavaPlugin, spawnLocation: Location, Name: String = "ä½œæ
     private fun isEnoughItems(): Boolean {
         val storageCar = train.getComponents(StorageCar::class.java)
         if (storageCar.size == 1) {
-            val count = storageCar[0].storage.count()
-            val woodCount = count.filter {
-                it.key.type.isWood()
-            }.toList().count { it.first.amount.toLong() }
-            val stoneCount = count.filter {
-                it.key.type.isStone()
-            }.toList().count { it.first.amount.toLong() }
-            // Collected Counts
-            return woodCount >= 1 && stoneCount >= 1
+            return storageCar[0].woodCount >= 1 && storageCar[0].stoneCount >= 1
         } else {
             error("in CraftCar#isEnoughItems storageCar is Duplicated")
         }

@@ -19,10 +19,17 @@ class StorageCar(
         const val baseStorageSize = 5
     }
 
-    var storageSize = baseStorageSize
-        private set
+    private var storageSize = baseStorageSize
 
-    val storage = SizedInventory(storageSize)
+    /**
+     * The amount of woods this storageCar holding
+     */
+    val woodCount = 0
+
+    /**
+     * The amount of stones this storageCar holding
+     */
+    val stoneCount = 0
 
     override fun onUpgrade(t: Int) {
         storageSize = t
