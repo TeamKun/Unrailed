@@ -107,7 +107,7 @@ class MinecartListener(unrailed: Unrailed) : ListenerBase(unrailed) {
             gameInstance.lanes
                 .mapNotNull { l -> l.train }
                 .map { t -> t.getCars() }.flatten()
-                .first { it.getMinecart() == minecart }
+                .firstOrNull { it.getMinecart() == minecart }
         }
     }
 
