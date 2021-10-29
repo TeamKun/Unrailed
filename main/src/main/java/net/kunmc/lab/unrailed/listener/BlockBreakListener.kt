@@ -33,15 +33,12 @@ class BlockBreakListener(unrailed: Unrailed) : ListenerBase(unrailed) {
                     }
                 }
             } else {
-                if (e.block.type == StandardGenerator.baseBlock || e.block.isWool()) {
-                    // 地面掘ってるだけ、許したれ。
-                    // ↑誰が許すかアホ！
-                    e.isCancelled = true
-                } else {
-                    // 石とか掘ってるんやろ。たぶん。
-
-                    // 加算
+                if (e.block.type.isStone() || e.block.type.isWood()) {
+                    // 石とか木とか掘ってる
                     gamePlayer.state.points += gamePlayer.game.gameSetting.pointPerBreak
+                } else {
+                    // 地面とか掘ってる
+                    e.isCancelled = true
                 }
             }
         }
