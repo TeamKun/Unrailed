@@ -20,6 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scoreboard.Scoreboard
 import org.bukkit.scoreboard.Team
 import org.bukkit.util.Vector
+import java.lang.Integer.min
 import kotlin.random.Random
 
 val Rails = listOf(Material.RAIL, Material.ACTIVATOR_RAIL, Material.POWERED_RAIL, Material.DETECTOR_RAIL)
@@ -701,3 +702,70 @@ fun Player.dropItemAt(index: Int) {
     val i = inventory.getItem(index)
     if (i != null) dropItem(i)
 }
+
+fun Inventory.remove(filter: (ItemStack) -> Boolean, amount: Int): Boolean {
+    if (storageContents.filter { it != null && filter(it) }
+            .count { it.amount.toLong() }
+            .toInt() < amount
+    ) {
+        debug("Not Enough")
+        return false
+    }
+
+    var left = amount
+
+    storageContents.mapIndexed { index, itemStack ->
+        if (itemStack == null) {
+            null
+        } else {
+            if (left > 0) {
+                val i = min(left, itemStack.amount)
+                debug("removing stack amount:$i")
+                itemStack.amount = itemStack.amount - i
+                left -= i
+                if (itemStack.amount == 0) {
+                    debug("removing")
+                }
+            }
+            itemStack
+        }
+    }.forEachIndexed { index, itemStack ->
+        setItem(index,itemStack)
+    }
+
+//    storageContents.forEachIndexed { index, itemStack ->
+//        if (itemStack != null) {
+//            if (left > 0) {
+//                val i = min(left, itemStack.amount)
+//                debug("removing stack amount:$i")
+//                itemStack.amount = itemStack.amount - i
+//                left -= i
+//                if (itemStack.amount == 0) {
+//                    debug("removing")
+//                    clear(index)
+//                }
+//            } else {
+//                return@forEachIndexed
+//            }
+//        }
+//    }
+
+//    storageContents.filter { it != null && filter(it) }.forEach {
+//        if (left > 0) {
+//            val i = min(left, it.amount)
+//            debug("removing stack amount:$i")
+//            it.amount = it.amount - i
+//            left -= i
+//            if (it.amount == 0) {
+//                debug("removing")
+//                remove(it)
+//            }
+//        } else {
+//            return@forEach
+//        }
+//    }
+    debug("left:$left")
+    return left == 0 // Maybe this value will not be null
+}
+
+fun Inventory.remove(material: Material, amount: Int) = remove({ it.type == material }, amount)

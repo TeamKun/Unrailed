@@ -1,11 +1,11 @@
 package net.kunmc.lab.unrailed.car
 
 import net.kunmc.lab.unrailed.car.upgrade.UpGradeSetting
-import net.kunmc.lab.unrailed.util.CarInteractEvent
-import net.kunmc.lab.unrailed.util.SizedInventory
+import net.kunmc.lab.unrailed.util.*
 import org.bukkit.Location
 import org.bukkit.entity.minecart.StorageMinecart
 import org.bukkit.plugin.java.JavaPlugin
+import kotlin.math.min
 
 class StorageCar(
     plugin: JavaPlugin,
@@ -19,17 +19,20 @@ class StorageCar(
         const val baseStorageSize = 5
     }
 
+    /**
+     * This value means that this storage stores <value> items each.
+     */
     private var storageSize = baseStorageSize
 
     /**
      * The amount of woods this storageCar holding
      */
-    val woodCount = 0
+    var woodCount = 0
 
     /**
      * The amount of stones this storageCar holding
      */
-    val stoneCount = 0
+    var stoneCount = 0
 
     override fun onUpgrade(t: Int) {
         storageSize = t
@@ -37,6 +40,36 @@ class StorageCar(
 
     override fun onInteract(e: CarInteractEvent) {
         // TODO 持ち物を自動整理とかそこらへん(たぶん)
+        val p = e.getPlayer() ?: return
+
+        val wC =
+            p.inventory.storageContents.filterNotNull().filter { it.type.isWood() }.count { it.amount.toLong() }.toInt()
+        val sC = p.inventory.storageContents.filterNotNull().filter { it.type.isStone() }.count { it.amount.toLong() }
+            .toInt()
+
+        val wTC = min(storageSize - woodCount, wC)
+        val sTC = min(storageSize - stoneCount, sC)
+
+        if (p.inventory.remove({ it.type.isWood() }, wTC)) {
+            // Able to Remove all Amount
+            woodCount += wTC
+        } else {
+            if (wTC != 0) {
+                // This Branch Will not be reached
+                error("in StorageCar#onInteract not expected reaching happened: wTC:${wTC} wC:${wC}")
+            }
+        }
+
+        if (p.inventory.remove({ it.type.isStone() }, sTC)) {
+            // Able to Remove all Amount
+            stoneCount += sTC
+        } else {
+            if (sTC != 0) {
+                // This Branch Will not be reached
+                error("in StorageCar#onInteract not expected reaching happened: sTC:${sTC} sC:${sC}")
+            }
+        }
+        debug("StorageCar#onInteract woodCount:${woodCount} stoneCount:${stoneCount}")
     }
 }
 
