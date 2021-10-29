@@ -2,6 +2,7 @@ package net.kunmc.lab.unrailed.car
 
 import net.kunmc.lab.unrailed.car.upgrade.UpGradeSetting
 import net.kunmc.lab.unrailed.util.CarInteractEvent
+import net.kunmc.lab.unrailed.util.SizedInventory
 import org.bukkit.Location
 import org.bukkit.entity.minecart.StorageMinecart
 import org.bukkit.plugin.java.JavaPlugin
@@ -21,6 +22,8 @@ class StorageCar(
     var storageSize = baseStorageSize
         private set
 
+    val storage = SizedInventory(storageSize)
+
     override fun onUpgrade(t: Int) {
         storageSize = t
     }
@@ -33,9 +36,14 @@ class StorageCar(
 class StorageUpgradeSetting : UpGradeSetting<Int>(
     cost = { it },
     tFunction = { StorageCar.baseStorageSize + it * increaseItemSizePerLevel },
-    description = { level, size -> listOf("ストレージ容量を増加", "ストレージ容量:${StorageCar.baseStorageSize + level * increaseItemSizePerLevel}") }
+    description = { level, size ->
+        listOf(
+            "ストレージ容量を増加",
+            "ストレージ容量:${StorageCar.baseStorageSize + level * increaseItemSizePerLevel}"
+        )
+    }
 ) {
-    companion object{
+    companion object {
         const val increaseItemSizePerLevel = 4
     }
 }

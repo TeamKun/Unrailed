@@ -1,6 +1,7 @@
 package net.kunmc.lab.unrailed.train
 
 import net.kunmc.lab.unrailed.Unrailed
+import net.kunmc.lab.unrailed.car.CraftCar
 import net.kunmc.lab.unrailed.car.EngineCar
 import net.kunmc.lab.unrailed.car.StorageCar
 import net.kunmc.lab.unrailed.rail.Rail
@@ -17,5 +18,7 @@ class DefaultTrainBuilder(val unrailed: Unrailed, val startTerrainCenter: Locati
             rail,
             unrailed
         ).addCar { l, unrailed -> StorageCar(unrailed, l) }
+            .also { it.addCar { l, unrailed -> CraftCar(unrailed, l, train = it) } }
+
     }
 }

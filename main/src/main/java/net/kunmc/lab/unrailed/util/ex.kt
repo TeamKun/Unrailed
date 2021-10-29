@@ -657,3 +657,38 @@ fun Player.isLeader(): Boolean {
 inline fun <reified T> List<*>.containSameType(t: T): Boolean {
     return any { it is T }
 }
+
+fun Material.isWood(): Boolean {
+    return when (this) {
+        Material.OAK_WOOD,
+        Material.SPRUCE_WOOD,
+        Material.BIRCH_WOOD,
+        Material.JUNGLE_WOOD,
+        Material.ACACIA_WOOD,
+        Material.DARK_OAK_WOOD,
+        Material.CRIMSON_HYPHAE,
+        Material.WARPED_HYPHAE -> {
+            true
+        }
+        else -> false
+    }
+}
+
+fun Material.isStone(): Boolean {
+    return when (this) {
+        Material.COBBLESTONE,
+        Material.STONE -> {
+            true
+        }
+
+        else -> false
+    }
+}
+
+fun <T> List<T>.count(counter: (T) -> Long): Long {
+    var count = 0L
+    forEach {
+        count += counter(it)
+    }
+    return count
+}
