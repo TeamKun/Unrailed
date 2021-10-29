@@ -115,6 +115,11 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
                 broadCast("生成中 ${index + 1}/${lanes.size}:${it}")
             }
             lane.start()
+            lane.getAllTeamMember().forEach {
+                // Make sure all player's inventory is clear
+                // so everyone will not have external tools or items
+                it.p.inventory.clear()
+            }
             debug("Lane Station Size:${lane.stations!!.size}")
         }
         // Status Reset
