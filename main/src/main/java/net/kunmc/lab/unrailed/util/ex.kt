@@ -692,3 +692,12 @@ fun <T> List<T>.count(counter: (T) -> Long): Long {
     }
     return count
 }
+
+fun Player.dropItem(itemStack: ItemStack) {
+    world.dropItem(location, itemStack)
+}
+
+fun Player.dropItemAt(index: Int) {
+    val i = inventory.getItem(index)
+    if (i != null) dropItem(i)
+}
