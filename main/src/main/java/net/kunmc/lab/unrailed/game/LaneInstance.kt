@@ -246,6 +246,14 @@ class LaneInstance(
             // クリア
         }
     }
+
+    fun dispose() {
+        teamMember.forEach {
+            it.state.perks.forEach { perk ->
+                perk.onDeEffect(it.p)
+            }
+        }
+    }
     //////////////// Life Cycle /////////////////
 }
 
