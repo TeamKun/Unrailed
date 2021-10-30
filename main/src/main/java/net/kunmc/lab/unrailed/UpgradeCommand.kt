@@ -36,7 +36,7 @@ val upgradeCommand: (Unrailed) -> Commander<Unrailed> = { unrailed ->
                         } else {
                             // Non Leader用のメニュー
                             debug("Not Leader")
-                            val gui = UpgradeGUI(gamePlayer, collectUpgradeable(true, gamePlayer), unrailed)
+                            val gui = UpgradeGUI(gamePlayer, collectUpgradeable(false, gamePlayer), unrailed)
                             gui.open()
                         }
                         return@setInvoker true
