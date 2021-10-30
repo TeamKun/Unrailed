@@ -209,6 +209,7 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
     fun dispose() {
         // TODO Call this function when regenerate gameInstance
         hudManager.dispose()
+        lanes.forEach { it.dispose() }
     }
 
 

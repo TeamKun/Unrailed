@@ -1,5 +1,6 @@
 package net.kunmc.lab.unrailed.game
 
+import com.github.bun133.flylib2.utils.ComponentUtils
 import net.kunmc.lab.unrailed.game.player.GamePlayer
 import net.kunmc.lab.unrailed.generator.AbstractGenerator
 import net.kunmc.lab.unrailed.generator.GenerateSetting
@@ -33,6 +34,21 @@ class LaneInstance(
     val team: Team =
         game.unrailed.server.scoreboardManager.mainScoreboard.getOrRegisterTeam("Ur-${generateSetting.teamColor}")
             .setColor(generateSetting.teamColor)
+    val scoreboard = game.unrailed.server.scoreboardManager.newScoreboard
+
+    // Non Used Value
+    // Can be accessed by Player.scoreboard.getObjective("Ur-GUI-Objective")
+    val objective =
+        run {
+            val obj =
+                scoreboard.getObjective("Ur-GUI-Objective")
+            obj
+                ?: scoreboard.registerNewObjective(
+                    "Ur-GUI-Objective",
+                    "dummy",
+                    ComponentUtils.fromText("GameStatus")
+                )
+        }
     var train: Train? = null
     var tickTask: BukkitTask? = null
     var stations: MutableList<Station>? = null
@@ -52,6 +68,7 @@ class LaneInstance(
     fun addTeamMember(g: GamePlayer) {
         teamMember.add(g)
         team.addEntry(g.p.name)
+        g.p.scoreboard = scoreboard
         g.p.sendMessage("" + ChatColor.GREEN + "${generateSetting.teamColor.displayName}色チームに参加しました!")
         if (g.p.isLeader()) {
             // Notify player that you are the leader of this lane
