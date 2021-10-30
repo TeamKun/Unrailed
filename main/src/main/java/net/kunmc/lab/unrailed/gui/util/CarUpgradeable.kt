@@ -1,6 +1,7 @@
 package net.kunmc.lab.unrailed.gui.util
 
 import com.github.bun133.flylib2.utils.EasyItemBuilder
+import net.kunmc.lab.unrailed.car.CraftCar
 import net.kunmc.lab.unrailed.car.EngineCar
 import net.kunmc.lab.unrailed.car.StorageCar
 import net.kunmc.lab.unrailed.car.UpgradeableCar
@@ -22,6 +23,9 @@ class CarUpgradeable(val upgradeableCar: UpgradeableCar) : Upgradable {
             }
             is StorageCar -> {
                 Material.CHEST
+            }
+            is CraftCar -> {
+                Material.CRAFTING_TABLE
             }
             else -> TODO()
         }
