@@ -694,13 +694,19 @@ fun <T> List<T>.count(counter: (T) -> Long): Long {
     return count
 }
 
-fun Player.dropItem(itemStack: ItemStack) {
-    world.dropItem(location, itemStack)
+fun Player.dropItem(itemStack: ItemStack, remove: Boolean = true) {
+    val index = inventory.storageContents.indexOfFirst { it.isSimilar(itemStack) }
+    if (index != -1) {
+        dropItemAt(index, remove)
+    }
 }
 
-fun Player.dropItemAt(index: Int) {
+fun Player.dropItemAt(index: Int, remove: Boolean = true) {
     val i = inventory.getItem(index)
-    if (i != null) dropItem(i)
+    if (remove) inventory.setItem(index, null)
+    if (i != null) {
+        world.dropItem(location, i)
+    }
 }
 
 fun Inventory.remove(filter: (ItemStack) -> Boolean, amount: Int): Boolean {

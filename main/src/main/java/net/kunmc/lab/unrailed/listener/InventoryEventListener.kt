@@ -1,14 +1,18 @@
 package net.kunmc.lab.unrailed.listener
 
 import net.kunmc.lab.unrailed.Unrailed
+import net.kunmc.lab.unrailed.game.player.GamePlayer
 import net.kunmc.lab.unrailed.util.debug
 import net.kunmc.lab.unrailed.util.dropItem
 import net.kunmc.lab.unrailed.util.isJoinedGame
+import net.kunmc.lab.unrailed.util.isMergeable
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.entity.EntityPickupItemEvent
 import org.bukkit.event.inventory.InventoryInteractEvent
+import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
+import java.lang.Integer.min
 
 class InventoryEventListener(unrailed: Unrailed) : ListenerBase(unrailed) {
     companion object {
@@ -38,9 +42,32 @@ class InventoryEventListener(unrailed: Unrailed) : ListenerBase(unrailed) {
 
     private fun checkInventory(e: EntityPickupItemEvent) {
         val count = (e.entity as Player).inventory.storageContents.filterNotNull().count()
-        if (count >= 1) {
-            // TODO おんなじ種類でスタック可能だったら?
+        if (count >= 2) {
             e.isCancelled = true
+        } else if (count == 1) {
+            // TODO おんなじ種類でスタック可能だったら?
+            val stack = (e.entity as Player).inventory.storageContents.filterNotNull().firstOrNull()!!
+            val gamePlayer = GamePlayer.getFromPlayer(e.entity as Player)!!
+            if (stack.isSimilar(e.item.itemStack)) {
+                // gamePlayer.state.storageStackAmount
+                e.isCancelled = true
+                val amount = min(gamePlayer.state.storageStackAmount, stack.amount + e.item.itemStack.amount)
+                e.item.itemStack = e.item.itemStack.also { it.amount = it.amount - (amount - stack.amount) }
+                stack.amount = amount
+            } else {
+                e.isCancelled = true
+            }
+        } else if (count == 0) {
+            val gamePlayer = GamePlayer.getFromPlayer(e.entity as Player)!!
+            if (e.item.itemStack.amount > gamePlayer.state.storageStackAmount) {
+                e.isCancelled = true
+                e.item.itemStack = e.item.itemStack.also { it.amount = it.amount - gamePlayer.state.storageStackAmount }
+
+                gamePlayer.p.inventory.setItem(
+                    inventorySlotIndex,
+                    ItemStack(e.item.itemStack.type, gamePlayer.state.storageStackAmount)
+                )
+            }
         }
         checkInventory((e.entity as Player).inventory, e.entity as Player)
     }
