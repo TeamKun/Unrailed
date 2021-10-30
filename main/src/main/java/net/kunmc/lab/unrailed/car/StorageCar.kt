@@ -39,7 +39,6 @@ class StorageCar(
     }
 
     override fun onInteract(e: CarInteractEvent) {
-        // TODO 持ち物を自動整理とかそこらへん(たぶん)
         val p = e.getPlayer() ?: return
 
         val wC =

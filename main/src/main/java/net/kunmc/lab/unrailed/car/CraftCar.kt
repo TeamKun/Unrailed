@@ -66,7 +66,6 @@ class CraftCar(plugin: JavaPlugin, spawnLocation: Location, Name: String = "ä½œæ
     }
 
     override fun onInteract(e: CarInteractEvent) {
-        // TODO Add Rails To Player Inventory
         val p = e.getPlayer() ?: return
 
         if (p.inventory.storageContents.filterNotNull().size == 1 && p.inventory.storageContents.filterNotNull()
