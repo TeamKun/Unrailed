@@ -200,6 +200,8 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
         sortedMap.toList().forEachIndexed { index, pair ->
             broadCaseMessage("${index + 1}位 ${pair.first.generateSetting.teamColor.chatColor}${pair.first.generateSetting.teamColor.displayName}色${ChatColor.RESET}チーム 記録:${pair.second.nullMap { -1 }}ブロック")
         }
+
+        dispose()
     }
 
 
