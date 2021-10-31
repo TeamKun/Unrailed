@@ -12,6 +12,7 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.material.MaterialData
 import org.bukkit.plugin.java.JavaPlugin
+import java.lang.Math.pow
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
@@ -39,11 +40,24 @@ class CraftCar(plugin: JavaPlugin, spawnLocation: Location, Name: String = "作�
          */
         const val decreaseRateCraftTime = 0.9
 
+        // CraftCarのベースのストレージ容量
+        const val baseStorageSize = 5
+
+        /**
+         * 計算のときに使う値
+         * must be > 1
+         * 大きくすれば大きくするほどストレージ容量が大きくなる
+         */
+        const val increaseRateStorageSize = 1.1
+
         /**
          * calculate craft time
          */
         internal fun calculateCraftTime(toUpgrade: Int): Int =
             ((baseCraftTime - 1) * (decreaseRateCraftTime.pow(toUpgrade.toDouble())) + 1).roundToInt()
+
+        internal fun calculateStorageSize(toUpgrade: Int): Int =
+            (baseStorageSize * increaseRateStorageSize.pow((toUpgrade - 1).toDouble())).roundToInt()
 
         /**
          * calculate Upgrade Cost
@@ -61,15 +75,16 @@ class CraftCar(plugin: JavaPlugin, spawnLocation: Location, Name: String = "作�
     var railCounts = 0
 
     private var craftTime: Int = baseCraftTime
+    private var storageSize: Int = baseStorageSize
     override fun onUpgrade(t: Int) {
-        craftTime = t
+        craftTime = CraftCar.calculateCraftTime(t)
+        storageSize = CraftCar.calculateStorageSize(t)
     }
 
     override fun onInteract(e: CarInteractEvent) {
         val p = e.getPlayer() ?: return
 
-        if(railCounts == 0) return
-
+        if (railCounts == 0) return
         if (p.inventory.storageContents.filterNotNull().size == 1 && p.inventory.storageContents.filterNotNull()
                 .first().isMergeable(ItemStack(Material.RAIL), GamePlayer.storageSize)
         ) {
@@ -93,7 +108,7 @@ class CraftCar(plugin: JavaPlugin, spawnLocation: Location, Name: String = "作�
      * To do something about crafting.........
      */
     private fun tick() {
-        if (isEnoughItems()) {
+        if (isEnoughItems() && railCounts < storageSize) {
             craftTicksCount++
             if (craftTicksCount >= craftTime) {
                 // Complete Crafting
@@ -135,7 +150,13 @@ class CraftCar(plugin: JavaPlugin, spawnLocation: Location, Name: String = "作�
 }
 
 class CraftUpgradeSetting : UpGradeSetting<Int>(
-    description = { i, f -> listOf("クラフトスピード加速", "クラフト速度:${f}") },
+    description = { i, f ->
+        listOf(
+            "クラフトアップグレード",
+            "クラフト速度:${CraftCar.calculateCraftTime(f)}",
+            "ストレージ容量:${CraftCar.calculateStorageSize(f)}"
+        )
+    },
     cost = { CraftCar.calculateCost(it) },
-    tFunction = { CraftCar.calculateCraftTime(it) }
+    tFunction = { it }
 )
