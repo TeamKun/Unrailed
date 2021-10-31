@@ -56,7 +56,7 @@ val upgradeCommand: (Unrailed) -> Commander<Unrailed> = { unrailed ->
 
 private fun collectUpgradeable(isLeader: Boolean, gamePlayer: GamePlayer): MutableList<Upgradable> {
     val list = mutableListOf<Upgradable>()
-    if (isLeader) {
+    if (isLeader && gamePlayer.getLane().asNotNull { it.state.isUpgradeTime } == true) {
         val carUpgradeable =
             gamePlayer.getLane().asNotNull {
                 it.train.asNotNull { t ->
