@@ -91,7 +91,6 @@ class Train(firstCar: EngineCar, val rail: Rail, private val plugin: Unrailed) :
 
     private fun onUpdate() {
         if (!plugin.isGoingOn) return
-        //TODO 先頭車両に後続車両をびっちりくっつける // 死ぬ
         if (!isMoving) return
 
         car.removeAll {

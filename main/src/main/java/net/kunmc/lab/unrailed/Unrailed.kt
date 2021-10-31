@@ -21,13 +21,6 @@ class Unrailed : JavaPlugin() {
 
     var isGoingOn = false
 
-    fun start(loc: Location) {
-        // TODO
-    }
-
-    fun stop() {
-    }
-
     override fun onEnable() {
         // Plugin startup logic
         saveDefaultConfig()
@@ -43,6 +36,7 @@ class Unrailed : JavaPlugin() {
 }
 
 fun command(unrailed: Unrailed) =
+    // TODO Rewrite All
     Commander(
         unrailed, "Command of Unraild Plugin", "/ur <start|stop>",
         CommanderBuilder<Unrailed>()
@@ -50,7 +44,7 @@ fun command(unrailed: Unrailed) =
             .addTabChain(TabChain(TabObject("start")))
             .setInvoker { plugin, sender, _ ->
                 if (sender is Player) {
-                    plugin.start(sender.location)
+//                    plugin.start(sender.location)
                     sender.sendMessage("開始します")
                     return@setInvoker true
                 }
@@ -61,7 +55,7 @@ fun command(unrailed: Unrailed) =
             .addFilter(CommanderBuilder.Filters.OP())
             .addTabChain(TabChain(TabObject("stop")))
             .setInvoker { plugin, sender, _ ->
-                plugin.stop()
+//                plugin.stop()
                 sender.sendMessage("終了します")
                 return@setInvoker true
             },
