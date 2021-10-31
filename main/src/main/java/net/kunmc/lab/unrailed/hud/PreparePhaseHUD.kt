@@ -8,7 +8,6 @@ class PreparePhaseHUD : HUD {
     private var departTick: Int = -1
 
     override fun update(unrailed: Unrailed, p: GamePlayer) {
-        // TODO
 //        p.p.sendActionBar(ComponentUtils.fromText("PreparePhaseHUD"))
         if (departTick != -1 && departTick - unrailed.server.currentTick >= 0) {
             p.p.sendActionBar(ComponentUtils.fromText("timeToDepart:${departTick - unrailed.server.currentTick}"))

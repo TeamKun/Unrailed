@@ -88,8 +88,8 @@ class HUDManager(val unrailed: Unrailed, val gameInstance: GameInstance) {
 
     // GAME PHASE END
     // END PHASE START
-    fun onAllDone() {
-        endHUD.onAllDone()
+    fun onAllDone(sortedMap: Map<LaneInstance, Int?>) {
+        endHUD.onAllDone(sortedMap)
     }
     // END PHASE END
     //////////////// EVENTS END /////////////////

@@ -179,8 +179,6 @@ class LaneInstance(
 
         // Set State to upgrade time
         state.isUpgradeTime = true
-
-        // TODO Upgrade関係
     }
 
     /**

@@ -1,7 +1,6 @@
 package net.kunmc.lab.unrailed.game
 
 import net.kunmc.lab.unrailed.Unrailed
-import net.kunmc.lab.unrailed.car.EngineCar
 import net.kunmc.lab.unrailed.game.phase.EndPhase
 import net.kunmc.lab.unrailed.game.phase.GamePhase
 import net.kunmc.lab.unrailed.game.phase.Phase
@@ -19,7 +18,6 @@ import net.kunmc.lab.unrailed.train.DefaultTrainBuilder
 import net.kunmc.lab.unrailed.train.Train
 import net.kunmc.lab.unrailed.train.TrainBuilder
 import net.kunmc.lab.unrailed.util.*
-import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -205,7 +203,7 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
         sortedMap.toList().forEachIndexed { index, pair ->
             broadCaseMessage("${index + 1}位 ${pair.first.generateSetting.teamColor.chatColor}${pair.first.generateSetting.teamColor.displayName}色${ChatColor.RESET}チーム 記録:${pair.second.nullMap { -1 }}ブロック")
         }
-        hudManager.onAllDone()
+        hudManager.onAllDone(sortedMap)
         dispose()
     }
 

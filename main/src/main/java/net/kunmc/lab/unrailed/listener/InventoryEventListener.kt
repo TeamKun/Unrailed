@@ -45,7 +45,6 @@ class InventoryEventListener(unrailed: Unrailed) : ListenerBase(unrailed) {
         if (count >= 2) {
             e.isCancelled = true
         } else if (count == 1) {
-            // TODO おんなじ種類でスタック可能だったら?
             val stack = (e.entity as Player).inventory.storageContents.filterNotNull().firstOrNull()!!
             val gamePlayer = GamePlayer.getFromPlayer(e.entity as Player)!!
             if (stack.isSimilar(e.item.itemStack)) {
@@ -88,7 +87,6 @@ class InventoryEventListener(unrailed: Unrailed) : ListenerBase(unrailed) {
         // Drop Other Items
         if (count != 1) {
             inventory.storageContents.filterNotNull().filter { !it.isSimilar(first) }.forEach {
-                // TODO 無限増殖バグがあるような気がする
                 p.dropItem(it)
             }
         }
