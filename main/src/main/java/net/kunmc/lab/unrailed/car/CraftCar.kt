@@ -68,14 +68,18 @@ class CraftCar(plugin: JavaPlugin, spawnLocation: Location, Name: String = "ä½œæ
     override fun onInteract(e: CarInteractEvent) {
         val p = e.getPlayer() ?: return
 
+        if(railCounts == 0) return
+
         if (p.inventory.storageContents.filterNotNull().size == 1 && p.inventory.storageContents.filterNotNull()
                 .first().isMergeable(ItemStack(Material.RAIL), GamePlayer.storageSize)
         ) {
             // Can be merged
             val stack = p.inventory.storageContents.filterNotNull().first()
             stack.amount = stack.amount + 1
+            railCounts--
         } else if (p.inventory.storageContents.filterNotNull().isEmpty()) {
             p.inventory.setItem(InventoryEventListener.inventorySlotIndex, ItemStack(Material.RAIL))
+            railCounts--
         }
     }
 
