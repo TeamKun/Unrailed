@@ -128,7 +128,7 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
 
         // Init HUDs
         hudManager.init()
-
+        hudManager.onStart(gameSetting.ticksOfStarting)
         // Pass to #startMoving
         unrailed.server.scheduler.runTaskLater(unrailed, Runnable { startMoving() }, gameSetting.ticksOfStarting)
     }
@@ -138,6 +138,7 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
      */
     fun startMoving() {
         nowPhase = GamePhase()
+        hudManager.onStartMoving()
         broadCast("開始!")
         lanes.forEach {
             it.startMoving()
@@ -147,7 +148,8 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
     /**
      * このゲーム内のレーンが駅に着いた時の処理
      */
-    fun onArrive(lane: LaneInstance, station: Station) {
+    fun onArrive(lane: LaneInstance, station: Station, timeToDepart: Long) {
+        hudManager.onArrive(timeToDepart,lane)
         log("GameInstance ${lane.generateSetting.teamColor.displayName}#onArrive@${station}")
     }
 
@@ -155,6 +157,7 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
      * このゲーム内のレーンが駅を出発する時の処理
      */
     fun onDepart(lane: LaneInstance, station: Station) {
+        hudManager.onDepart(lane,station)
         log("GameInstance ${lane.generateSetting.teamColor.displayName}#onDepart@${station}")
     }
 
@@ -166,6 +169,7 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
         broadCaseMessage("${lane.generateSetting.teamColor.chatColor}${lane.generateSetting.teamColor.displayName}色${ChatColor.RESET}チーム クリア!")
         broadCaseMessage("記録:${blocks}ブロック")
         laneResult[lane] = blocks
+        hudManager.onClear(lane,clearLocation)
         checkAllResult()
     }
 
@@ -177,6 +181,7 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
         broadCaseMessage("${lane.generateSetting.teamColor.chatColor}${lane.generateSetting.teamColor.displayName}色${ChatColor.RESET}チーム 脱落!")
         broadCaseMessage("記録:${blocks}ブロック")
         laneResult[lane] = blocks
+        hudManager.onFail(lane,failLocation)
         checkAllResult()
     }
 
@@ -200,7 +205,7 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
         sortedMap.toList().forEachIndexed { index, pair ->
             broadCaseMessage("${index + 1}位 ${pair.first.generateSetting.teamColor.chatColor}${pair.first.generateSetting.teamColor.displayName}色${ChatColor.RESET}チーム 記録:${pair.second.nullMap { -1 }}ブロック")
         }
-
+        hudManager.onAllDone()
         dispose()
     }
 

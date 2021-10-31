@@ -2,9 +2,12 @@ package net.kunmc.lab.unrailed.hud
 
 import net.kunmc.lab.unrailed.Unrailed
 import net.kunmc.lab.unrailed.game.GameInstance
+import net.kunmc.lab.unrailed.game.LaneInstance
 import net.kunmc.lab.unrailed.game.phase.EndPhase
 import net.kunmc.lab.unrailed.game.phase.GamePhase
 import net.kunmc.lab.unrailed.game.phase.PreparePhase
+import net.kunmc.lab.unrailed.station.Station
+import org.bukkit.Location
 import org.bukkit.scheduler.BukkitTask
 
 /**
@@ -53,4 +56,41 @@ class HUDManager(val unrailed: Unrailed, val gameInstance: GameInstance) {
             hud.update(unrailed, it)
         }
     }
+
+
+    //////////////// EVENTS /////////////////
+    // PREPARE PHASE START
+    fun onStart(timeToStartMove: Long) {
+        prepareHUD.onStart((unrailed.server.currentTick + timeToStartMove).toInt())
+    }
+
+    // PREPARE PHASE END
+    // GAME PHASE START
+    fun onStartMoving() {
+        gameHUD.onStartMoving(gameInstance.lanes)
+    }
+
+    fun onArrive(timeToDepart: Long, lane: LaneInstance) {
+        gameHUD.onArrive((timeToDepart + unrailed.server.currentTick).toInt(), lane)
+    }
+
+    fun onDepart(lane: LaneInstance, station: Station) {
+        gameHUD.onDepart(lane, station)
+    }
+
+    fun onFail(lane: LaneInstance, failLocation: Location) {
+        gameHUD.onFail(lane, failLocation)
+    }
+
+    fun onClear(lane: LaneInstance, clearLocation: Location) {
+        gameHUD.onClear(lane, clearLocation)
+    }
+
+    // GAME PHASE END
+    // END PHASE START
+    fun onAllDone() {
+        endHUD.onAllDone()
+    }
+    // END PHASE END
+    //////////////// EVENTS END /////////////////
 }

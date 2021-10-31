@@ -9,4 +9,8 @@ class EndPhaseHUD : HUD {
         // TODO
         p.p.sendActionBar(ComponentUtils.fromText("EndPhaseHUD") )
     }
+
+    ///////////// EVENT /////////////
+    fun onAllDone() {
+    }
 }

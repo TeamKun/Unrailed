@@ -5,6 +5,7 @@ import net.kunmc.lab.unrailed.game.phase.GamePhase
 import net.kunmc.lab.unrailed.game.phase.Phase
 import net.kunmc.lab.unrailed.game.player.GamePlayer
 import net.kunmc.lab.unrailed.train.Train
+import net.kyori.adventure.text.TextComponent
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -17,6 +18,8 @@ import org.bukkit.event.Listener
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scoreboard.Objective
+import org.bukkit.scoreboard.RenderType
 import org.bukkit.scoreboard.Scoreboard
 import org.bukkit.scoreboard.Team
 import org.bukkit.util.Vector
@@ -781,4 +784,22 @@ fun ItemStack.isMergeable(other: ItemStack, maxStackSize: Int? = null): Boolean 
         return isSimilar(other) && (amount + other.amount) <= min(maxStackSize, this.maxStackSize)
     }
     return isSimilar(other) && (amount + other.amount) <= this.maxStackSize
+}
+
+fun Scoreboard.getOrRegisterObjective(
+    name: String,
+    criteria: String = "dummy",
+    component: TextComponent,
+    renderType: RenderType? = null
+): Objective {
+    val o = getObjective(name)
+    return if (o != null) {
+        o
+    } else {
+        if (renderType != null) {
+            registerNewObjective(name, criteria, component, renderType)
+        } else {
+            registerNewObjective(name, criteria, component)
+        }
+    }
 }

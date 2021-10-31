@@ -165,7 +165,7 @@ class LaneInstance(
         // Update Lane Keys & GamePlayer Point
         state.keys += game.gameSetting.keysPerStation
         teamMember.forEach { it.state.points += game.gameSetting.pointPerStation }
-        game.onArrive(this, station)
+        game.onArrive(this, station, game.gameSetting.ticksOfUpgrade)
 
         // Replace The Train (disabled) (not working)
 //        train!!.replace(train!!.getFirstLocation()!!)
