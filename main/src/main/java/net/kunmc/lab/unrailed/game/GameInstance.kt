@@ -108,6 +108,12 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
      */
     fun start() {
         broadCast("開始処理中...")
+        if (lanes.isEmpty()) {
+            // Lanes are empty
+            error("レーン指定がないため終了します")
+            return
+        }
+
         lanes.forEachIndexed { index, lane ->
             lane.generateAll {
                 broadCast("生成中 ${index + 1}/${lanes.size}:${it}")
@@ -147,7 +153,7 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
      * このゲーム内のレーンが駅に着いた時の処理
      */
     fun onArrive(lane: LaneInstance, station: Station, timeToDepart: Long) {
-        hudManager.onArrive(timeToDepart,lane)
+        hudManager.onArrive(timeToDepart, lane)
         log("GameInstance ${lane.generateSetting.teamColor.displayName}#onArrive@${station}")
     }
 
@@ -155,7 +161,7 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
      * このゲーム内のレーンが駅を出発する時の処理
      */
     fun onDepart(lane: LaneInstance, station: Station) {
-        hudManager.onDepart(lane,station)
+        hudManager.onDepart(lane, station)
         log("GameInstance ${lane.generateSetting.teamColor.displayName}#onDepart@${station}")
     }
 
@@ -167,7 +173,7 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
         broadCaseMessage("${lane.generateSetting.teamColor.chatColor}${lane.generateSetting.teamColor.displayName}色${ChatColor.RESET}チーム クリア!")
         broadCaseMessage("記録:${blocks}ブロック")
         laneResult[lane] = blocks
-        hudManager.onClear(lane,clearLocation)
+        hudManager.onClear(lane, clearLocation)
         checkAllResult()
     }
 
@@ -179,7 +185,7 @@ class GameInstance(val unrailed: Unrailed, val gameSetting: GameSetting) {
         broadCaseMessage("${lane.generateSetting.teamColor.chatColor}${lane.generateSetting.teamColor.displayName}色${ChatColor.RESET}チーム 脱落!")
         broadCaseMessage("記録:${blocks}ブロック")
         laneResult[lane] = blocks
-        hudManager.onFail(lane,failLocation)
+        hudManager.onFail(lane, failLocation)
         checkAllResult()
     }
 

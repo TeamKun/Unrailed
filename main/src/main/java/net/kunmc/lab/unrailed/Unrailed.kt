@@ -38,26 +38,17 @@ class Unrailed : JavaPlugin() {
 fun command(unrailed: Unrailed) =
     // TODO Rewrite All
     Commander(
-        unrailed, "Command of Unraild Plugin", "/ur <start|stop>",
+        unrailed, "Command of Unrailed Plugin", "/ur <start|stop>",
         CommanderBuilder<Unrailed>()
             .addFilter(CommanderBuilder.Filters.OP())
             .addTabChain(TabChain(TabObject("start")))
             .setInvoker { plugin, sender, _ ->
                 if (sender is Player) {
-//                    plugin.start(sender.location)
-                    sender.sendMessage("開始します")
+                    UnrailedGameSettingGUI(sender, plugin).open()
                     return@setInvoker true
                 }
                 sender.sendMessage("Playerから開始してください")
                 return@setInvoker false
-            },
-        CommanderBuilder<Unrailed>()
-            .addFilter(CommanderBuilder.Filters.OP())
-            .addTabChain(TabChain(TabObject("stop")))
-            .setInvoker { plugin, sender, _ ->
-//                plugin.stop()
-                sender.sendMessage("終了します")
-                return@setInvoker true
             },
         CommanderBuilder<Unrailed>()
             .addFilter(CommanderBuilder.Filters.OP())
