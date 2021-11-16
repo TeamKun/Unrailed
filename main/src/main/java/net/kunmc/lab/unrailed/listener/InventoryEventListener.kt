@@ -51,7 +51,13 @@ class InventoryEventListener(unrailed: Unrailed) : ListenerBase(unrailed) {
                 // gamePlayer.state.storageStackAmount
                 e.isCancelled = true
                 val amount = min(gamePlayer.state.storageStackAmount, stack.amount + e.item.itemStack.amount)
-                e.item.itemStack = e.item.itemStack.also { it.amount = it.amount - (amount - stack.amount) }
+                val copied = e.item.itemStack.also { it.amount = it.amount - (amount - stack.amount) }
+
+                if (copied.amount == 0) {
+                    e.item.remove()
+                } else {
+                    e.item.itemStack = copied
+                }
                 stack.amount = amount
             } else {
                 e.isCancelled = true
@@ -60,8 +66,13 @@ class InventoryEventListener(unrailed: Unrailed) : ListenerBase(unrailed) {
             val gamePlayer = GamePlayer.getFromPlayer(e.entity as Player)!!
             if (e.item.itemStack.amount > gamePlayer.state.storageStackAmount) {
                 e.isCancelled = true
-                e.item.itemStack = e.item.itemStack.also { it.amount = it.amount - gamePlayer.state.storageStackAmount }
+                val copied = e.item.itemStack.also { it.amount = it.amount - gamePlayer.state.storageStackAmount }
 
+                if (copied.amount == 0) {
+                    e.item.remove()
+                } else {
+                    e.item.itemStack = copied
+                }
                 gamePlayer.p.inventory.setItem(
                     inventorySlotIndex,
                     ItemStack(e.item.itemStack.type, gamePlayer.state.storageStackAmount)

@@ -35,7 +35,7 @@ class GamePhaseHUD : HUD {
 //        p.p.sendActionBar(ComponentUtils.fromText("GamePhaseHUD"))
         val lane = p.game.getLane(p.p) ?: return
         val objective = p.p.scoreboard.getOrRegisterObjective(
-            "Ur-GUI-Objective",
+            "Ur-GUI-GP-${lane.hashCode().toString(36)}",
             "dummy",
             ComponentUtils.fromText("GAME PHASE: MAIN ")
         )
@@ -43,14 +43,13 @@ class GamePhaseHUD : HUD {
     }
 
     private fun update(objective: Objective, p: GamePlayer, lane: LaneInstance, unrailed: Unrailed) {
+        var actionBarString = ""
+        actionBarString += "Points:${p.state.points} "
         objective.displaySlot = DisplaySlot.SIDEBAR
-        val points = objective.getScore("Points:")
-        points.score = p.state.points
         val keys = objective.getScore("Keys:")
         keys.score = lane.state.keys
 
-        val i = this.departTick.getOrDefault(lane, -3)
-        when (i) {
+        when (val i = this.departTick.getOrDefault(lane, -3)) {
             -3 -> {
                 // Not Found in DepartTick Map
                 // This Train hasn't started moving yet
@@ -60,17 +59,17 @@ class GamePhaseHUD : HUD {
 
             failMagicNum -> {
                 // This Lane is failed
-                p.p.sendActionBar(ComponentUtils.fromText("STATE:${ChatColor.RED}FAILED"))
+                actionBarString += "STATE:${ChatColor.RED}FAILED"
             }
 
             clearMagicNum -> {
                 // This Lane is Cleared
-                p.p.sendActionBar(ComponentUtils.fromText("STATE:${ChatColor.GREEN}CLEARED"))
+                actionBarString += "STATE:${ChatColor.GREEN}CLEARED"
             }
 
             0 -> {
                 // This train is Moving
-                p.p.sendActionBar(ComponentUtils.fromText("STATE:${ChatColor.BLUE}MOVING"))
+                actionBarString += "STATE:${ChatColor.BLUE}MOVING"
             }
 
             else -> {
@@ -81,6 +80,7 @@ class GamePhaseHUD : HUD {
                 }
             }
         }
+        p.p.sendActionBar(ComponentUtils.fromText(actionBarString))
     }
 
 

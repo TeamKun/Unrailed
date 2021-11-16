@@ -34,16 +34,15 @@ class LaneInstance(
     val team: Team =
         game.unrailed.server.scoreboardManager.mainScoreboard.getOrRegisterTeam("Ur-${generateSetting.teamColor}")
             .setColor(generateSetting.teamColor)
-    val scoreboard = game.unrailed.server.scoreboardManager.newScoreboard
 
     // Non Used Value
     // Can be accessed by Player.scoreboard.getObjective("Ur-GUI-Objective")
     val objective =
         run {
             val obj =
-                scoreboard.getObjective("Ur-GUI-Objective")
+                game.unrailed.server.scoreboardManager.mainScoreboard.getObjective("Ur-GUI-Objective")
             obj
-                ?: scoreboard.registerNewObjective(
+                ?: game.unrailed.server.scoreboardManager.mainScoreboard.registerNewObjective(
                     "Ur-GUI-Objective",
                     "dummy",
                     ComponentUtils.fromText("GameStatus")
@@ -68,7 +67,7 @@ class LaneInstance(
     fun addTeamMember(g: GamePlayer) {
         teamMember.add(g)
         team.addEntry(g.p.name)
-        g.p.scoreboard = scoreboard
+        g.p.scoreboard = game.unrailed.server.scoreboardManager.mainScoreboard
         g.p.sendMessage("" + ChatColor.GREEN + "${generateSetting.teamColor.displayName}色チームに参加しました!")
         if (g.p.isLeader()) {
             // Notify player that you are the leader of this lane
@@ -254,5 +253,3 @@ class LaneInstance(
     }
     //////////////// Life Cycle /////////////////
 }
-
-
